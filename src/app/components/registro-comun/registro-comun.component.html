@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Registrarte</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+
+        <div class="barNav"></div>
+        <form #usuarioForm="ngForm" (ngSubmit)="createUsuario(usuarioForm)" class="form">
+            <div class="barraForm">
+                <h2>Registrarte</h2>
+            </div>
+            <input type="text" name="nombre" id="" placeholder="Nombre" [(ngModel)]="usuarioComunService.selectedUsuario.nombre">
+            <input type="text" name="apellidoPaterno" id="" placeholder="Apellido Paterno" [(ngModel)]="usuarioComunService.selectedUsuario.apellidoPaterno">
+            <input type="text" name="apellidoMaterno" id="" placeholder="Apellido Materno" [(ngModel)]="usuarioComunService.selectedUsuario.apellidoMaterno">
+            <input type="email" name="correoElectronico" id="" placeholder="Correo electrónico" [(ngModel)]="usuarioComunService.selectedUsuario.correoElectronico">
+            <input type="text" name="nombreUsuario" id="" placeholder="Nombre de Usuario" [(ngModel)]="usuarioComunService.selectedUsuario.nombreUsuario">
+            <input type="password" name="contrasena" id="" placeholder="Contraseña" [(ngModel)]="usuarioComunService.selectedUsuario.contrasena">
+            <input type="password" name="confirmarcontrasena" id="" placeholder="Confirmar Contraseña">
+            <input type="submit" name="registrarte" value="Registrarte" id="" class="registrate">
+        </form>
+
+    </body>
+
+</html>
