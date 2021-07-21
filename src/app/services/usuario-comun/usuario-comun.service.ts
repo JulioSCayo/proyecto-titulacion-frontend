@@ -15,8 +15,7 @@ export class UsuarioComunService {
     apellidoMaterno: '',
     correoElectronico: '',
     nombreUsuario: '',
-    contrasena: '',
-    reputacion: 2
+    contrasena: ''
   };
 
   usuarios: UsuarioComun[] = [];
@@ -24,7 +23,6 @@ export class UsuarioComunService {
   constructor(private http: HttpClient) { }
 
   createUsuario(usuarios: UsuarioComun) {
-    usuarios.reputacion = 2;
     return this.http.post<UsuarioComun[]>(this.URL_API, usuarios);
   }
 

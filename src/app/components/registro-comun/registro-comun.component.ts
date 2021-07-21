@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UsuarioComunService } from "../../services/usuario-comun/usuario-comun.service";
-import { NgForm } from "@angular/forms";
+import { NgForm } from "@angular/forms"
+import { Router } from "@angular/router";
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-registro-comun',
@@ -9,7 +11,7 @@ import { NgForm } from "@angular/forms";
 })
 export class RegistroComunComponent implements OnInit {
 
-  constructor(public usuarioComunService: UsuarioComunService) { }
+  constructor(public usuarioComunService: UsuarioComunService, private router: Router) { }
 
   ngOnInit(): void {
   }
@@ -17,9 +19,25 @@ export class RegistroComunComponent implements OnInit {
   createUsuario(form: NgForm) {
     this.usuarioComunService.createUsuario(form.value).subscribe(
       res => {
-        console.log(res);
+        Swal.fire({
+          title: 'Te has registrado!',
+          text: 'Bienvenido a "nombredelaapp"',
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        });
+        
+        this.router.navigate(['/']);
       },
-      err => console.error(err)
+      err => {
+        Swal.fire({
+          title: 'Oh no!',
+          text: 'Ocurrio un problema enviando tu registro"',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+
+        console.error(err);
+      }
     );
   }
 

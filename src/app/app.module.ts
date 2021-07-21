@@ -10,13 +10,15 @@ import { AppComponent } from './app.component';
 import { RegistroComunComponent } from './components/registro-comun/registro-comun.component';
 import { RegistroEspecialComponent } from './components/registro-especial/registro-especial.component';
 import { RegistroResponsableComponent } from './components/registro-responsable/registro-responsable.component';
+import { InicioComponent } from './components/inicio/inicio.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RegistroComunComponent,
     RegistroEspecialComponent,
-    RegistroResponsableComponent
+    RegistroResponsableComponent,
+    InicioComponent
   ],
   imports: [
     BrowserModule,

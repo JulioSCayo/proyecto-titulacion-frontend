@@ -1,4 +1,4 @@
-export interface UsuarioComun {
+export interface UsuarioEspecial {
 	_id?: string;
     nombre: string;
 	apellidoPaterno: string;
@@ -7,6 +7,8 @@ export interface UsuarioComun {
 	nombreUsuario: string;
 	contrasena: string;
 	reputacion?: number;
+	imagen?: File;
+	validado?: boolean;
     createdAt?: string;
     updatedAt?: string;
 }
