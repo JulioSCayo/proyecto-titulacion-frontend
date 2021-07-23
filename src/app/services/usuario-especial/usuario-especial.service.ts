@@ -16,17 +16,15 @@ export class UsuarioEspecialService {
     correoElectronico: '',
     nombreUsuario: '',
     contrasena: '',
-    imagen: undefined
+    imagen: ''
   };
 
   usuarios: UsuarioEspecial[] = [];
 
   constructor(private http: HttpClient) { }
 
-  createUsuario(usuario: UsuarioEspecial, form: FormData) {
-    usuario.imagen = <File>form.get('imagen'); // Creo que esto no está jalando, tenemos que mandar la imagen como archivo, no como string, pero se envía como objeto vacío
-
-    return this.http.post<FormData[]>(this.URL_API, usuario);
+  createUsuario(formData: FormData) {
+    return this.http.post(this.URL_API, formData);
   }
 
   getUsuario() {

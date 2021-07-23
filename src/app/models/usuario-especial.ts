@@ -7,7 +7,7 @@ export interface UsuarioEspecial {
 	nombreUsuario: string;
 	contrasena: string;
 	reputacion?: number;
-	imagen?: File;
+	imagen: string;
 	validado?: boolean;
     createdAt?: string;
     updatedAt?: string;

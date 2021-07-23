@@ -7,16 +7,16 @@
     <body>
 
         <div class="barNav"></div>
-        <form #usuarioForm="ngForm" (ngSubmit)="createUsuario(usuarioForm)" class="form">
+        <form (submit)="createUsuario(nombre, apellidoPaterno, apellidoMaterno, correoElectronico, nombreUsuario, contrasena)" class="form">
             <div class="barraForm">
                 <h2>Registrarte como Usuario Especial</h2>
             </div>
-                <input type="text" name="nombre" id="" placeholder="Nombre" [(ngModel)]="usuarioEspecialService.selectedUsuario.nombre">
-                <input type="text" name="apellidoPaterno" id="" placeholder="Apellido Paterno" [(ngModel)]="usuarioEspecialService.selectedUsuario.apellidoPaterno">
-                <input type="text" name="apellidoMaterno" id="" placeholder="Apellido Materno" [(ngModel)]="usuarioEspecialService.selectedUsuario.apellidoMaterno">
-                <input type="email" name="correoElectronico" id="" placeholder="Correo Electronico" [(ngModel)]="usuarioEspecialService.selectedUsuario.correoElectronico">
-                <input type="text" name="nombreUsuario" id="" placeholder="Nombre de Usuario" [(ngModel)]="usuarioEspecialService.selectedUsuario.nombreUsuario">
-                <input type="password" name="contrasena" id="" placeholder="Constraseña" [(ngModel)]="usuarioEspecialService.selectedUsuario.contrasena">
+                <input type="text" name="nombre" id="" placeholder="Nombre" #nombre>
+                <input type="text" name="apellidoPaterno" id="" placeholder="Apellido Paterno" #apellidoPaterno>
+                <input type="text" name="apellidoMaterno" id="" placeholder="Apellido Materno" #apellidoMaterno>
+                <input type="email" name="correoElectronico" id="" placeholder="Correo Electronico" #correoElectronico>
+                <input type="text" name="nombreUsuario" id="" placeholder="Nombre de Usuario" #nombreUsuario>
+                <input type="password" name="contrasena" id="" placeholder="Constraseña" #contrasena>
                 <input type="password" name="confirmarContrasena" id="" placeholder="Confirmar Constraseña">
 
                 <div class="container-input">
