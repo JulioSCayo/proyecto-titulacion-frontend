@@ -5,23 +5,37 @@
         <meta charset="utf-8">
     </head>
     <body>
-        <div class="barNav"></div>
 
-        <form action="POST" class="form">
+        <app-barra-navegacion></app-barra-navegacion>
+
+        <!-- <form class="form" (submit)="CreateUsuario()" [formGroup]="registrarForm" errorTailor>
+            <div class="barraForm">
+                 <h2>Registrarte</h2>
+             </div>
+             <input type="text" id="" placeholder="Nombre" formControlName = "nombre">
+             <input type="text" name="apellidoPaterno" id="" placeholder="Apellido Paterno" formControlName = "apellidoPaterno">
+             <input type="text" name="apellidoMaterno" id="" placeholder="Apellido Materno" formControlName = "apellidoMaterno">
+             <input type="email" name="correoElectronico" id="" placeholder="Correo electrónico" formControlName = "correoElectronico">
+             <input type="text" name="nombreUsuario" id="" placeholder="Nombre de Usuario" formControlName = "nombreUsuario">
+             <input type="password" name="contrasena" id="" placeholder="Contraseña" formControlName = "contrasena" 
+                     [controlErrorsTpl]="errorContrasena">
+             <button  class="registrate" [disabled]="registrarForm.invalid" >Registrarte</button>
+         </form> -->
+
+        <form class="form" (submit)="CreateUsuario()" [formGroup]="registrarForm">
             <div class="barraForm">
                 <h2>Generar Registro de Usuario Responsable de Mantenimiento</h2>
             </div>
                 <label id="institucionLabel">Institución</label>
-                <select name="institucion" id="selectInstitucion">
-                    <option value="ninguna" selected="true" disabled="disabled">Selecciona una institución</option>
+                <select name="institucion" id="selectInstitucion" name="institucion" formControlName = "institucion">
+                    <option value="Ninguna" selected="true" disabled="disabled">Selecciona una institución</option>
                     <option value="SIAPA">SIAPA</option>
                     <option value="Infrectructura">Infrectructura de Obras Públicas</option>
                     <option value="Bomberos">Bomberos</option>
                     <option value="CFE">CFE</option>
                 </select>                
 
-                <input type="submit" name="" value="Generar registro" id="enviarInstitucion" class="registrate">
+                <input type="submit" name="registrarte" value="Generar registro" id="enviarInstitucion" class="registrate">
         </form>
     </body>
-
 </html>

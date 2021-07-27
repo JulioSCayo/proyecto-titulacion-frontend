@@ -1,0 +1,13 @@
+<div class="icono-menu" id="icono" (click)="toggleClass = !toggleClass">
+    <img src="https://img.icons8.com/ios-filled/30/000000/menu--v1.png"/>
+</div>
+
+<div class="cont-menu active" id="menu" [ngClass]="{'active': !toggleClass, 'opacity': !toggleClass}">
+    <hr>
+    <ul>
+        <li> Perfil </li>
+        <li> Generar ruta </li>
+        <li> Informacion </li>
+        <li> Cerrar Sesion </li>
+    </ul>
+</div>

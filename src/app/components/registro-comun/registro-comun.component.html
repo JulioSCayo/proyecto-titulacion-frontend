@@ -6,21 +6,46 @@
     </head>
     <body>
 
-        <div class="barNav"></div>
-        <form #usuarioForm="ngForm" (ngSubmit)="createUsuario(usuarioForm)" class="form">
+        <app-barra-navegacion></app-barra-navegacion>
+        
+        <form class="form" (submit)="CreateUsuario()" [formGroup]="registrarForm" >
             <div class="barraForm">
-                <h2>Registrarte</h2>
-            </div>
-            <input type="text" name="nombre" id="" placeholder="Nombre" [(ngModel)]="usuarioComunService.selectedUsuario.nombre">
-            <input type="text" name="apellidoPaterno" id="" placeholder="Apellido Paterno" [(ngModel)]="usuarioComunService.selectedUsuario.apellidoPaterno">
-            <input type="text" name="apellidoMaterno" id="" placeholder="Apellido Materno" [(ngModel)]="usuarioComunService.selectedUsuario.apellidoMaterno">
-            <input type="email" name="correoElectronico" id="" placeholder="Correo electrónico" [(ngModel)]="usuarioComunService.selectedUsuario.correoElectronico">
-            <input type="text" name="nombreUsuario" id="" placeholder="Nombre de Usuario" [(ngModel)]="usuarioComunService.selectedUsuario.nombreUsuario">
-            <input type="password" name="contrasena" id="" placeholder="Contraseña" [(ngModel)]="usuarioComunService.selectedUsuario.contrasena">
-            <input type="password" name="confirmarcontrasena" id="" placeholder="Confirmar Contraseña">
-            <input type="submit" name="registrarte" value="Registrarte" id="" class="registrate">
-        </form>
-
-    </body>
-
-</html>
+                 <h2>Registrarte</h2>
+             </div>
+             <input type="text" id="" placeholder="Nombre" formControlName = "nombre">
+             <input type="text" name="apellidoPaterno" id="" placeholder="Apellido Paterno" formControlName = "apellidoPaterno">
+             <input type="text" name="apellidoMaterno" id="" placeholder="Apellido Materno" formControlName = "apellidoMaterno">
+             <input type="email" name="correoElectronico" id="" placeholder="Correo electrónico" formControlName = "correoElectronico">
+             <input type="text" name="nombreUsuario" id="" placeholder="Nombre de Usuario" formControlName = "nombreUsuario">
+             <input type="password" name="contrasena" id="" placeholder="Contraseña" formControlName = "contrasena" 
+                     [controlErrorsTpl]="errorContrasena">
+             <input type="password" name="confirmarContrasena" id="" placeholder="Confirmar Contraseña" formControlName = "confirmarContrasena">
+             <!-- <div *ngIf=true>
+                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque necessitatibus nam commodi exercitationem eveniet perferendis pariatur qui. Modi nihil accusantium dolorem, praesentium vel odio minus cum, in qui beatae deleniti.
+             </div> -->
+             <div *ngIf="registrarForm.hasError('mustMatch')">
+                 Las contraseñas deben coincidir
+             </div>
+             
+             <button  class="registrate" [disabled]="registrarForm.invalid" >Registrarte</button>
+         </form>
+         
+         <div>
+             Error mustMatch: {{registrarForm.hasError('mustMatch') | json}}
+             <br>
+             Valido: {{registrarForm.valid | json}}
+         </div>
+ 
+ 
+         <ng-template let-error let-text="text" #errorContrasena>
+             <!-- {{error | json}} {{text}} -->
+             <div *ngIf="error?.minlength">
+                 <b>error:</b>
+                 <i>No cumples con los caracteres minimos</i>
+             </div>
+         </ng-template>
+ 
+ 
+     </body>
+ 
+ </html>

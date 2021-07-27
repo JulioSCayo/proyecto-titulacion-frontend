@@ -1,0 +1,14 @@
+<div class="barNav">
+
+    <div class="float-left">
+        <app-menu-desplegable></app-menu-desplegable>
+
+        <div class="logo-nombre" (click)="inicio()">
+            "Nombre del sistema"
+        </div>
+    </div>
+
+    <div class="float-right">
+        <button class="boton-registrarte" *ngIf="paginaInicio==true" (click)="registrarte()">Registrarte</button>
+    </div>
+</div>

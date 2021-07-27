@@ -6,7 +6,8 @@
     </head>
     <body>
 
-        <div class="barNav"></div>
+        <app-barra-navegacion></app-barra-navegacion>
+        
         <form (submit)="createUsuario(nombre, apellidoPaterno, apellidoMaterno, correoElectronico, nombreUsuario, contrasena)" class="form">
             <div class="barraForm">
                 <h2>Registrarte como Usuario Especial</h2>
@@ -31,7 +32,5 @@
 
                 <input type="submit" name="registrarte" value="Solicitar registro" id="" class="registrate">
         </form>
-        
     </body>
-
 </html>
