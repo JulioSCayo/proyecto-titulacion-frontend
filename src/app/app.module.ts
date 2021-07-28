@@ -14,6 +14,7 @@ import { RegistroEspecialComponent } from './components/registro-especial/regist
 import { RegistroResponsableComponent } from './components/registro-responsable/registro-responsable.component';
 import { BarraNavegacionComponent } from './components/components/barra-navegacion/barra-navegacion.component';
 import { MenuDesplegableComponent } from './components/components/menu-desplegable/menu-desplegable.component';
+import { ListaUsuariosComponent } from './components/lista-usuarios/lista-usuarios.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { MenuDesplegableComponent } from './components/components/menu-desplegab
     RegistroResponsableComponent,
     InicioComponent,
     BarraNavegacionComponent,
-    MenuDesplegableComponent
+    MenuDesplegableComponent,
+    ListaUsuariosComponent
   ],
   imports: [
     BrowserModule,

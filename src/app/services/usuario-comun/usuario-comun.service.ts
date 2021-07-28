@@ -26,8 +26,12 @@ export class UsuarioComunService {
     return this.http.post<UsuarioComun[]>(this.URL_API, usuarios);
   }
 
-  getUsuario() {
+  getUsuarios() {
+    return this.http.get<UsuarioComun[]>(this.URL_API);
+  }
 
+  getUsuario() {
+    
   }
 
   editUsuario() {

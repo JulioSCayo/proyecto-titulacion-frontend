@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Registrarte</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+
+        <app-barra-navegacion></app-barra-navegacion>
+
+        <div class="div-botones">
+            <button class="grupo-botones izquierda">Comunes</button>
+            <button class="grupo-botones">Especiales</button>
+            <button class="grupo-botones derecha">Responsables</button>
+        </div>
+
+        <div class="buscador">
+            <input type="text" placeholder="Buscar" class="grupo-botones">
+        </div>
+        
+        <div class="div-tabla">
+            <table class="tabla">
+                <tr class="cabecera">
+                    <th>Id</th>
+                    <th>Nombre de Usuario</th>
+                    <th>Fecha de Registro</th>
+                    <th>Reputación</th>
+                    <th class="acciones">Acciones</th>
+                </tr>
+                <tr *ngFor="let usuario of usuarios">
+                    <td>{{ usuario._id }}</td>
+                    <th>{{ usuario.nombreUsuario }}</th>
+                    <td>{{ usuario.createdAt | date:'dd-MM-yyyy' }}</td>
+                    <td>{{ usuario.reputacion }} puntos</td>
+                    <td>
+                        <button class="boton-eliminar">Eliminar</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        
+ 
+     </body>
+ 
+ </html>

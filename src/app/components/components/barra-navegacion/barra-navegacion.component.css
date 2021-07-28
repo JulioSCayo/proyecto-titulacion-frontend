@@ -27,6 +27,9 @@
     color: #FFFFFF;
     cursor: pointer;
 }
+    .logo-nombre:hover {
+        color: #eeeeee;
+    }
 
 .boton-registrarte {
     margin-right: 30px;
