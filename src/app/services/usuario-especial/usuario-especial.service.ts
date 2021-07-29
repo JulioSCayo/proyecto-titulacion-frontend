@@ -27,6 +27,10 @@ export class UsuarioEspecialService {
     return this.http.post(this.URL_API, formData);
   }
 
+  getUsuarios() {
+    return this.http.get<UsuarioEspecial[]>(this.URL_API);
+  }
+
   getUsuario() {
 
   }

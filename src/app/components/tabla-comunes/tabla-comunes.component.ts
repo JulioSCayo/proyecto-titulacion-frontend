@@ -4,11 +4,11 @@ import { UsuarioComun } from "../../models/usuario-comun";
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-lista-usuarios',
-  templateUrl: './lista-usuarios.component.html',
-  styleUrls: ['./lista-usuarios.component.css']
+  selector: 'app-tabla-comunes',
+  templateUrl: './tabla-comunes.component.html',
+  styleUrls: ['./tabla-comunes.component.css']
 })
-export class ListaUsuariosComponent implements OnInit {
+export class TablaComunesComponent implements OnInit {
 
   usuarios: UsuarioComun[] = [{
     nombre: '',

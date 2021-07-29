@@ -1,4 +1,5 @@
 export interface UsuarioResponsable {
+    _id?: string;
     institucion: string,
     nombreUsuario: string,
     contrasena?: string,
@@ -13,4 +14,6 @@ export interface UsuarioResponsable {
             latitud?: Number
         }
     }
+    createdAt?: string;
+    updatedAt?: string;
 }

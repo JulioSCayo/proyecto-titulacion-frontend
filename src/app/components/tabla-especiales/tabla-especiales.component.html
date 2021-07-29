@@ -8,11 +8,7 @@
 
         <app-barra-navegacion></app-barra-navegacion>
 
-        <div class="div-botones">
-            <button class="grupo-botones izquierda">Comunes</button>
-            <button class="grupo-botones">Especiales</button>
-            <button class="grupo-botones derecha">Responsables</button>
-        </div>
+        <app-btns-tablas-usuarios></app-btns-tablas-usuarios>
 
         <div class="buscador">
             <input type="text" placeholder="Buscar" class="grupo-botones">
@@ -24,14 +20,14 @@
                     <th>Id</th>
                     <th>Nombre de Usuario</th>
                     <th>Fecha de Registro</th>
-                    <th>Reputación</th>
+                    <th>Imagen</th>
                     <th class="acciones">Acciones</th>
                 </tr>
                 <tr *ngFor="let usuario of usuarios">
                     <td>{{ usuario._id }}</td>
                     <th>{{ usuario.nombreUsuario }}</th>
                     <td>{{ usuario.createdAt | date:'dd-MM-yyyy' }}</td>
-                    <td>{{ usuario.reputacion }} puntos</td>
+                    <td>{{ usuario.imagen }}</td>
                     <td>
                         <button class="boton-eliminar">Eliminar</button>
                     </td>
@@ -39,8 +35,6 @@
             </table>
         </div>
 
-        
- 
      </body>
  
  </html>

@@ -61,6 +61,10 @@ export class UsuarioResponsableService {
     return this.http.post<UsuarioResponsable[]>(this.URL_API, usuarios);
   }
 
+  getUsuarios() {
+    return this.http.get<UsuarioResponsable[]>(this.URL_API);
+  }
+
   getUsuario(): Observable<UsuarioResponsable[]> {
     return this.http.get<UsuarioResponsable[]>(this.URL_API);
   }
