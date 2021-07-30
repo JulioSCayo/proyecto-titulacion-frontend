@@ -8,7 +8,21 @@
 
         <app-barra-navegacion></app-barra-navegacion>
         
-        <h1>Inicio</h1>
+        <!-- <h1>Inicio</h1> -->
+        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d59726.524218614904!2d-103.2978432!3d20.6733312!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2smx!4v1627490896681!5m2!1ses!2smx" class="content" allowfullscreen="" loading="lazy"></iframe>
+
+        <form action="post"  class="login" (submit)="login()">
+                <h2 class="h2Login barraForm">Iniciar sesión</h2>
+                <div class="contenedorInputs">
+                    <h3>Usuario</h3>
+                    <input type="text" [(ngModel)]="usuario.nombreUsuario" name="nombreUsuario">
+                    <h3>Contraseña</h3>
+                    <input type="password" [(ngModel)]="usuario.contrasena" name="contrasena">
+                    <p *ngIf="noCoinciden" class="error" style="margin: 10px 0px -30px 0px;">El usuario y contrasena no coincide</p>
+                    <input type="submit" class="enviar" value="Iniciar">
+                </div>
+        </form>
+
 
     </body>
 

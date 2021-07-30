@@ -119,6 +119,9 @@ export class RegistroComunComponent implements OnInit {
           icon: 'success',
           confirmButtonText: 'Ok'
         });
+
+        console.log("respuesta del backend, esperamos token")
+        console.log(res)
         
         this.router.navigate(['/']);
       },

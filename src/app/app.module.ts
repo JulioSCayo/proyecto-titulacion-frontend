@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpInterceptor, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ErrorTailorModule } from '@ngneat/error-tailor';
@@ -15,6 +15,11 @@ import { RegistroResponsableComponent } from './components/registro-responsable/
 import { BarraNavegacionComponent } from './components/components/barra-navegacion/barra-navegacion.component';
 import { MenuDesplegableComponent } from './components/components/menu-desplegable/menu-desplegable.component';
 import { ListaUsuariosComponent } from './components/lista-usuarios/lista-usuarios.component';
+import { MapaReportesComponent } from './components/mapa-reportes/mapa-reportes/mapa-reportes.component';
+
+import { AutenticacionGuard } from './services/guard/autenticacion.guard';
+import { TokenInterceptorService } from './services/token-interceptor/token-interceptor.service';
+
 
 @NgModule({
   declarations: [
@@ -25,7 +30,8 @@ import { ListaUsuariosComponent } from './components/lista-usuarios/lista-usuari
     InicioComponent,
     BarraNavegacionComponent,
     MenuDesplegableComponent,
-    ListaUsuariosComponent
+    ListaUsuariosComponent,
+    MapaReportesComponent
   ],
   imports: [
     BrowserModule,
@@ -46,7 +52,14 @@ import { ListaUsuariosComponent } from './components/lista-usuarios/lista-usuari
       }
     })
   ],
-  providers: [],
+  providers: [
+    AutenticacionGuard,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptorService,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

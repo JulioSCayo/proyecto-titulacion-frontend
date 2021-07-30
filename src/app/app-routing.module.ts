@@ -5,6 +5,9 @@ import { RegistroComunComponent } from "./components/registro-comun/registro-com
 import { RegistroEspecialComponent } from "./components/registro-especial/registro-especial.component";
 import { RegistroResponsableComponent } from "./components/registro-responsable/registro-responsable.component";
 import { ListaUsuariosComponent } from "./components/lista-usuarios/lista-usuarios.component";
+import { MapaReportesComponent } from "./components/mapa-reportes/mapa-reportes/mapa-reportes.component";
+
+import { AutenticacionGuard } from './services/guard/autenticacion.guard';
 
 const routes: Routes = [
   {path: '', component: InicioComponent},
@@ -12,6 +15,7 @@ const routes: Routes = [
   {path: 'registro-especial', component: RegistroEspecialComponent},
   {path: 'registro-responsable', component: RegistroResponsableComponent},
   {path: 'usuarios', component: ListaUsuariosComponent},
+  {path: 'mapa-reportes', component: MapaReportesComponent, canActivate: [AutenticacionGuard]},
   {path: '**', component: InicioComponent}
 ];
 
