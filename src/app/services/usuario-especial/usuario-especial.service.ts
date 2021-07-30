@@ -35,11 +35,13 @@ export class UsuarioEspecialService {
 
   }
 
-  editUsuario() {
-
+  editUsuario(usuarios: UsuarioEspecial) {
+    this.URL_API = this.URL_API + '/' + usuarios._id;
+    return this.http.put(this.URL_API, usuarios);
   }
 
-  deleteUsuario(_id: string) {
-
+  deleteUsuario(_id?: string) {
+    this.URL_API = this.URL_API + '/' + _id;
+    return this.http.delete(this.URL_API);
   }
 }

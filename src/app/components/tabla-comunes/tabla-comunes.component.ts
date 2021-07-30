@@ -43,4 +43,46 @@ export class TablaComunesComponent implements OnInit {
       }
       );
   }
+
+  deleteUsuario(id?: string) {
+    Swal.fire({
+      title: 'Seguro?',
+      text: "No podrás recuperar al usuario eliminado",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, eliminar!',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.usuarioComunService.deleteUsuario(id)?.subscribe(
+          res => {
+            Swal.fire({
+              title: 'Eliminado',
+              text: "Se eliminó al usuario",
+              icon: 'success',
+              showCancelButton: false,
+              confirmButtonColor: '#3085d6',
+              confirmButtonText: 'Ok'
+            }).then((result) => {
+              if (result.isConfirmed || result.isDismissed) {
+                window.location.reload();
+              }
+            });
+          },
+          err => {
+            Swal.fire({
+              title: 'Oh no!',
+              text: 'Ocurrio un problema eliminando al usuario',
+              icon: 'error',
+              confirmButtonText: 'Ok'
+            });
+    
+            console.error(err);
+          }
+          );
+      }
+    });
+  }
 }

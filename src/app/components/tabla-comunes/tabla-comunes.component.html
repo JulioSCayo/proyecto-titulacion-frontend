@@ -28,8 +28,8 @@
                     <th>{{ usuario.nombreUsuario }}</th>
                     <td>{{ usuario.createdAt | date:'dd-MM-yyyy' }}</td>
                     <td>{{ usuario.reputacion }} puntos</td>
-                    <td>
-                        <button class="boton-eliminar">Eliminar</button>
+                    <td class="acciones">
+                        <button class="boton-eliminar" (click)="deleteUsuario(usuario._id)">Eliminar</button>
                     </td>
                 </tr>
             </table>

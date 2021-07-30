@@ -73,7 +73,8 @@ export class UsuarioResponsableService {
 
   }
 
-  deleteUsuario(_id: string) {
-
+  deleteUsuario(_id?: string) {
+    this.URL_API = this.URL_API + '/' + _id;
+    return this.http.delete(this.URL_API);
   }
 }

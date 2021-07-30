@@ -20,16 +20,18 @@
                     <th>Id</th>
                     <th>Nombre de Usuario</th>
                     <th>Fecha de Registro</th>
-                    <th>Imagen</th>
+                    <th class="acciones">Imagen</th>
                     <th class="acciones">Acciones</th>
                 </tr>
                 <tr *ngFor="let usuario of usuarios">
                     <td>{{ usuario._id }}</td>
                     <th>{{ usuario.nombreUsuario }}</th>
                     <td>{{ usuario.createdAt | date:'dd-MM-yyyy' }}</td>
-                    <td>{{ usuario.imagen }}</td>
-                    <td>
-                        <button class="boton-eliminar">Eliminar</button>
+                    <td class="acciones"><a class="imagen-especial" (click)="imagenEspecial(usuario.imagen)">Ver imagen</a></td>
+                    <td class="acciones">
+                        <button class="boton-aceptar" (click)="aceptarUsuario(usuario)" *ngIf="usuario.validado == false">Aceptar</button>
+                        <button class="boton-eliminar" (click)="deleteUsuario(usuario._id)" *ngIf="usuario.validado == false">Denegar</button>
+                        <button class="boton-eliminar" (click)="deleteUsuario(usuario._id)" *ngIf="usuario.validado == true">Eliminar</button>
                     </td>
                 </tr>
             </table>

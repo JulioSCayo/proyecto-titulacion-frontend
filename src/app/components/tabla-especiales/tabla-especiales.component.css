@@ -40,24 +40,25 @@
     border-collapse: collapse;
     margin: 0 0 1em 0;
     caption-side: top;
- }
+}
 
- .cabecera th {
+.cabecera th {
     border-bottom: 2px solid #999999;
- }
+}
 
- .acciones {
-     text-align: center;
- }
-
- th, td {
+th, td {
     text-align: left;
-    padding: 1em;
+    padding: .5em;
     border-bottom: 1px solid #999999;
-    width: 25%;
- }
+    width: auto;
+}
 
- .boton-eliminar {
+.acciones {
+    text-align: center;
+    width: 320px;
+}
+
+.boton-eliminar {
     background: #FE2148;
     margin: 0;
     padding: 0;
@@ -76,6 +77,50 @@
         box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.45);
     }
 
+     .boton-eliminar {
+    background: #FE2148;
+    margin: 0;
+    padding: 0;
+    width: 125px;
+    height: 35px;
+    text-align: center;
+    border: none;
+    color: #000000;
+    cursor: pointer;
+    border-radius: 1rem;
+    font-weight: bold;
+    font-size: 16px;
+}
+    .boton-eliminar:hover {
+        background: #CA1F3D;
+        box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.45);
+    }
+
+.boton-aceptar {
+    background: #2ECC71;
+    margin: 0 5px 0 0;
+    padding: 0;
+    width: 125px;
+    height: 35px;
+    text-align: center;
+    border: none;
+    color: #000000;
+    cursor: pointer;
+    border-radius: 1rem;
+    font-weight: bold;
+    font-size: 16px;
+}
+    .boton-aceptar:hover {
+        background: #2D995A;
+        box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.45);
+    }
+
 .misma-linea {
     display: inline-block;
+}
+
+.imagen-especial {
+    text-decoration: underline;
+    color: #04CAB3;
+    cursor: pointer;
 }

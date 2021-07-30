@@ -52,9 +52,9 @@
 
  th, td {
     text-align: left;
-    padding: 1em;
+    padding: .5em;
     border-bottom: 1px solid #999999;
-    width: 25%;
+    width: auto;
  }
 
  .boton-eliminar {
@@ -75,7 +75,3 @@
         background: #CA1F3D;
         box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.45);
     }
-
-.misma-linea {
-    display: inline-block;
-}
