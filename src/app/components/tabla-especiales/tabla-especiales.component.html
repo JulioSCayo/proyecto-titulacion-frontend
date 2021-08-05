@@ -10,8 +10,8 @@
 
         <app-btns-tablas-usuarios></app-btns-tablas-usuarios>
 
-        <div class="buscador">
-            <input type="text" placeholder="Buscar" class="grupo-botones">
+        <div class="buscador" *ngIf="usuarios.length">
+            <input type="text" placeholder="Buscar" class="grupo-botones" [(ngModel)]="busqueda">
         </div>
         
         <div class="div-tabla">
@@ -23,7 +23,7 @@
                     <th class="acciones">Imagen</th>
                     <th class="acciones">Acciones</th>
                 </tr>
-                <tr *ngFor="let usuario of usuarios">
+                <tr *ngFor="let usuario of usuarios | busquedaUsuarios: busqueda">
                     <td>{{ usuario._id }}</td>
                     <th>{{ usuario.nombreUsuario }}</th>
                     <td>{{ usuario.createdAt | date:'dd-MM-yyyy' }}</td>
@@ -35,6 +35,10 @@
                     </td>
                 </tr>
             </table>
+        </div>
+
+        <div class="div-tabla" *ngIf="!usuarios.length">
+            <h1>No hay usuarios especiales registrados</h1>
         </div>
 
      </body>

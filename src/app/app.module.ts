@@ -18,6 +18,7 @@ import { TablaComunesComponent } from './components/tabla-comunes/tabla-comunes.
 import { TablaEspecialesComponent } from './components/tabla-especiales/tabla-especiales.component';
 import { TablaResponsablesComponent } from './components/tabla-responsables/tabla-responsables.component';
 import { BtnsTablasUsuariosComponent } from './components/components/btns-tablas-usuarios/btns-tablas-usuarios.component';
+import { BusquedaUsuariosPipe } from './pipes/busqueda-usuarios.pipe';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { BtnsTablasUsuariosComponent } from './components/components/btns-tablas
     TablaComunesComponent,
     TablaEspecialesComponent,
     TablaResponsablesComponent,
-    BtnsTablasUsuariosComponent
+    BtnsTablasUsuariosComponent,
+    BusquedaUsuariosPipe
   ],
   imports: [
     BrowserModule,

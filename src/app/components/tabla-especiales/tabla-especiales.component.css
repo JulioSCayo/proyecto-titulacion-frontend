@@ -33,6 +33,10 @@
     margin-top: 0;
 }
 
+.div-tabla h1 {
+    color: #3A4049;
+}
+
 .tabla {
     width: 100%;
     border: none;

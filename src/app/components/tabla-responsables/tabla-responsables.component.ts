@@ -16,6 +16,8 @@ export class TablaResponsablesComponent implements OnInit {
     contrasena: ''
   }];
 
+  busqueda = "";
+
   constructor(public usuarioResponsableService: UsuarioResponsableService) { }
 
   ngOnInit(): void {

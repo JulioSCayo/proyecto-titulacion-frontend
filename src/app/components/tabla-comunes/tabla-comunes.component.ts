@@ -19,6 +19,8 @@ export class TablaComunesComponent implements OnInit {
     contrasena: ''
   }];
 
+  busqueda = "";
+
   constructor(public usuarioComunService: UsuarioComunService) { }
 
   ngOnInit(): void {

@@ -21,6 +21,8 @@ export class TablaEspecialesComponent implements OnInit {
     imagen: ''
   }];
 
+  busqueda = "";
+
   constructor(public usuarioEspecialService: UsuarioEspecialService) { }
 
   ngOnInit(): void {
@@ -31,6 +33,7 @@ export class TablaEspecialesComponent implements OnInit {
     this.usuarioEspecialService.getUsuarios().subscribe(
       res => {
         this.usuarios = <UsuarioEspecial[]>res;
+        console.log(this.usuarios);
       },
       err => {
         Swal.fire({
