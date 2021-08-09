@@ -16,7 +16,10 @@ export class UsuarioEspecialService {
     correoElectronico: '',
     nombreUsuario: '',
     contrasena: '',
-    imagen: ''
+    usuarioEspecial: {
+      imagen: '',
+      validado: false
+    }
   };
 
   usuarios: UsuarioEspecial[] = [];
@@ -24,18 +27,22 @@ export class UsuarioEspecialService {
   constructor(private http: HttpClient) { }
 
   createUsuario(formData: FormData) {
+    console.log(formData)
+    console.log(this.usuarios)
     return this.http.post(this.URL_API, formData);
   }
 
-  getUsuario() {
-
+  getUsuarios() {
+    return this.http.get<any[]>('http://localhost:4000/buscarEspecial');
   }
 
-  editUsuario() {
-
+  editUsuario(usuarios: UsuarioEspecial) {
+    let url = "http://localhost:4000/registro/" + usuarios._id
+    return this.http.put(url, usuarios);
   }
 
-  deleteUsuario(_id: string) {
-
+  deleteUsuario(_id?: string) {
+    let url = "http://localhost:4000/registro/" + _id
+    return this.http.delete(url);
   }
 }

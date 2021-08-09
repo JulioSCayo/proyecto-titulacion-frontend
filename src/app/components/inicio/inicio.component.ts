@@ -28,6 +28,7 @@ export class InicioComponent implements OnInit {
     this.loginService.ingresar(this.usuario).subscribe(
       res => {
         console.log("usuario valido")
+        console.log(res.token)
         localStorage.setItem('token',res.token); // cuando el usuario cierre su sesion debe borrarse esto del localStorage
         this.router.navigate(['/mapa-reportes']) 
       },

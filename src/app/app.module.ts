@@ -19,6 +19,11 @@ import { MapaReportesComponent } from './components/mapa-reportes/mapa-reportes/
 
 import { AutenticacionGuard } from './services/guard/autenticacion.guard';
 import { TokenInterceptorService } from './services/token-interceptor/token-interceptor.service';
+import { TablaComunesComponent } from './components/tabla-comunes/tabla-comunes.component';
+import { TablaEspecialesComponent } from './components/tabla-especiales/tabla-especiales.component';
+import { TablaResponsablesComponent } from './components/tabla-responsables/tabla-responsables.component';
+import { BtnsTablasUsuariosComponent } from './components/components/btns-tablas-usuarios/btns-tablas-usuarios.component';
+import { BusquedaUsuariosPipe } from './pipes/busqueda-usuarios.pipe';
 
 
 @NgModule({
@@ -31,7 +36,12 @@ import { TokenInterceptorService } from './services/token-interceptor/token-inte
     BarraNavegacionComponent,
     MenuDesplegableComponent,
     ListaUsuariosComponent,
-    MapaReportesComponent
+    MapaReportesComponent,
+    TablaComunesComponent,
+    TablaEspecialesComponent,
+    TablaResponsablesComponent,
+    BtnsTablasUsuariosComponent,
+    BusquedaUsuariosPipe
   ],
   imports: [
     BrowserModule,

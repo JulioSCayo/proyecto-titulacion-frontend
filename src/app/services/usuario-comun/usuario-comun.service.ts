@@ -27,18 +27,34 @@ export class UsuarioComunService {
   }
 
   getUsuarios() {
-    return this.http.get<UsuarioComun[]>(this.URL_API);
+    return this.http.get<any[]>('http://localhost:4000/buscarComun');
   }
-
+  
   getUsuario() {
-    
+    // return this.http.get<UsuarioComun[]>(this.URL_API, this.usuarios);
   }
 
   editUsuario() {
 
   }
 
-  deleteUsuario(_id: string) {
-
+  deleteUsuario(_id?: string) {
+    this.URL_API = this.URL_API + '/' + _id;
+    return this.http.delete(this.URL_API);
   }
+
+
+  verUsuarioUnico(nombre: String){
+    console.log(nombre)
+    return this.http.post<any>('http://localhost:4000/usuarioRepetido', nombre)
+  }
+
+  verCorreoUnico(usuario: any){
+    console.log(usuario)
+    return this.http.post<any>('http://localhost:4000/correoRepetido', usuario)
+  }
+  
+
+  
+
 }

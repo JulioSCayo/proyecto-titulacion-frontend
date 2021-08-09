@@ -4,18 +4,20 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs';
 import { UsuarioComun } from 'src/app/models/usuario-comun';
+import { UsuarioComunService } from "../../services/usuario-comun/usuario-comun.service";
+
 
 // @Injectable({
 //     providedIn: 'root'
 //   })
 export class MiValidaciones{
     
-    URL_API = 'http://localhost:4000/registro-responsable';
+    // URL_API = 'http://localhost:4000/registro-responsable';
     // static getUsuario: any;
     // static getCorreo: any;
     
     
-    constructor(private http: HttpClient) {     }
+    constructor(private http: HttpClient, public usuarioComunService: UsuarioComunService) {     }
 
     // validacion personalizada para asignar un tamaño minimo de caracteres
     static CaracteresMinimos(control: AbstractControl){
@@ -27,6 +29,23 @@ export class MiValidaciones{
         }
         
         return null;
+    }
+
+
+    static UsuarioRepetido(control: AbstractControl){
+      const nombre = String(control.value)
+      console.log(nombre)
+
+      // this.verUsuarioUnico(nombre).subscribe(
+      //   res => {
+
+      //   },
+      //   err => {
+      //     console.error(err);
+      //   }
+      // );
+
+
     }
 
 
@@ -43,56 +62,67 @@ export class MiValidaciones{
             matchingControl.setErrors({mustMatch: true})
           }else{
             matchingControl.setErrors(null);
-            // this.registrarForm.setErrors({mustMatch: null})
-            // this.registrarForm.setErrors(null)
           }
         };
       }
 
 
+    // static UsuarioUnico(controlName: string, registrarForm: FormGroup){
+    //   return(FormGroup: { controls: { [x: string]: any; }; }) =>{
+    //     const usuario = FormGroup.controls[controlName];
 
+        
+    //   };
+    // }
+
+
+
+
+    /*
     // validacion personalizada para que no se repita el nombre de usuario
     static UsuarioUnico(control: AbstractControl){
         const nombre = String(control.value);
 
-        // this.getUsuario().subscribe((data: any[]) =>
-        //     data.forEach(i => {
-        //     if(i.nombreUsuario == nombre){
-        //         console.log(i);
-        //         return {usuarioExistente: true}
-        //     }
-        // }),
-        //   );
+        this.getUsuario().subscribe((data: any[]) =>
+            data.forEach(i => {
+            if(i.nombreUsuario == nombre){
+                console.log(i);
+                return {usuarioExistente: true}
+            }
+        }),
+          );
             console.log("UsuarioUnico prueba")
             return null;
     }
+    */
     
     
+    /*
     // validacion personalizada para que no se repita el correo
     static CorreoUnico(control: AbstractControl){
         // let http = new HttpClient();
         const correo = String(control.value);
 
-        // let peticion = this.http.get<UsuarioComun[]>("http://localhost:4000/registro-responsable");
+        let peticion = this.http.get<UsuarioComun[]>("http://localhost:4000/registro-responsable");
 
-        // peticion.subscribe((data: any[]) =>
-        //     data.forEach(i => {
-        //     if(i.nombreUsuario == correo){
-        //         console.log(i)
-        //         return {correoExistente: true}
-        //     }
-        //     }),
-        //   );
+        peticion.subscribe((data: any[]) =>
+            data.forEach(i => {
+            if(i.nombreUsuario == correo){
+                console.log(i)
+                return {correoExistente: true}
+            }
+            }),
+          );
             console.log("CorreoUnico prueba")
             return null;
     }
+    */
 
     
     
-    getUsuario(): Observable<UsuarioComun[]> {
-
-        return this.http.get<UsuarioComun[]>("http://localhost:4000/registro-responsable");
-    }
-
+   verUsuarioUnico(nombre: any){
+    console.log(nombre)
+    return this.http.post<any>('http://localhost:4000/usuarioRepetido', nombre)
+  }
 
 }

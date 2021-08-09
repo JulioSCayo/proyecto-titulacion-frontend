@@ -40,6 +40,9 @@ export class RegistroEspecialComponent implements OnInit {
     formData.append('nombreUsuario', nombreUsuario.value);
     formData.append('contrasena', contrasena.value);
     formData.append('imagen', this.file?.nativeElement.files[0]);
+    formData.append('usuarioEspecial.validado', 'false');
+    formData.append('usuarioEspecial.imagen', 'prueba')
+
 
     this.usuarioEspecialService.createUsuario(formData).subscribe(
         res => {

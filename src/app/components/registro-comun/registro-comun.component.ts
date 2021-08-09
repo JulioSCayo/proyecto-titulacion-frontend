@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UsuarioComunService } from "../../services/usuario-comun/usuario-comun.service";
-import { FormBuilder, FormControl, FormGroup, NgForm, Validators } from "@angular/forms";
+import { AbstractControl, FormBuilder, FormControl, FormGroup, NgForm, Validators } from "@angular/forms";
 import { HttpClient } from '@angular/common/http'
 import { Router } from "@angular/router";
 import Swal from 'sweetalert2';
@@ -34,10 +34,43 @@ export class RegistroComunComponent implements OnInit {
       // validatorb: this.UsuarioUnico("nombreUsuario"),
       // validatorc: this.CorreoUnico("correoElectronico")
 
-      validator: [this.Iguales("contrasena", "confirmarContrasena")/*, this.UsuarioUnico("nombreUsuario"), this.CorreoUnico("correoElectronico")*/] 
-
+      // validator: [this.Iguales("contrasena", "confirmarContrasena"), this.UsuarioUnico("nombreUsuario"), this.CorreoUnico("correoElectronico")] 
+      validator: [this.UsuarioRepetido]
     }); 
   }
+
+
+  UsuarioRepetido(control: AbstractControl){
+    const nombre = String(control.value)
+    console.log(nombre)
+
+
+    // this.http.post<any>('http://localhost:4000/usuarioRepetido', nombre).subscribe(
+    //   res => {
+    //     console.log("el usuario ya existe")
+    //   },
+    //   err => {
+    //     console.log("el usuario aun no existe")
+    //   }
+    // );
+
+
+    this.usuarioComunService.verUsuarioUnico(nombre).subscribe(
+      res => {
+        if(res == true){
+          console.log("el usuario ya existe")
+          // this.registrarForm.setErrors({nombreRepetido: true})
+        }else{
+          console.log("el usuario aun no existe")
+          // this.registrarForm.setErrors({nombreRepetido: false})
+        }
+      },
+      err => {
+        console.error(err);
+      }
+    );
+  }
+
 
   Iguales(controlName: string, matchingControlName: string){
     return(FormGroup: { controls: { [x: string]: any; }; }) =>{
@@ -61,51 +94,101 @@ export class RegistroComunComponent implements OnInit {
   }
 
 
+  /*
+  UsuarioRepetido(control: AbstractControl){
+    const nombre = String(control.value)
+    console.log(nombre)
 
-  // // validacion personalizada para que no se repita el nombre de usuario
-  // UsuarioUnico(controlName: string){
-  //   console.log("ptm ya")
-  //   return(FormGroup: { controls: { [x: string]: any; }; }) =>{
-  //   const control = FormGroup.controls[controlName];
-  //   console.log("UsuarioUnico prueba")
+    this.usuarioComunService.verUsuarioUnico(nombre).subscribe(
+      res => {
+        if(res){
+          console.log("el usuario ya existe")
+          this.registrarForm.setErrors({nombreRepetido: true})
+        }else{
+          console.log("el usuario aun no existe")
+          this.registrarForm.setErrors({nombreRepetido: null})
+        }
+      },
+      err => {
+        console.error(err);
+      }
+      );
 
-  //   this.usuarioComunService.getUsuario().subscribe(data =>
-  //       data.forEach(i => {
-  //         if(i.nombreUsuario == String(control.value)){
-  //           console.log("USUARIO REPETIDO")
-  //           control.setErrors({nombreRepetido: true})
-  //           this.registrarForm.setErrors({nombreRepetido: true})
-  //         }
-  //       })
-  //     );
-  //   }
-
-  //     // control.setErrors({repetido: null})
-  //     this.registrarForm.setErrors({nombreRepetido: null})
-  // }
+  }
+  */
 
 
+
+  /*
+  // validacion personalizada para que no se repita el nombre de usuario
+  UsuarioUnico(controlName: string){
+    console.log("ptm ya")
+    return(FormGroup: { controls: { [x: string]: any; }; }) =>{
+    const control = FormGroup.controls[controlName];
+
+    this.usuarioComunService.getUsuarios().subscribe(data =>
+        data.forEach(i => {
+          if(i.nombreUsuario == String(control.value)){
+            console.log("USUARIO REPETIDO")
+            control.setErrors({nombreRepetido: true})
+            this.registrarForm.setErrors({nombreRepetido: true})
+          }
+        })
+      );
+    }
+
+      // control.setErrors({repetido: null})
+      this.registrarForm.setErrors({nombreRepetido: null})
+  }
+  */
+    
   
   // // validacion personalizada para que no se repita el nombre de usuario
-  // CorreoUnico(controlName: string){
-  //   return(FormGroup: { controls: { [x: string]: any; }; }) =>{
-  //   const control = FormGroup.controls[controlName];
-  //   console.log("UsuarioUnico prueba")
+  CorreoUnico(controlName: string){
+    return(FormGroup: { controls: { [x: string]: any; }; }) =>{
+    const control = FormGroup.controls[controlName];
 
-  //   this.usuarioComunService.getUsuario().subscribe(data =>
-  //       data.forEach(i => {
-  //           if(i.correoElectronico == String(control.value)){
-  //             console.log("CORREO REPETIDO")
-  //             control.setErrors({correoRepetido: true})
-  //             this.registrarForm.setErrors({correoRepetido: true})
-  //           }
-  //         })
-  //       );
-  //     }
+    this.usuarioComunService.getUsuarios().subscribe(data =>
+        data.forEach(i => {
+            if(i.correoElectronico == String(control.value)){
+              console.log("CORREO REPETIDO")
+              control.setErrors({correoRepetido: true})
+              this.registrarForm.setErrors({correoRepetido: true})
+            }
+          })
+        );
+      }
 
-  //     // control.setErrors({repetido: null})
-  //     this.registrarForm.setErrors({correoRepetido: null})
-  // }
+      // control.setErrors({repetido: null})
+      this.registrarForm.setErrors({correoRepetido: null})
+  }   
+
+
+    // NO FUNCIONA
+  /*
+ UsuarioUnico(controlName: string){
+    return(FormGroup: { controls: { [x: string]: any; }; }) =>{
+    const nombre = FormGroup.controls[controlName];
+
+    this.usuarioComunService.verUsuarioUnico(nombre).subscribe(
+      res => {
+        if(res){
+          console.log("el usuario ya existe")
+          this.registrarForm.setErrors({nombreRepetido: true})
+        }else{
+          console.log("el usuario aun no existe")
+          this.registrarForm.setErrors({nombreRepetido: null})
+        }
+      },
+      err => {
+        console.log(err)
+      }
+      );
+
+      // this.registrarForm.setErrors({nombreRepetido: null})
+    }
+  }
+  */
 
 
 
@@ -115,7 +198,7 @@ export class RegistroComunComponent implements OnInit {
       res => {
         Swal.fire({
           title: 'Solicitud enviada!',
-          text: 'Hemos recibido tu solicitud de registro a "nombredelaapp" como usuario especial',
+          text: 'Bienvenido a "nombredelaapp"',
           icon: 'success',
           confirmButtonText: 'Ok'
         });

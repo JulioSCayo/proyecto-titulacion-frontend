@@ -28,7 +28,8 @@ export class ListaUsuariosComponent implements OnInit {
   getUsuarios() {
     this.usuarioComunService.getUsuarios().subscribe(
       res => {
-        this.usuarios = <UsuarioComun[]>res;
+        this.usuarios = res;
+
         console.log(res);
       },
       err => {

@@ -12,8 +12,8 @@ export class RegistroResponsableComponent implements OnInit {
   UsuarioResponsableService: any;
   registrarForm!: FormGroup;
   submitted = false;
-  numResp = 0;
-  usuarioTemp = "";
+  // numResp = 0;
+  // usuarioTemp = "";
 
   constructor(private formBuilder: FormBuilder, public usuarioResponsableService: UsuarioResponsableService) { }
 
@@ -23,14 +23,16 @@ export class RegistroResponsableComponent implements OnInit {
     });
   }
   
+  
+  
   CreateUsuario() {
     
-
     this.usuarioResponsableService.createUsuario(this.registrarForm.value).subscribe(
       res => {
+        console.log("Respuesta de la peticion")
         Swal.fire({
           title: 'Responsable de mantenimiento registrado!',
-          text: 'El nombre de usuario y contraseña son: ' + this.usuarioResponsableService.usuarioTemp,
+          text: 'El nombre de usuario y contraseña son: ' + res,
           icon: 'success',
           confirmButtonText: 'Ok'
         });
@@ -48,10 +50,6 @@ export class RegistroResponsableComponent implements OnInit {
     );
   }
 
-  getUsuario(){
-    // this.usuarioResponsableService.getUsuario().subscribe(
-    //   res => console.log(res),
-    //   err => console.log(err)
-    // );
-  }
+
+
 }
