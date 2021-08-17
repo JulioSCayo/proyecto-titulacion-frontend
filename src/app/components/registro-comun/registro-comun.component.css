@@ -1,0 +1,24 @@
+            /* VALIDACIONES */
+            form label{
+                color:  rgb(238, 61, 61);
+                padding: 0px;
+                margin: 0px;
+                margin-top: 2px;
+            }
+            
+            /* control-error{
+                color: red;
+                background: rgb(65, 219, 73);
+            } */
+            
+            label.control-error{
+                color: red;
+                background: rgb(65, 219, 73);
+            }
+                        
+            input.ng-invalid.ng-touched{
+                border: solid 2px rgb(238, 61, 61);
+            }
+            input.ng-valid{
+                border: solid 2px rgb(65, 219, 73);
+            }
