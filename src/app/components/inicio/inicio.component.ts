@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, NgForm, Validators } from "@angula
 import { HttpClient } from '@angular/common/http'
 import { Router } from "@angular/router";
 import { LoginService } from '../../services/login/login.service'
+import { Loader } from '@googlemaps/js-api-loader';
 
 @Component({
   selector: 'app-inicio',
@@ -21,6 +22,7 @@ export class InicioComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.mapa();
   }
 
   login() {
@@ -43,9 +45,63 @@ export class InicioComponent implements OnInit {
 
   }
 
-  
+  mapa() {
+    let latitud: number;
+    let longitud: number;
 
+    if(navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
 
+        latitud = position.coords.latitude;
+        longitud = position.coords.longitude;
+      });
+    }
 
+    let loader = new Loader({
+      apiKey: ''
+    });
+
+    loader.load().then(() => {
+      const map = new google.maps.Map(document.getElementById("mapa")!, {
+        center: { lat: latitud, lng: longitud},
+        zoom: 12,
+        disableDefaultUI:true, 
+        styles: [
+          {
+            "featureType": "administrative.land_parcel",
+            "elementType": "labels",
+            "stylers": [
+              {
+                "visibility": "off"
+              }
+            ]
+          },
+          {
+            "featureType": "poi",
+            "elementType": "labels.text",
+            "stylers": [
+              {
+                "visibility": "off"
+              }
+            ]
+          },
+          {
+            "featureType": "road.local",
+            "elementType": "labels",
+            "stylers": [
+              {
+                "visibility": "off"
+              }
+            ]
+          }
+        ]
+      });
+
+      map.addListener("mousedown", () => {
+        this.router.navigate(['/informacion/conoce-mas']) 
+      });
+
+    });
+  }
 
 }

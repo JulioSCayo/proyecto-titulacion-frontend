@@ -17,7 +17,7 @@
         <li *ngIf="opciones('usuarios')==true" [routerLink]="['/usuarios']"> Lista de usuarios </li>
         <li *ngIf="opciones('generarReporte')==true" [routerLink]="['/mapa-reportes']"> Generar reporte </li>
         <li *ngIf="opciones('generarRuta')==true" [routerLink]="['/']"> Generar ruta </li>
-        <li *ngIf="opciones('informacion')==true" [routerLink]="['/']"> Informacion </li>
+        <li *ngIf="opciones('informacion')==true" [routerLink]="['/informacion']"> Informacion </li>
         <li *ngIf="opciones('cerrarSesion')==true" (click)="cerrarSesion()"> Cerrar Sesion </li>
     </ul>
 </div>

@@ -14,8 +14,7 @@ import { RegistroEspecialComponent } from './components/registro-especial/regist
 import { RegistroResponsableComponent } from './components/registro-responsable/registro-responsable.component';
 import { BarraNavegacionComponent } from './components/components/barra-navegacion/barra-navegacion.component';
 import { MenuDesplegableComponent } from './components/components/menu-desplegable/menu-desplegable.component';
-import { ListaUsuariosComponent } from './components/lista-usuarios/lista-usuarios.component';
-import { MapaReportesComponent } from './components/mapa-reportes/mapa-reportes/mapa-reportes.component';
+import { MapaReportesComponent } from './components/mapa-reportes/mapa-reportes.component';
 
 import { AutenticacionGuard } from './services/guard/autenticacion.guard';
 import { TokenInterceptorService } from './services/token-interceptor/token-interceptor.service';
@@ -24,6 +23,8 @@ import { TablaEspecialesComponent } from './components/tabla-especiales/tabla-es
 import { TablaResponsablesComponent } from './components/tabla-responsables/tabla-responsables.component';
 import { BtnsTablasUsuariosComponent } from './components/components/btns-tablas-usuarios/btns-tablas-usuarios.component';
 import { BusquedaUsuariosPipe } from './pipes/busqueda-usuarios.pipe';
+import { InformacionComponent } from './components/informacion/informacion/informacion.component';
+import { ConoceMasComponent } from './components/informacion/conoce-mas/conoce-mas.component';
 
 
 @NgModule({
@@ -35,13 +36,14 @@ import { BusquedaUsuariosPipe } from './pipes/busqueda-usuarios.pipe';
     InicioComponent,
     BarraNavegacionComponent,
     MenuDesplegableComponent,
-    ListaUsuariosComponent,
     MapaReportesComponent,
     TablaComunesComponent,
     TablaEspecialesComponent,
     TablaResponsablesComponent,
     BtnsTablasUsuariosComponent,
-    BusquedaUsuariosPipe
+    BusquedaUsuariosPipe,
+    InformacionComponent,
+    ConoceMasComponent
   ],
   imports: [
     BrowserModule,

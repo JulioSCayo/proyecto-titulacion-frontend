@@ -5,45 +5,67 @@
 
 body {
     background-color: #FAFAFA;
-    font-family: Helvetica;
+    font-family: 'Source Sans Pro', sans-serif;
 }
 
-body{
-    background: #f8ffff;
-}
-
-.content{
+.content {
     width: 92%;
     height: 82%;
     z-index: 1;
-    background-color:fffff;
     position: absolute;
     margin: 2.5% 0 0 4%;
     border: none;
+    align-items: center;
     box-shadow: 1px 1px 8px 2px rgba(0, 0, 0, .30);
+    background-color: #000000;
 }
 
-
-.barNav {
-    padding: 0;
+.mapa {
     width: 100%;
-    height: 50px;
-    background-color: #04CAB3;
-}
-
-.login{
-    z-index:3;
+    height: 100%;
+    z-index: 2;
     position: absolute;
+    border: none;
+    transition: all .5s;
+}
+    .mapa:hover {
+        transition: all .5s;
+        opacity: .25;
+    }
+
+.mensaje {
+    display: block;
+    float: left;
+    width: 70%;
+    height: 100%;
+    z-index: 3;
+    text-align: center;
+    margin-top: 250px;
+    
+}
+    .mensaje h1 {
+        color: #FFFFFF;
+        font-weight: bold;
+        font-size: 40px;
+    }
+    .mensaje h2 {
+        color: #00a592;
+        font-weight: bold;
+        font-size: 30px;
+    }
+
+.login {
+    z-index: 4;
+    display: block;
+    float: right;
+    position: absolute;
+    right: 0;
+    margin: 4.5% 4.5% 0 4.5%;
     width: 340px;
     background-color: #A0A2A1;
-    margin: 6.5% 0% 0% 71%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
     border-radius: 1rem;
     box-shadow: 4px 4px 10px 2px rgba(0, 0, 0, .45);
-    justify-content: center;
 }
     form .barraForm {
         align-self: stretch;

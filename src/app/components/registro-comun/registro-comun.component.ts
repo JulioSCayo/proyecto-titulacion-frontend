@@ -197,7 +197,7 @@ export class RegistroComunComponent implements OnInit {
     this.usuarioComunService.createUsuario(this.registrarForm.value).subscribe(
       res => {
         Swal.fire({
-          title: 'Solicitud enviada!',
+          title: 'Te has registrado!',
           text: 'Bienvenido a "nombredelaapp"',
           icon: 'success',
           confirmButtonText: 'Ok'

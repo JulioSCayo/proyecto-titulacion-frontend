@@ -1,0 +1,158 @@
+.contenido {
+    width: 100%;
+    height: calc(100% - 55px);
+    margin: 0;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #000000;
+}
+
+.mapa {
+    transition: all .5s;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    position: absolute;
+    border: none;
+}
+
+.buscador {
+    display: block;
+    float: right;
+    text-align: center;
+    margin: 25px;
+    z-index: 2;
+    right: 0;
+    position: fixed;
+}
+    .buscador input {
+        margin: 0;
+        padding: 0;
+        width: 350px;
+        height: 35px;
+        background: #FFFFFF;
+        background-image: url("https://img.icons8.com/ios-glyphs/30/000000/search--v1.png");
+        background-repeat: no-repeat;
+        background-position: 6px center;
+        background-size: 20px;
+        border: none;
+        border-radius: 1rem;
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+        color: #000;
+        outline: none;
+        cursor: pointer;
+    }
+
+    .buscador input:focus {
+        box-shadow: inset 0 0 0 2px #00a592;
+        ;
+    }
+
+.botonReportar {
+    visibility: hidden;
+    position: absolute;
+    margin: 10px;
+    height: auto;
+    width: 100px;
+    padding: 5px;
+    background: #04CAB3;
+    cursor: pointer;
+    border: none;
+    border-radius: .5rem;
+    font-weight: bold;
+    font-size: 18px;
+    transition: all .5s ease;
+}
+    .botonReportar:hover {
+        background: #00a592;
+        color: #FFFFFF;
+        box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.45);
+    }
+    .showBotonReportar {
+        visibility: visible;
+        position: static;
+    }
+
+.reportar {
+    transition: all .5s;
+    background-color: #FAFAFA;
+    position: fixed;
+    align-items: center;
+    text-align: center;
+    justify-self: center;
+    height: max-content;
+    width: max-content;
+    z-index: 3;
+    border-radius: 1rem;
+    margin: 200px;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, .45);
+}
+    .reportar .opciones {
+        list-style: none;
+    }
+    .reportar .barra {
+        border-radius: 1rem 1rem 0rem 0rem;
+        color: #FFFFFF;
+        background-color: #3A4049;
+        padding: 10px;
+    }
+    .reportar .opciones li {        
+        padding: 10px 40px;
+        font-size: 22px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .reportar .incendio hr{
+        color: #ff4b14;
+        margin-top: 55px;
+        width: 90%;
+        margin-left: 5%;
+        border: 1px solid #6b7383;
+    }
+        .reportar .incendio:hover {
+            color: #fd8037;
+        }
+    .reportar .agua {
+        color: #236275;
+    }
+        .reportar .agua:hover {
+            color: #6cb7ce;
+        }
+    .reportar .obstruccion {
+        color: #75441D;
+    }
+        .reportar .obstruccion:hover {
+            color: #795130;
+        }
+    .reportar .alumbrado {
+        color: #d8c200;
+    }
+        .reportar .alumbrado:hover {
+            color: #fdf77a;
+        }
+
+.active {
+    opacity: 1;
+    pointer-events: auto;
+    transition: all .5s;
+}
+
+.cerrar {
+    margin: 5px;
+    cursor: pointer;
+}
+    .cerrar:hover {
+        font-weight: bold;
+    }
+
+.desactivarMapa {
+    opacity: .5;
+    pointer-events: none;
+    transition: all .5s;
+}

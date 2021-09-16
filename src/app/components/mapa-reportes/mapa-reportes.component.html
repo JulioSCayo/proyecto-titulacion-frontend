@@ -1,0 +1,26 @@
+<app-barra-navegacion></app-barra-navegacion>
+
+<div class="buscador">
+    <input type="text" name="busqueda" id="buscador" placeholder="No sirve todavía">
+</div>
+
+<div class="contenido">
+    <div class="mapa" id="mapa" [ngClass]="{'desactivarMapa': toggleDesactivarMapa}"></div>
+
+    <div class="reportar" [ngClass]="{'active': toggleReportar}">
+        <div class="barra"><h2>Tipo de problema</h2></div>
+        <ul class="opciones">
+            <li class="alumbrado">Alumbrado</li>
+            <hr>
+            <li class="agua">Agua</li>
+            <hr>
+            <li class="obstruccion">Obstrucción de circulación</li>
+            <hr>
+            <li class="incendio">Incendios</li>
+            <hr>
+        </ul>
+        <p class="cerrar" (click)="this.toggleReportar = false; this.toggleDesactivarMapa = false">Cerrar</p>
+    </div>
+</div>
+
+<button id="boton" class="botonReportar" [ngClass]="{'showBotonReportar': toggleShowBotonReportar}">Reportar</button>
