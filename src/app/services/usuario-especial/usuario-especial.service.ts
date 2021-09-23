@@ -27,8 +27,6 @@ export class UsuarioEspecialService {
   constructor(private http: HttpClient) { }
 
   createUsuario(formData: FormData) {
-    console.log(formData)
-    console.log(this.usuarios)
     return this.http.post(this.URL_API, formData);
   }
 

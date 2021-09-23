@@ -1,6 +1,7 @@
-import { flatten } from '@angular/compiler';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { ReportesService } from "../../services/reportes/reportes.service";
 import { Loader } from '@googlemaps/js-api-loader';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-mapa-reportes',
@@ -9,20 +10,45 @@ import { Loader } from '@googlemaps/js-api-loader';
 })
 export class MapaReportesComponent implements OnInit {
 
-  toggleReportar: boolean = false;
-  toggleDesactivarMapa: boolean = false;
-  toggleShowBotonReportar: boolean = false;
+  @Input() span = 'Seleccionar archivo de imagen';
 
-  constructor() { }
+  @ViewChild('file', {
+    read: ElementRef
+  }) file?: ElementRef;
+
+  selectedImage?: File;
+
+  // VARIABLES PARA HACER TOGGLE DE CLASES
+  toggleShowBotonReportar: boolean = false;
+  toggleDesactivarMapa: boolean = false;
+  toggleTipoProblema: boolean = false;
+  toggleTipoAgua: boolean = false;
+  toggleTipoObstruccion: boolean = false;
+  toggleFormReporte: boolean = false;
+  
+  // COORDENADAS Y TIPO DEL NUEVO REPORTE
+  nuevoLatLng: any;
+  nuevoProblema: string = "";
+
+  constructor(public reportesService: ReportesService) { }
 
   ngOnInit(): void {
     this.mapa();
+  }
+
+  onImageSelected(event: Event) {
+    this.selectedImage = this.file?.nativeElement.files[0];
+
+    if(this.selectedImage?.name) {
+			this.span = this.selectedImage?.name;
+    }
   }
 
   mapa() {
     let longitud: number;
     let latitud: number;
 
+    // CONSEGUIR COORDENADAS
     if(navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
         latitud = position.coords.latitude;
@@ -32,11 +58,13 @@ export class MapaReportesComponent implements OnInit {
       }, {enableHighAccuracy: true});
     }
 
+    // DECLARAR LOADER DEL MAPA CON LA APIKEY
     let loader = new Loader({
       // apiKey: 'AIzaSyAYN-jmRSHPR78rT0l1na0XchXlJT7_sDw'
       apiKey: ''
     });
 
+    // SE CARGA EL MAPA
     loader.load().then(() => {
       const map = new google.maps.Map(document.getElementById("mapa")!, {
         center: { lat: latitud, lng: longitud},
@@ -74,27 +102,25 @@ export class MapaReportesComponent implements OnInit {
         ]
       });
 
+      // ESTO ES PARA INTENTAR HACER EL BUSCADOR EN UN FUTURO
       // const buscador = <HTMLInputElement>document.getElementById("buscador")!;
       // const buscar = new google.maps.places.Autocomplete(buscador);
       // buscar.bindTo("bounds", map);
 
       
 
+      this.addMarker(latitud, longitud, map);
+
+
+
       const markerDefault = "red"
       const markerColor1 = "#3FABCB";
-      const markerColor2 = "#75441D";
-      const markerColor3 = "#ADD82B";
-      const markerColor4 = "#FF6A14";
-      const markerColor5 = "#FFF62B";
 
       let newMarker: google.maps.Marker[] = [];
 
-
-
-
-
       google.maps.event.addListener(map, "click", (event: any) => {
         let boton = document.getElementById('boton')
+        this.nuevoLatLng = event.latLng;
         
         if(newMarker.length > 0) {
           newMarker[0].setMap(null);
@@ -102,7 +128,7 @@ export class MapaReportesComponent implements OnInit {
         }
 
         const addMarker = new google.maps.Marker({
-          position: event.latLng,
+          position: this.nuevoLatLng,
           map,
           title: "New Marker!",
           optimized: true,
@@ -120,13 +146,9 @@ export class MapaReportesComponent implements OnInit {
         }, 100);
         
         boton?.addEventListener('click', () => {
-          this.reportar();
+          this.tipoProblema();
         })
       })
-
-
-
-
 
       const newMarkerIcon = {
         path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
@@ -138,10 +160,6 @@ export class MapaReportesComponent implements OnInit {
         anchor: new google.maps.Point(15, 30)
       };
 
-
-
-
-
       const icon1 = {
         path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
         fillColor: markerColor1,
@@ -152,94 +170,14 @@ export class MapaReportesComponent implements OnInit {
         anchor: new google.maps.Point(15, 30)
       };
 
-      const icon2 = {
-        path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
-        fillColor: markerColor2,
-        fillOpacity: 1,
-        strokeWeight: 0,
-        rotation: 0,
-        scale: 2,
-        anchor: new google.maps.Point(15, 30)
-      };
-
-      const icon3 = {
-        path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
-        fillColor: markerColor3,
-        fillOpacity: 1,
-        strokeWeight: 0,
-        rotation: 0,
-        scale: 2,
-        anchor: new google.maps.Point(15, 30)
-      };
-
-      const icon4 = {
-        path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
-        fillColor: markerColor4,
-        fillOpacity: 1,
-        strokeWeight: 0,
-        rotation: 0,
-        scale: 2,
-        anchor: new google.maps.Point(15, 30)
-      };
-
-      const icon5 = {
-        path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
-        fillColor: markerColor5,
-        fillOpacity: 1,
-        strokeWeight: 0,
-        rotation: 0,
-        scale: 2,
-        anchor: new google.maps.Point(15, 30)
-      };
-
-
-
-
-
       const marker1 = new google.maps.Marker({
-        position: { lat: latitud, lng: longitud},
+        position: { lat: latitud, lng: longitud },
         map,
         title: "Marker 1!",
         optimized: true,
         icon: icon1,
-        draggable: true
+        draggable: false
       });
-
-      const marker2 = new google.maps.Marker({
-        position: { lat: latitud + .05, lng: longitud},
-        map,
-        title: "Marker 2!",
-        optimized: true,
-        icon: icon2
-      });
-
-      const marker3 = new google.maps.Marker({
-        position: { lat: latitud - .05, lng: longitud},
-        map,
-        title: "Marker 3!",
-        optimized: true,
-        icon: icon3
-      });
-
-      const marker4 = new google.maps.Marker({
-        position: { lat: latitud, lng: longitud + .05},
-        map,
-        title: "Marker 4!",
-        optimized: true,
-        icon: icon4
-      });
-
-      const marker5 = new google.maps.Marker({
-        position: { lat: latitud, lng: longitud - .05},
-        map,
-        title: "Marker 5!",
-        optimized: true,
-        icon: icon5
-      });
-
-
-
-
 
       const infoWindow = new google.maps.InfoWindow();
 
@@ -249,35 +187,92 @@ export class MapaReportesComponent implements OnInit {
         infoWindow.open(marker1.getMap(), marker1);
       });
 
-      marker2.addListener("click", () => {
-        infoWindow.close();
-        infoWindow.setContent(marker2.getTitle());
-        infoWindow.open(marker2.getMap(), marker2);
-      });
-
-      marker3.addListener("click", () => {
-        infoWindow.close();
-        infoWindow.setContent(marker3.getTitle());
-        infoWindow.open(marker3.getMap(), marker3);
-      });
-
-      marker4.addListener("click", () => {
-        infoWindow.close();
-        infoWindow.setContent(marker4.getTitle());
-        infoWindow.open(marker4.getMap(), marker4);
-      });
-
-      marker5.addListener("click", () => {
-        infoWindow.close();
-        infoWindow.setContent(marker5.getTitle());
-        infoWindow.open(marker5.getMap(), marker5);
-      });
-
     });
   }
 
-  reportar() {
-    this.toggleReportar = true;
+
+
+
+  // AGREGAR LOS MARCADORES DE LOS REPORTES EXISTENTES (PENDIENTE)
+  addMarker(latitud: number, longitud: number, map: google.maps.Map) {
+    new google.maps.Marker({
+      position: { lat: latitud-.05, lng: longitud-.05 },
+      map: map,
+      title: "Marker",
+      optimized: true,
+      draggable: false
+    });
+  }
+
+
+
+
+  // MOSTRAR LA VENTANA DE TIPO DE PROBLEMA
+  tipoProblema() {
+    this.toggleTipoProblema = true;
     this.toggleDesactivarMapa = true;
   }
+  // MOSTRAR LA VENTANA DE TIPO DE PROBLEMA DE AGUA Y CERRAR LA GENERAL
+  tipoAgua() {
+    this.toggleTipoProblema = false
+    this.toggleTipoAgua = true;
+  }
+  // MOSTRAR LA VENTANA DE TIPO DE PROBLEMA DE OBSTRUCCION Y CERRAR LA GENERAL
+  tipoObstruccion() {
+    this.toggleTipoProblema = false
+    this.toggleTipoObstruccion = true;
+  }
+  
+  
+
+
+  formReporte(tipoProblema: string) {
+    this.nuevoProblema = tipoProblema;
+    this.toggleTipoProblema = false
+    this.toggleTipoAgua = false;
+    this.toggleTipoObstruccion = false;
+    this.toggleFormReporte = true;
+  }
+
+
+
+
+
+  // ENVIAR REPORTE
+  reportar(comentario: HTMLTextAreaElement, cronico: HTMLInputElement, riesgoVida: HTMLInputElement) {
+    const latitud = this.nuevoLatLng.lat();
+    const longitud = this.nuevoLatLng.lng();
+
+    const formData = new FormData;
+    formData.append('credibilidad', '5');
+    formData.append('tipoProblema', this.nuevoProblema);
+    formData.append('ubicacion.latitud', latitud);
+    formData.append('ubicacion.longitud', longitud);
+    // formData.append('comentario', comentario.value);
+    // formData.append('cronico', cronico.value);
+    // formData.append('riesgoVida', riesgoVida.value);
+    // formData.append('imagen', this.file?.nativeElement.files[0]);
+
+    this.reportesService.createReporte(formData).subscribe(
+      res => {
+        Swal.fire({
+          title: 'Reporte enviado!',
+          text: 'Hemos recibido tu reporte del problema',
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        });
+        
+      },
+      err => {
+        Swal.fire({
+          title: 'Oh no!',
+          text: 'Ocurrio un problema enviando tu reporte',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+
+        console.error(err);
+      }
+    );
+   }
 }

@@ -43,7 +43,6 @@ export class RegistroEspecialComponent implements OnInit {
     formData.append('usuarioEspecial.validado', 'false');
     formData.append('usuarioEspecial.imagen', 'prueba')
 
-
     this.usuarioEspecialService.createUsuario(formData).subscribe(
         res => {
           Swal.fire({

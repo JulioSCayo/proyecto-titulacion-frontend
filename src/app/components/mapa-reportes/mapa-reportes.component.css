@@ -1,3 +1,7 @@
+textarea {
+    resize: none;
+}
+
 .contenido {
     width: 100%;
     height: calc(100% - 55px);
@@ -77,10 +81,14 @@
         position: static;
     }
 
+
+
+
+
 .reportar {
     transition: all .5s;
     background-color: #FAFAFA;
-    position: fixed;
+    position: absolute;
     align-items: center;
     text-align: center;
     justify-self: center;
@@ -96,51 +104,122 @@
     .reportar .opciones {
         list-style: none;
     }
-    .reportar .barra {
+    .reportar .barra1 {
         border-radius: 1rem 1rem 0rem 0rem;
         color: #FFFFFF;
         background-color: #3A4049;
         padding: 10px;
     }
+    .reportar .barra2 {
+        border-radius: 1rem 1rem 0rem 0rem;
+        color: #FFFFFF;
+        background-color: #6cb7ce;
+        padding: 10px;
+    }
+    .reportar .barra3 {
+        border-radius: 1rem 1rem 0rem 0rem;
+        color: #FFFFFF;
+        background-color: #864109;
+        padding: 10px;
+    }
+
+
+
+
+
     .reportar .opciones li {        
         padding: 10px 40px;
         font-size: 22px;
         font-weight: bold;
         cursor: pointer;
     }
-    .reportar .incendio hr{
-        color: #ff4b14;
-        margin-top: 55px;
-        width: 90%;
-        margin-left: 5%;
-        border: 1px solid #6b7383;
+    .reportar .incendio {
+        color: #3A4049;
     }
         .reportar .incendio:hover {
             color: #fd8037;
         }
     .reportar .agua {
-        color: #236275;
+        color: #3A4049;
     }
         .reportar .agua:hover {
             color: #6cb7ce;
         }
     .reportar .obstruccion {
-        color: #75441D;
+        color: #3A4049;
     }
         .reportar .obstruccion:hover {
-            color: #795130;
+            color: #864109;
         }
     .reportar .alumbrado {
-        color: #d8c200;
+        color: #3A4049;
     }
         .reportar .alumbrado:hover {
-            color: #fdf77a;
+            color: #ccc547;
         }
 
-.active {
+
+
+
+        
+.tipoProblema {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    z-index: 3;
+}
+
+.activeTipoProblema {
     opacity: 1;
     pointer-events: auto;
     transition: all .5s;
+}
+
+.tipoAgua {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    z-index: 4;
+}
+
+.activeTipoAgua {
+    opacity: 1;
+    pointer-events: auto;
+    transition: all .5s;
+}
+
+.tipoObstruccion {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    z-index: 4;
+}
+
+.activeTipoObstruccion {
+    opacity: 1;
+    pointer-events: auto;
+    transition: all .5s;
+}
+
+.formReporte {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    z-index: 4;
+}
+
+.activeFormReporte {
+    opacity: 1;
+    pointer-events: auto;
+    transition: all .5s;
+}
+
+
+
+
+
+.formReporteForm {
+    all: unset;
 }
 
 .cerrar {
