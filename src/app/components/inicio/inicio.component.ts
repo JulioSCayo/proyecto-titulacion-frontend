@@ -32,7 +32,8 @@ export class InicioComponent implements OnInit {
         console.log(res.token)
         console.log(this.usuario);
         localStorage.setItem('token',res.token); // cuando el usuario cierre su sesion debe borrarse esto del localStorage
-        localStorage.setItem('tipoUsuario', res.tipoUsuario);
+        localStorage.setItem('IDU', res.idUsuario);
+        localStorage.setItem('TipoUsr', res.tipoUsuario);
 
         this.router.navigate(['/mapa-reportes']) 
       },

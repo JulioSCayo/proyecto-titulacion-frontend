@@ -13,16 +13,20 @@ import { ConoceMasComponent } from "./components/informacion/conoce-mas/conoce-m
 
 
 import { AutenticacionGuard } from './services/guard/autenticacion.guard';
+import { ResponsableGuard } from './services/guard/guard-usuario-responsable/responsable.guard';
+import { ComunGuard } from './services/guard/guard-usuario-comun/comun.guard';
+import { AdminGuard } from './services/guard/guard-usuario-admin/admin.guard';
+import { EspecialGuard } from './services/guard/guard-usuario-especial/especial.guard';
 
 const routes: Routes = [
   {path: '', component: InicioComponent},
   {path: 'registro', component: RegistroComunComponent},
   {path: 'registro-especial', component: RegistroEspecialComponent},
   {path: 'registro-responsable', component: RegistroResponsableComponent, canActivate: [AutenticacionGuard]},
-  {path: 'usuarios', component: TablaComunesComponent, canActivate: [AutenticacionGuard]},
-  {path: 'usuarios-comunes', component: TablaComunesComponent, canActivate: [AutenticacionGuard]},
-  {path: 'usuarios-especiales', component: TablaEspecialesComponent, canActivate: [AutenticacionGuard]},
-  {path: 'usuarios-responsables', component: TablaResponsablesComponent, canActivate: [AutenticacionGuard]},
+  {path: 'usuarios', component: TablaComunesComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
+  {path: 'usuarios-comunes', component: TablaComunesComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
+  {path: 'usuarios-especiales', component: TablaEspecialesComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
+  {path: 'usuarios-responsables', component: TablaResponsablesComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
   {path: 'mapa-reportes', component: MapaReportesComponent, canActivate: [AutenticacionGuard]},
   {path: 'informacion', component: InformacionComponent},
   {path: 'informacion/conoce-mas', component: ConoceMasComponent},

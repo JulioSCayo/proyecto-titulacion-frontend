@@ -72,6 +72,9 @@ import { ConoceMasComponent } from './components/informacion/conoce-mas/conoce-m
       multi: true
     }
   ],
+  exports: [
+
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

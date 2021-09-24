@@ -2,6 +2,7 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ReportesService } from "../../services/reportes/reportes.service";
 import { Loader } from '@googlemaps/js-api-loader';
 import Swal from 'sweetalert2';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, NgForm, Validators } from "@angular/forms";
 
 @Component({
   selector: 'app-mapa-reportes',
@@ -9,7 +10,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./mapa-reportes.component.css']
 })
 export class MapaReportesComponent implements OnInit {
-
+  registrarForm!: FormGroup;
   @Input() span = 'Seleccionar archivo de imagen';
 
   @ViewChild('file', {
@@ -30,10 +31,23 @@ export class MapaReportesComponent implements OnInit {
   nuevoLatLng: any;
   nuevoProblema: string = "";
 
-  constructor(public reportesService: ReportesService) { }
+  constructor(public reportesService: ReportesService, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
     this.mapa();
+
+    this.registrarForm = this.formBuilder.group({
+      comentario: ['', ],
+      imagen: ['', ],
+      cronico: [false, ],
+      riesgoVida: [false, ],
+      tipoProblema: ['', ],
+      ubicacion: {
+        longitud: [0, ],
+        latitud: [0, ]
+        }
+    }); 
+
   }
 
   onImageSelected(event: Event) {
@@ -44,6 +58,7 @@ export class MapaReportesComponent implements OnInit {
     }
   }
 
+//||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
   mapa() {
     let longitud: number;
     let latitud: number;
@@ -107,11 +122,8 @@ export class MapaReportesComponent implements OnInit {
       // const buscar = new google.maps.places.Autocomplete(buscador);
       // buscar.bindTo("bounds", map);
 
-      
 
       this.addMarker(latitud, longitud, map);
-
-
 
       const markerDefault = "red"
       const markerColor1 = "#3FABCB";
@@ -159,7 +171,6 @@ export class MapaReportesComponent implements OnInit {
         scale: 2,
         anchor: new google.maps.Point(15, 30)
       };
-
       const icon1 = {
         path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
         fillColor: markerColor1,
@@ -169,7 +180,6 @@ export class MapaReportesComponent implements OnInit {
         scale: 2,
         anchor: new google.maps.Point(15, 30)
       };
-
       const marker1 = new google.maps.Marker({
         position: { lat: latitud, lng: longitud },
         map,
@@ -189,7 +199,7 @@ export class MapaReportesComponent implements OnInit {
 
     });
   }
-
+// |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
 
@@ -237,23 +247,33 @@ export class MapaReportesComponent implements OnInit {
 
 
 
-
+//comentario: HTMLTextAreaElement, cronico: HTMLInputElement, riesgoVida: HTMLInputElement
   // ENVIAR REPORTE
-  reportar(comentario: HTMLTextAreaElement, cronico: HTMLInputElement, riesgoVida: HTMLInputElement) {
+  reportar(): any {
+    console.log("ReportarReportarReportarReportarReportarReportarReportar")
+    console.log(this.registrarForm?.value);
+    console.log("ReportarReportarReportarReportarReportarReportarReportar")
     const latitud = this.nuevoLatLng.lat();
     const longitud = this.nuevoLatLng.lng();
 
-    const formData = new FormData;
-    formData.append('credibilidad', '5');
-    formData.append('tipoProblema', this.nuevoProblema);
-    formData.append('ubicacion.latitud', latitud);
-    formData.append('ubicacion.longitud', longitud);
+    console.log(latitud)
+    console.log(longitud)
+
+    this.registrarForm.value.ubicacion.latitud = latitud;
+    this.registrarForm.value.ubicacion.longitud = longitud;
+    this.registrarForm.value.tipoProblema = this.nuevoProblema;
+
+    // const formData = new FormData;
+    // formData.append('credibilidad', '5');
+    // formData.append('tipoProblema', this.nuevoProblema);
+    // formData.append('ubicacion.latitud', latitud);
+    // formData.append('ubicacion.longitud', longitud);
     // formData.append('comentario', comentario.value);
     // formData.append('cronico', cronico.value);
     // formData.append('riesgoVida', riesgoVida.value);
     // formData.append('imagen', this.file?.nativeElement.files[0]);
 
-    this.reportesService.createReporte(formData).subscribe(
+    this.reportesService.createReporte(this.registrarForm?.value).subscribe(
       res => {
         Swal.fire({
           title: 'Reporte enviado!',
