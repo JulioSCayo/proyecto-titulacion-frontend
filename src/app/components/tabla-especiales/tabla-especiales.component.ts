@@ -31,15 +31,34 @@ export class TablaEspecialesComponent implements OnInit {
     this.getUsuarios(); // Se cargan los usuarios especiales en la tabla
   }
 
+  // getUsuarios() {
+  //   this.usuarioEspecialService.getUsuarios().subscribe(
+  //     res => {
+  //       this.usuarios = <UsuarioEspecial[]>res;
+  //       // console.log(this.usuarios.sort(({usuarioEspecial.validado: A}, {usuarioEspecial.validado:B})=> A-B))
+  //       // console.log(this.usuarios.sort((a,b) => this.usuarios.usuarioEspecial.valido(a) -this.usuarios.usuarioEspecial.valido(b)))
+  //       console.log(this.usuarios)
+
+  //       // let op = userArray.sort(({disabled:A}, {disabled:B})=> A-B)
+  //     },
+  //     err => {
+  //       Swal.fire({
+  //         title: 'Oh no!',
+  //         text: 'Ocurrio un problema recibiendo los usuarios',
+  //         icon: 'error',
+  //         confirmButtonText: 'Ok'
+  //       });
+
+  //       console.error(err);
+  //     }
+  //     );
+  // }
+
   getUsuarios() {
     this.usuarioEspecialService.getUsuarios().subscribe(
       res => {
         this.usuarios = <UsuarioEspecial[]>res;
-        // console.log(this.usuarios.sort(({usuarioEspecial.validado: A}, {usuarioEspecial.validado:B})=> A-B))
-        // console.log(this.usuarios.sort((a,b) => this.usuarios.usuarioEspecial.valido(a) -this.usuarios.usuarioEspecial.valido(b)))
-        console.log(this.usuarios)
-
-        // let op = userArray.sort(({disabled:A}, {disabled:B})=> A-B)
+        // console.log(this.usuarios)
       },
       err => {
         Swal.fire({

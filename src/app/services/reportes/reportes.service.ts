@@ -33,8 +33,8 @@ export class ReportesService {
     return this.http.post(this.URL_API + '/nuevo-reporte/', formData);
   }
 
-  replicarReporte() {
-
+  replicarReporte(_id?: string, formData?: FormData) {
+    return this.http.put<any>(this.URL_API + '/replicar-reporte/' + _id, formData);
   }
 
   getTipoReportes() {

@@ -1,8 +1,9 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ReportesService } from "../../services/reportes/reportes.service";
+import { Reporte } from "../../models/reporte";
 import { Loader } from '@googlemaps/js-api-loader';
 import Swal from 'sweetalert2';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, NgForm, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup } from "@angular/forms";
 
 @Component({
   selector: 'app-mapa-reportes',
@@ -21,19 +22,40 @@ export class MapaReportesComponent implements OnInit {
 
   // VARIABLES PARA HACER TOGGLE DE CLASES
   toggleShowBotonReportar: boolean = false;
+  toggleShowBotonReplicar: boolean = false;
   toggleDesactivarMapa: boolean = false;
   toggleTipoProblema: boolean = false;
   toggleTipoAgua: boolean = false;
   toggleTipoObstruccion: boolean = false;
   toggleFormReporte: boolean = false;
-  
-  // COORDENADAS Y TIPO DEL NUEVO REPORTE
+
+  // TRUE SI SE VA A HACER LA REPLICA DE UN REPORTE
+  replica: boolean = false;
+
+  // ID DEL REPORTE A REPLICAR
+  replicaId: string = "";
+
+  // COORDENADAS Y TIPO DEL NUEVO REPORTE EN DONDE SE COLOCÓ EL MARKER
   nuevoLatLng: any;
   nuevoProblema: string = "";
+
+  // ESQUEMA DE REPORTE PARA RECIBIR LOS REPORTES YA EXISTENTES
+  reportes: Reporte[] = [{
+    ubicacion: {
+      latitud: 0,
+      longitud: 0
+    },
+    tipoProblema: "",
+    credibilidad: 0,
+    usuarios: [{
+      _id: ""
+    }]
+  }];
 
   constructor(public reportesService: ReportesService, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
+    // SE INICIA EL MAPA
     this.mapa();
 
     this.registrarForm = this.formBuilder.group({
@@ -45,11 +67,14 @@ export class MapaReportesComponent implements OnInit {
       ubicacion: {
         longitud: [0, ],
         latitud: [0, ]
-        }
+        },
+      usuarios: {
+        _id: ""
+      }
     }); 
-
   }
 
+  // NECESARIO PARA RECIBIR LA IMAGEN (PENDIENTE)
   onImageSelected(event: Event) {
     this.selectedImage = this.file?.nativeElement.files[0];
 
@@ -58,12 +83,16 @@ export class MapaReportesComponent implements OnInit {
     }
   }
 
-//||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+//||||||||||||||||||||||||||||||||||||| SE CARGA EL MAPA |||||||||||||||||||||||||||||||||||||
   mapa() {
+    // COORDENADAS DEL USUARIO PARA CENTRAR EL MAPA
     let longitud: number;
     let latitud: number;
 
-    // CONSEGUIR COORDENADAS
+    // CONSEGUIR COORDENADAS DEL USUARIO
     if(navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
         latitud = position.coords.latitude;
@@ -79,13 +108,13 @@ export class MapaReportesComponent implements OnInit {
       apiKey: ''
     });
 
-    // SE CARGA EL MAPA
+    // SE CARGA EL MAPA CENTRADO EN LA UBICACION DEL USUARIO
     loader.load().then(() => {
       const map = new google.maps.Map(document.getElementById("mapa")!, {
         center: { lat: latitud, lng: longitud},
         disableDefaultUI: true,
         zoomControl: true,
-        zoom: 12,
+        zoom: 15,
         styles: [
           {
             "featureType": "administrative.land_parcel",
@@ -122,34 +151,56 @@ export class MapaReportesComponent implements OnInit {
       // const buscar = new google.maps.places.Autocomplete(buscador);
       // buscar.bindTo("bounds", map);
 
-
-      this.addMarker(latitud, longitud, map);
-
-      const markerDefault = "red"
-      const markerColor1 = "#3FABCB";
-
+      // INFOWINDOW
+      const infoWindow = new google.maps.InfoWindow();
+      // ARREGLO DE MARKERS PARA CAMBIAR DE POSICION EL MARCADOR CUANDO EL USUARIO PRESIONA EL MAPA
       let newMarker: google.maps.Marker[] = [];
 
+
+
+      // SE CREAN LOS MARCADORES DE LOS REPORTES YA EXISTENTES
+      this.reportesExistentes(map);
+
+
+
+      // ICONO DEL MARKER DEL NUEVO REPORTE
+      const nuevoReporteMarker = {
+        path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
+        fillColor: "#04CAB3",
+        fillOpacity: 1,
+        strokeWeight: 0,
+        rotation: 0,
+        scale: 2,
+        anchor: new google.maps.Point(15, 30)
+      };
+
+
+
+      // SE CREA EL LISTENER DEL MAPA PARA CREAR NUEVOS REPORTES
       google.maps.event.addListener(map, "click", (event: any) => {
-        let boton = document.getElementById('boton')
-        this.nuevoLatLng = event.latLng;
+        let boton = document.getElementById('botonReportar')
+        this.nuevoLatLng = event.latLng; // SE OBTIENE LA UBICACIÓN SELECCIONADA
         
+        // SI YA EXISTE EL MARKER SE BORRA
         if(newMarker.length > 0) {
           newMarker[0].setMap(null);
           newMarker = [];
         }
 
+        // SE CREA EL MARKER
         const addMarker = new google.maps.Marker({
           position: this.nuevoLatLng,
           map,
-          title: "New Marker!",
+          title: "Has un reporte!",
           optimized: true,
-          icon: newMarkerIcon,
+          icon: nuevoReporteMarker,
           draggable: true
         });
 
+        // SE AGREGA EL MARKER AL ARREGLO PARA SABER CUANDO SE CREA
         newMarker.push(addMarker);
 
+        // SE CIERRA EL INFOWINDOW DEL OTRO MARKER EN CASO DE EXISTIR Y SE MUESTRA EL BOTON EN EL NUEVO MARCADOR
         setTimeout(() => {
           infoWindow.close();
           infoWindow.setContent(boton);
@@ -157,136 +208,108 @@ export class MapaReportesComponent implements OnInit {
           infoWindow.open(newMarker[0].getMap(), newMarker[0]);
         }, 100);
         
+        // AL PRESIONAR EL BOTON SE USA EL METODO
         boton?.addEventListener('click', () => {
           this.tipoProblema();
         })
       })
-
-      const newMarkerIcon = {
-        path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
-        fillColor: markerDefault,
-        fillOpacity: 1,
-        strokeWeight: 0,
-        rotation: 0,
-        scale: 2,
-        anchor: new google.maps.Point(15, 30)
-      };
-      const icon1 = {
-        path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
-        fillColor: markerColor1,
-        fillOpacity: 1,
-        strokeWeight: 0,
-        rotation: 0,
-        scale: 2,
-        anchor: new google.maps.Point(15, 30)
-      };
-      const marker1 = new google.maps.Marker({
-        position: { lat: latitud, lng: longitud },
-        map,
-        title: "Marker 1!",
-        optimized: true,
-        icon: icon1,
-        draggable: false
-      });
-
-      const infoWindow = new google.maps.InfoWindow();
-
-      marker1.addListener("click", () => {
-        infoWindow.close();
-        infoWindow.setContent(marker1.getTitle());
-        infoWindow.open(marker1.getMap(), marker1);
-      });
-
     });
   }
-// |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-
-
-
-  // AGREGAR LOS MARCADORES DE LOS REPORTES EXISTENTES (PENDIENTE)
-  addMarker(latitud: number, longitud: number, map: google.maps.Map) {
-    new google.maps.Marker({
-      position: { lat: latitud-.05, lng: longitud-.05 },
-      map: map,
-      title: "Marker",
-      optimized: true,
-      draggable: false
-    });
-  }
+// |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
 
 
-  // MOSTRAR LA VENTANA DE TIPO DE PROBLEMA
-  tipoProblema() {
-    this.toggleTipoProblema = true;
-    this.toggleDesactivarMapa = true;
-  }
-  // MOSTRAR LA VENTANA DE TIPO DE PROBLEMA DE AGUA Y CERRAR LA GENERAL
-  tipoAgua() {
-    this.toggleTipoProblema = false
-    this.toggleTipoAgua = true;
-  }
-  // MOSTRAR LA VENTANA DE TIPO DE PROBLEMA DE OBSTRUCCION Y CERRAR LA GENERAL
-  tipoObstruccion() {
-    this.toggleTipoProblema = false
-    this.toggleTipoObstruccion = true;
-  }
-  
-  
+  // AGREGAR LOS MARCADORES DE LOS REPORTES EXISTENTES
+  reportesExistentes(map: google.maps.Map) {
+    const infoWindow = new google.maps.InfoWindow();
+    let boton = document.getElementById('botonReplicar')
+
+    // LOS COLORES DE LOS MARCADORES DE CADA TIPO DE PROBLEMA
+    const markerAlumbrado = "#ccc547";
+    const markerAgua = "#6cb7ce";
+    const markerObstruccion = "#864109";
+    const markerIncendio = "#fd8037";
+    
 
 
-  formReporte(tipoProblema: string) {
-    this.nuevoProblema = tipoProblema;
-    this.toggleTipoProblema = false
-    this.toggleTipoAgua = false;
-    this.toggleTipoObstruccion = false;
-    this.toggleFormReporte = true;
-  }
-
-
-
-
-//comentario: HTMLTextAreaElement, cronico: HTMLInputElement, riesgoVida: HTMLInputElement
-  // ENVIAR REPORTE
-  reportar(): any {
-    console.log("ReportarReportarReportarReportarReportarReportarReportar")
-    console.log(this.registrarForm?.value);
-    console.log("ReportarReportarReportarReportarReportarReportarReportar")
-    const latitud = this.nuevoLatLng.lat();
-    const longitud = this.nuevoLatLng.lng();
-
-    console.log(latitud)
-    console.log(longitud)
-
-    this.registrarForm.value.ubicacion.latitud = latitud;
-    this.registrarForm.value.ubicacion.longitud = longitud;
-    this.registrarForm.value.tipoProblema = this.nuevoProblema;
-
-    // const formData = new FormData;
-    // formData.append('credibilidad', '5');
-    // formData.append('tipoProblema', this.nuevoProblema);
-    // formData.append('ubicacion.latitud', latitud);
-    // formData.append('ubicacion.longitud', longitud);
-    // formData.append('comentario', comentario.value);
-    // formData.append('cronico', cronico.value);
-    // formData.append('riesgoVida', riesgoVida.value);
-    // formData.append('imagen', this.file?.nativeElement.files[0]);
-
-    this.reportesService.createReporte(this.registrarForm?.value).subscribe(
+    // SE OBTIENEN TODOS LOS REPORTES EXISTENTES DESDE EL BACKEND CON EL SERVICE
+    this.reportesService.getReportes().subscribe(
       res => {
-        Swal.fire({
-          title: 'Reporte enviado!',
-          text: 'Hemos recibido tu reporte del problema',
-          icon: 'success',
-          confirmButtonText: 'Ok'
-        });
+        this.reportes = <Reporte[]>res; 
         
+        // FOR PARA CREAR TODOS LOS MARCADORES
+        for (let i = 0; i < this.reportes.length; i++) {
+          let markerColor;
+    
+          // SE IDENTIFICA EL TIPO DE REPORTE PARA ASIGNAR UN COLOR
+          switch (this.reportes[i].tipoProblema) {
+            case "alumbrado":
+              markerColor = markerAlumbrado;
+              break;
+    
+            case "inundacion":
+            case "fuga":
+            case "faltaAlcantarilla":
+            case "alcantarillaObstruida":
+              markerColor = markerAgua;
+              break;
+    
+            case "escombros":
+            case "vehiculo":
+            case "arbol":
+            case "socavon":
+            case "cables":
+              markerColor = markerObstruccion;
+              break;
+    
+            case "incendio":
+              markerColor = markerIncendio;
+              break;
+          }
+    
+          // EL ICONO TOMA EL COLOR QUE LE CORRESPONDE
+          const icon = {
+            path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
+            fillColor: markerColor,
+            fillOpacity: 1,
+            strokeWeight: 0,
+            rotation: 0,
+            scale: 2,
+            anchor: new google.maps.Point(15, 30)
+          };
+    
+          // SE CREA EL MARCADOR CON EL ICONO Y LAS COORDENADAS DEL PROBLEMA
+          const marker = new google.maps.Marker({
+            position: { lat: this.reportes[i].ubicacion.latitud, lng: this.reportes[i].ubicacion.longitud },
+            map: map,
+            title: "Ver detalles",
+            icon: icon,
+            optimized: true,
+          });
+
+          // CUANDO SE HACE CLICK EN EL MARCADOR DE UN REPORTE EXISTENTE SE MUESTRA UN INFOWINDOW
+          marker.addListener("click", () => {
+            this.replicaId = this.reportes[i]._id!; // CUANDO SE PRESIONA UN MARKER DE UN REPORTE EXISTENTE SE OBTIENE SU ID
+            infoWindow.close();
+            infoWindow.setContent(boton);
+            this.toggleShowBotonReplicar = true;
+            infoWindow.open(marker.getMap(), marker);
+          })
+
+          // AL PRESIONAR EL BOTON SE ABRE EL FORMULARIO DE LA REPLICA
+          boton?.addEventListener('click', () => {
+            this.formReplicar();
+          })
+        }
       },
+
+
+
       err => {
         Swal.fire({
           title: 'Oh no!',
-          text: 'Ocurrio un problema enviando tu reporte',
+          text: 'Ocurrio un problema cargando los reportes existentes',
           icon: 'error',
           confirmButtonText: 'Ok'
         });
@@ -294,5 +317,146 @@ export class MapaReportesComponent implements OnInit {
         console.error(err);
       }
     );
-   }
+  }
+
+
+
+
+  // MOSTRAR LA VENTANA DE TIPO DE PROBLEMA
+  tipoProblema() {
+    this.toggleTipoProblema = true; // MUESTRA FORM 1
+    this.toggleDesactivarMapa = true; // DESACTIVA EL MAPA
+  }
+  // MOSTRAR LA VENTANA DE TIPO DE PROBLEMA DE AGUA Y CERRAR LA GENERAL
+  tipoAgua() {
+    this.toggleTipoProblema = false // ESCONDE EL FORM 1
+    this.toggleTipoAgua = true; // MUESTRA EL FORM DE AGUA
+  }
+  // MOSTRAR LA VENTANA DE TIPO DE PROBLEMA DE OBSTRUCCION Y CERRAR LA GENERAL
+  tipoObstruccion() {
+    this.toggleTipoProblema = false // ESCONDE EL FORM 1
+    this.toggleTipoObstruccion = true; // MUESTRA EL FORM DE OBSTRUCCION
+  }
+
+
+
+
+// FORMULARIO DE DETALLES DEL REPORTE
+  formReporte(tipoProblema: string) {
+    this.nuevoProblema = tipoProblema; // SE OBTIENE EL TIPO DE PROBLEMA
+    this.toggleTipoProblema = false // SE ESCONDE EL FORM 1
+    this.toggleTipoAgua = false; // SE ESCONDE EL FORM DE AGUA
+    this.toggleTipoObstruccion = false; // SE ESCONDE EL FORM DE OBSTRUCCION
+    this.toggleFormReporte = true; // SE MUESTRA EL FORM DE DETALLES
+  }
+
+  // FORMULARIO DE DETALLES DEL REPORTE
+  formReplicar() {
+    this.replica = true; // SE COLOCA COMO TRUE QUE SE VA A REPLICAR UN REPORTE
+    this.toggleDesactivarMapa = true; // SE DESACTIVA EL MAPA
+    this.toggleFormReporte = true; // SE MUESTRA EL FORM DE DETALLES
+  }
+
+
+
+//comentario: HTMLTextAreaElement, cronico: HTMLInputElement, riesgoVida: HTMLInputElement
+  // FORM DE DETALLES Y ENVIAR REPORTE
+  reportar(): any {
+    // SI ES REPLICA SE ENVIAN LOS DATOS PARA MODIFICAR EL REPORTE
+    if(this.replica == true) {
+      // SE INGRESA LA CREDIBILIDAD Y ID DEL USUARIO QUE VA A REPLICAR (FALTAN LOS ALGORITMOS)
+      this.registrarForm.value.credibilidad = 6; // (PROVISIONAL)
+      this.registrarForm.value.usuarios._id = "61129ea2c2248c6b2459129a"; // (PROVISIONAL)
+
+      this.reportesService.replicarReporte(this.replicaId, this.registrarForm?.value).subscribe(
+        res => {
+          Swal.fire({
+            title: 'Reporte replicado!',
+            text: 'Hemos recibido tu replica de un reporte ya existente',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          });
+          // CUANDO SE REPLICA UN REPORTE SE VA DIRECTO AL MAPA Y SE REFRESCA
+          this.toggleFormReporte = false; // SE ESCONDE EL FORM DE DETALLES
+          this.toggleDesactivarMapa = false; // SE ACTIVA EL MAPA
+          this.ngOnInit();
+        },
+        err => {
+          Swal.fire({
+            title: 'Oh no!',
+            text: 'Ocurrio un problema replicando el reporte',
+            icon: 'error',
+            confirmButtonText: 'Ok'
+          });
+
+          console.error(err);
+        }
+      );
+    }
+
+
+
+    // SI NO ES REPLICA ES REPORTE NUEVO
+    else {
+      // SE OBTIENEN LAS COORDENADAS DEL MARKER COLOCADO POR EL USUARIO
+      const latitud = this.nuevoLatLng.lat();
+      const longitud = this.nuevoLatLng.lng();
+
+      // SE GUARDAN LA UBICACION, EL TIPO DE PROBLEMA Y EL ID DEL USUARIO
+      this.registrarForm.value.ubicacion.latitud = latitud;
+      this.registrarForm.value.ubicacion.longitud = longitud;
+      this.registrarForm.value.tipoProblema = this.nuevoProblema;
+      this.registrarForm.value.usuarios._id = "61129ea2c2248c6b2459129a"; // (PROVISIONAL)
+
+      // SE VA A NECESITAR PARA ENVIAR LA IMAGEN
+      // const formData = new FormData;
+      // formData.append('credibilidad', '5');
+      // formData.append('tipoProblema', this.nuevoProblema);
+      // formData.append('ubicacion.latitud', latitud);
+      // formData.append('ubicacion.longitud', longitud);
+      // formData.append('comentario', comentario.value);
+      // formData.append('cronico', cronico.value);
+      // formData.append('riesgoVida', riesgoVida.value);
+      // formData.append('imagen', this.file?.nativeElement.files[0]);
+
+      this.reportesService.createReporte(this.registrarForm?.value).subscribe(
+        res => {
+          Swal.fire({
+            title: 'Reporte enviado!',
+            text: 'Hemos recibido tu reporte del problema',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          });
+          // CUANDO SE CREA UN REPORTE SE VA DIRECTO AL MAPA Y SE REFRESCA
+          this.toggleFormReporte = false; // SE ESCONDE EL FORM DE DETALLES
+          this.toggleDesactivarMapa = false; // SE ACTIVA EL MAPA
+          this.ngOnInit();
+        },
+        err => {
+          Swal.fire({
+            title: 'Oh no!',
+            text: 'Ocurrio un problema enviando tu reporte',
+            icon: 'error',
+            confirmButtonText: 'Ok'
+          });
+
+          console.error(err);
+        }
+      );
+    }
+  }
+
+  cerrarForm() {
+    // SE CIERRA EL FORM DE DETALLES CON UN TOGGLE
+    this.toggleFormReporte = false; 
+
+    // SI ES EL FORM DE UNA REPLICA SE VA DIRECTO AL MAPA
+    if(this.replica == true) {
+      this.replica = false;
+      this.toggleDesactivarMapa = false;
+    }
+    // SI ES EL FORM DE REPORTE NUEVO SE VA AL FORM DE TIPO DE PROBLEMA
+    else
+      this.toggleTipoProblema = true;  
+  }
 }

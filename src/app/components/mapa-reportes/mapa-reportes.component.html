@@ -125,9 +125,11 @@
             <!-- <button  class="enviar" >Registrarte</button> -->
         </form>
         <hr>
-        <p class="cerrar" (click)="this.toggleFormReporte = false; this.toggleTipoProblema = true">Cerrar</p>
+        <p class="cerrar" (click)="cerrarForm()">Cerrar</p>
     </div>
 
 </div>
 
-<button id="boton" class="botonReportar" [ngClass]="{'showBotonReportar': toggleShowBotonReportar}">Reportar</button>
+<button id="botonReportar" class="botonReportar" [ngClass]="{'showBotonReportar': toggleShowBotonReportar}">Reportar</button>
+
+<button id="botonReplicar" class="botonReportar" [ngClass]="{'showBotonReportar': toggleShowBotonReplicar}">Replicar reporte</button>
