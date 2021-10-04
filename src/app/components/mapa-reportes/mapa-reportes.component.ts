@@ -5,6 +5,10 @@ import { Loader } from '@googlemaps/js-api-loader';
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup } from "@angular/forms";
 
+import {AlgoritmoIdentificacion} from './algoritmo-identificacion';
+
+// import { from } from 'rxjs';
+
 @Component({
   selector: 'app-mapa-reportes',
   templateUrl: './mapa-reportes.component.html',
@@ -56,7 +60,12 @@ export class MapaReportesComponent implements OnInit {
 
   ngOnInit(): void {
     // SE INICIA EL MAPA
+    
     this.mapa();
+
+    // ASI SE UTILIZA LA CLASE CON EL ALGORITMO DE IDENTIFICACION,
+    // let prueba = new AlgoritmoIdentificacion(this.reportesService, this.http);
+    // prueba.Identificacion(this.reportePrueba); // es el reporte que se esta haciendo
 
     this.registrarForm = this.formBuilder.group({
       comentario: ['', ],
