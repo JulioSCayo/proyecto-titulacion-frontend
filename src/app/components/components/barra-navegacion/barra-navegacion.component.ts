@@ -24,7 +24,7 @@ export class BarraNavegacionComponent implements OnInit {
 
   // Presionando el nombre del sistema
   inicio() {
-    this.router.navigate(['/mapa-reportes']);
+    this.router.navigate(['/']);
   }
 
   // Presionando el boton de registro

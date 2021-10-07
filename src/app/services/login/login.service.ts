@@ -30,7 +30,6 @@ export class LoginService {
   }
 
   getUsuarioActual(){
-
     return localStorage.getItem('IDU');
   }
 
@@ -43,7 +42,7 @@ export class LoginService {
   logout(){
     localStorage.removeItem('token');
     localStorage.removeItem('IDU');
-    localStorage.removeItem('TipoUsr');
+    localStorage.setItem('TipoUsr','invitado');
     this.router.navigate(['/']);
   }
 

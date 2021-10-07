@@ -7,30 +7,6 @@
 <div class="contenido">
     <div class="mapa" id="mapa" [ngClass]="{'desactivarMapa': toggleDesactivarMapa}"></div>
 
-    <!-- <form class="form" (submit)="CreateUsuario()" [formGroup]="registrarForm" >
-        <div class="barraForm">
-             <h2>Registrarte</h2>
-         </div>
-         <input type="text" id="" placeholder="Nombre" formControlName = "nombre">
-         <input type="text" name="apellidoPaterno" id="" placeholder="Apellido Paterno" formControlName = "apellidoPaterno">
-         <input type="text" name="apellidoMaterno" id="" placeholder="Apellido Materno" formControlName = "apellidoMaterno">
-         <input type="email" name="correoElectronico" id="" placeholder="Correo electrónico" formControlName = "correoElectronico">
-         <input type="text" name="nombreUsuario" id="" placeholder="Nombre de Usuario" formControlName = "nombreUsuario">
-         <input type="password" name="contrasena" id="" placeholder="Contraseña" formControlName = "contrasena" 
-                 [controlErrorsTpl]="errorContrasena">
-         <input type="password" name="confirmarContrasena" id="" placeholder="Confirmar Contraseña" formControlName = "confirmarContrasena">
-         <div *ngIf=true>
-             Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque necessitatibus nam commodi exercitationem eveniet perferendis pariatur qui. Modi nihil accusantium dolorem, praesentium vel odio minus cum, in qui beatae deleniti.
-         </div>
-         <div *ngIf="registrarForm.hasError('mustMatch')">
-             Las contraseñas deben coincidir
-         </div>
-         
-         <button  class="registrate" [disabled]="registrarForm.invalid" >Registrarte</button>
-     </form> -->
-
-
-
     <div class="reportar tipoProblema" [ngClass]="{'activeTipoProblema': toggleTipoProblema}">
         <div class="barra1"><h2>Tipo de problema</h2></div>
         <ul class="opciones">
@@ -78,34 +54,9 @@
         </ul>
     </div>
 
-    <!-- <div class="reportar formReporte" [ngClass]="{'activeFormReporte': toggleFormReporte}">
-        <div class="barra1"><h2>Completa el formulario</h2></div>
-        <form action="post" class="formReporteForm" (submit)="this.reportar(comentario, cronico, riesgoVida);">
-            <h3>Agrega un comentario (Opcional)</h3>
-            <textarea name="comentario" rows="5" cols="30" placeholder="Comentario del problema" #comentario></textarea>
-            <h3>Imagen (Opcional)</h3>
-            <div class="container-input">
-                <input type="file" name="imagen" #file id="file" class="inputfile inputfile-2" (change)="onImageSelected($event)"/> 
-                <label for="file">
-                <svg xmlns="http://www.w3.org/2000/svg" class="iborrainputfile" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"></path></svg>
-                <span class="iborrainputfile" >{{span}}</span>
-                </label>  
-            </div>
-            <input type="checkbox" id="cronico" name="cronico" value="cronico" #cronico>
-            <label for="cronico">Ha ocurrido este problema anteriormente</label><br>
-            <input type="checkbox" id="riesgoVida" name="riesgoVida" value="riesgoVida" #riesgoVida>
-            <label for="riesgoVida"> Considero que hay vidas en riesgo</label><br>
-            <input type="submit" class="enviar" value="Enviar Reporte">
-        </form>
-        <hr>
-        <p class="cerrar" (click)="this.toggleFormReporte = false; this.toggleTipoProblema = true">Cerrar</p>
-    </div> -->
-
-    
-
     <div class="reportar formReporte" [ngClass]="{'activeFormReporte': toggleFormReporte}">
         <div class="barra1"><h2>Completa el formulario</h2></div>
-        <form class="form" (submit)="reportar()" [formGroup]="registrarForm" >
+        <form class="formReporteForm" (submit)="reportar()" [formGroup]="registrarForm" >
             <h3>Agrega un comentario (Opcional)</h3>
             <textarea name="comentario" rows="5" cols="30" placeholder="Comentario del problema" formControlName = "comentario"></textarea>
             <h3>Imagen (Opcional)</h3>
@@ -116,13 +67,11 @@
                 <span class="iborrainputfile" >{{span}}</span>
                 </label>  
             </div>
-            <input type="checkbox" id="cronico" name="cronico" value="cronico" formControlName = "cronico">
-            <label for="cronico">Ha ocurrido este problema anteriormente</label><br>
-            <input type="checkbox" id="riesgoVida" name="riesgoVida" value="riesgoVida" formControlName = "riesgoVida">
-            <label for="riesgoVida"> Considero que hay vidas en riesgo</label><br>
+            <input type="checkbox" class="checkbox" id="cronico" name="cronico" value="cronico" formControlName = "cronico">
+            <label class="checkboxLabel" for="cronico">Ha ocurrido este problema anteriormente</label><br>
+            <input type="checkbox" class="checkbox" id="riesgoVida" name="riesgoVida" value="riesgoVida" formControlName = "riesgoVida">
+            <label class="checkboxLabel" for="riesgoVida"> Considero que hay vidas en riesgo</label><br>
             <input type="submit" class="enviar" value="Enviar Reporte">
-            
-            <!-- <button  class="enviar" >Registrarte</button> -->
         </form>
         <hr>
         <p class="cerrar" (click)="cerrarForm()">Cerrar</p>

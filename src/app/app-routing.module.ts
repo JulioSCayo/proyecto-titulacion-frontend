@@ -13,24 +13,25 @@ import { ConoceMasComponent } from "./components/informacion/conoce-mas/conoce-m
 
 
 import { AutenticacionGuard } from './services/guard/autenticacion.guard';
-import { ResponsableGuard } from './services/guard/guard-usuario-responsable/responsable.guard';
-import { ComunGuard } from './services/guard/guard-usuario-comun/comun.guard';
+import { InvitadoGuard } from "./services/guard/guard-usuario-invitado/invitado.guard";
 import { AdminGuard } from './services/guard/guard-usuario-admin/admin.guard';
+import { ComunGuard } from './services/guard/guard-usuario-comun/comun.guard';
 import { EspecialGuard } from './services/guard/guard-usuario-especial/especial.guard';
+import { ResponsableGuard } from './services/guard/guard-usuario-responsable/responsable.guard';
 
 const routes: Routes = [
-  {path: '', component: InicioComponent},
+  {path: '', component: InicioComponent, canActivate: [InvitadoGuard]},
   {path: 'registro', component: RegistroComunComponent},
   {path: 'registro-especial', component: RegistroEspecialComponent},
-  {path: 'registro-responsable', component: RegistroResponsableComponent, canActivate: [AutenticacionGuard]},
-  {path: 'usuarios', component: TablaComunesComponent, canActivate: [AutenticacionGuard]},
-  {path: 'usuarios-comunes', component: TablaComunesComponent, canActivate: [AutenticacionGuard]},
-  {path: 'usuarios-especiales', component: TablaEspecialesComponent, canActivate: [AutenticacionGuard]},
-  {path: 'usuarios-responsables', component: TablaResponsablesComponent, canActivate: [AutenticacionGuard/*, ResponsableGuard*/]},
-  {path: 'mapa-reportes', component: MapaReportesComponent, canActivate: [AutenticacionGuard]},
+  {path: 'registro-responsable', component: RegistroResponsableComponent, canActivate: [AutenticacionGuard, AdminGuard]},
+  {path: 'usuarios', component: TablaComunesComponent, canActivate: [AutenticacionGuard, AdminGuard]},
+  {path: 'usuarios-comunes', component: TablaComunesComponent, canActivate: [AutenticacionGuard, AdminGuard]},
+  {path: 'usuarios-especiales', component: TablaEspecialesComponent, canActivate: [AutenticacionGuard, AdminGuard]},
+  {path: 'usuarios-responsables', component: TablaResponsablesComponent, canActivate: [AutenticacionGuard, AdminGuard]},
+  {path: 'mapa-reportes', component: MapaReportesComponent},
   {path: 'informacion', component: InformacionComponent},
   {path: 'informacion/conoce-mas', component: ConoceMasComponent},
-  {path: '**', component: InicioComponent}
+  {path: '**', component: InicioComponent, canActivate: [InvitadoGuard]}
 ];
 
 @NgModule({

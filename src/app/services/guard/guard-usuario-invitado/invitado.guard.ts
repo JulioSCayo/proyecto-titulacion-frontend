@@ -7,17 +7,18 @@ import { Router } from "@angular/router";
 @Injectable({
   providedIn: 'root'
 })
-export class EspecialGuard implements CanActivate {
+export class InvitadoGuard implements CanActivate {
   constructor(private loginService: LoginService, private router: Router){}
 
   canActivate(){
     let u = this.loginService.getTipoUsuario();
     console.log(u);
 
-    if(u == "especial") return true;
+    if(u == "invitado") return true;
     
     console.log("lo siento, no cuentas con los permisos")
-    this.router.navigate(['/'])
+    this.router.navigate(['/mapa-reportes'])
     return false;
   }
+  
 }

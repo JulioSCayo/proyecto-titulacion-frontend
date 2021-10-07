@@ -20,5 +20,4 @@ export class ComunGuard implements CanActivate {
     this.router.navigate(['/'])
     return false;
   }
-  
 }

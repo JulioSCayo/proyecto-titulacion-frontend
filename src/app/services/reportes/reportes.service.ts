@@ -26,10 +26,6 @@ export class ReportesService {
   constructor(private http: HttpClient) { }
 
   createReporte(formData: FormData) {
-    console.log("........................................................")
-
-    // this.selectedReporte = formData;
-
     return this.http.post(this.URL_API + '/nuevo-reporte/', formData);
   }
 

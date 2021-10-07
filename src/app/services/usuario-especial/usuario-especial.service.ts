@@ -31,7 +31,7 @@ export class UsuarioEspecialService {
   }
 
   getUsuarios() {
-    return this.http.get<any[]>('http://localhost:4000/buscarEspecial');
+    return this.http.get<any>('http://localhost:4000/buscarEspecial');
   }
 
   editUsuario(usuarios: UsuarioEspecial) {

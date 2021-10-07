@@ -4,6 +4,7 @@ import { Reporte } from "../../models/reporte";
 import { Loader } from '@googlemaps/js-api-loader';
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup } from "@angular/forms";
+import { LoginService } from "../../services/login/login.service";
 
 import {AlgoritmoIdentificacion} from './algoritmo-identificacion';
 
@@ -56,9 +57,11 @@ export class MapaReportesComponent implements OnInit {
     }]
   }];
 
-  constructor(public reportesService: ReportesService, private formBuilder: FormBuilder) { }
+  constructor(public reportesService: ReportesService, private formBuilder: FormBuilder, public loginService: LoginService) { }
 
   ngOnInit(): void {
+    
+
     // SE INICIA EL MAPA
     
     this.mapa();
@@ -212,8 +215,14 @@ export class MapaReportesComponent implements OnInit {
         // SE CIERRA EL INFOWINDOW DEL OTRO MARKER EN CASO DE EXISTIR Y SE MUESTRA EL BOTON EN EL NUEVO MARCADOR
         setTimeout(() => {
           infoWindow.close();
-          infoWindow.setContent(boton);
-          this.toggleShowBotonReportar = true;
+          if(localStorage.getItem('TipoUsr') == 'admin' || localStorage.getItem('TipoUsr') == 'responsable'){
+            infoWindow.setContent('<h2>No tiene permitido realizar reportes</h2>');
+          }
+          else {
+            infoWindow.setContent(boton);
+            this.toggleShowBotonReportar = true;
+          }
+
           infoWindow.open(newMarker[0].getMap(), newMarker[0]);
         }, 100);
         
@@ -301,8 +310,14 @@ export class MapaReportesComponent implements OnInit {
           marker.addListener("click", () => {
             this.replicaId = this.reportes[i]._id!; // CUANDO SE PRESIONA UN MARKER DE UN REPORTE EXISTENTE SE OBTIENE SU ID
             infoWindow.close();
-            infoWindow.setContent(boton);
-            this.toggleShowBotonReplicar = true;
+            if(localStorage.getItem('TipoUsr') == 'admin' || localStorage.getItem('TipoUsr') == 'responsable'){
+              infoWindow.setContent('<h2>No tiene permitido replicar reportes</h2>');
+            }
+            else {
+              infoWindow.setContent(boton);
+              this.toggleShowBotonReplicar = true;
+            }
+              
             infoWindow.open(marker.getMap(), marker);
           })
 
@@ -371,11 +386,12 @@ export class MapaReportesComponent implements OnInit {
 //comentario: HTMLTextAreaElement, cronico: HTMLInputElement, riesgoVida: HTMLInputElement
   // FORM DE DETALLES Y ENVIAR REPORTE
   reportar(): any {
+    
     // SI ES REPLICA SE ENVIAN LOS DATOS PARA MODIFICAR EL REPORTE
     if(this.replica == true) {
       // SE INGRESA LA CREDIBILIDAD Y ID DEL USUARIO QUE VA A REPLICAR (FALTAN LOS ALGORITMOS)
-      this.registrarForm.value.credibilidad = 6; // (PROVISIONAL)
-      this.registrarForm.value.usuarios._id = "61129ea2c2248c6b2459129a"; // (PROVISIONAL)
+
+      this.registrarForm.value.usuarios._id = this.loginService.getUsuarioActual(); // (PROVISIONAL)
 
       this.reportesService.replicarReporte(this.replicaId, this.registrarForm?.value).subscribe(
         res => {
@@ -415,7 +431,8 @@ export class MapaReportesComponent implements OnInit {
       this.registrarForm.value.ubicacion.latitud = latitud;
       this.registrarForm.value.ubicacion.longitud = longitud;
       this.registrarForm.value.tipoProblema = this.nuevoProblema;
-      this.registrarForm.value.usuarios._id = "61129ea2c2248c6b2459129a"; // (PROVISIONAL)
+      this.registrarForm.value.usuarios._id = this.loginService.getUsuarioActual(); // (PROVISIONAL)
+      console.log('Id: ' + this.loginService.getUsuarioActual());
 
       // SE VA A NECESITAR PARA ENVIAR LA IMAGEN
       // const formData = new FormData;

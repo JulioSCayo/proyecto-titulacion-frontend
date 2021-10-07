@@ -1,5 +1,6 @@
 textarea {
     resize: none;
+    padding: 5px;
 }
 
 .contenido {
@@ -221,6 +222,79 @@ textarea {
 .formReporteForm {
     all: unset;
 }
+    .formReporteForm h3 {
+        margin-top: 10px;
+        margin-bottom: 5px;
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+    .formReporteForm input {
+        align-self:center;
+        width: auto;
+        height: auto;
+        padding: 0%;
+        margin: 0%;
+        
+    }
+    .formReporteForm label {
+        width: auto;
+        height: auto;
+        padding: 0%;
+        margin: 0%;
+    }
+    .formReporteForm .checkbox {
+        width: 20px;
+        height: 20px;
+        padding: 0%;
+        margin: 0 5px 10px 20px;
+    }
+    .formReporteForm .checkboxLabel {
+        width: auto;
+        height: auto;
+        font-size: 18px;
+        padding: 0%;
+        margin-right: 20px;
+    }
+    .formReporteForm .enviar {
+        margin: 10px auto 15px auto;
+        width: 60%;
+        height: 40px;
+        padding: 0%;
+        text-align: center;
+        border: none;
+        background: #04CAB3;
+        cursor: pointer;
+        border-radius: .5rem;
+        font-weight: bold;
+        font-size: 16px;
+    }
+    .formReporteForm .enviar:hover {
+        background: #00a592;
+        color: #FFFFFF;
+        box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.45);
+    }
+    .container-input {
+        margin-bottom: 15px;
+        width: 100%;
+    }
+
+
+    /* margin: 0px 0px 10px 10%;
+    padding: 0px;
+    align-self: stretch;
+    color: #000000;
+}
+form input {
+    width: 70%;
+    height: 30px;
+    margin-bottom: 30px;
+    border: none;
+    border-radius: .5rem;
+    background-color: #FFFFFF;
+    font-size: 16px;
+    padding-left: 5%; */
+
+
 
 .cerrar {
     margin: 5px;

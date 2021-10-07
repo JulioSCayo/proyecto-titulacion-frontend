@@ -23,6 +23,7 @@ export class InicioComponent implements OnInit {
 
   ngOnInit(): void {
     this.mapa();
+    localStorage.setItem('TipoUsr','invitado'); // el usuario al inicio es invitado
   }
 
   login() {
@@ -31,7 +32,7 @@ export class InicioComponent implements OnInit {
         console.log("usuario valido")
         console.log(res.token)
         console.log(this.usuario);
-        localStorage.setItem('token',res.token); // cuando el usuario cierre su sesion debe borrarse esto del localStorage
+        localStorage.setItem('token',res.token); // cuando el usuario cierre su sesion debe colocarse esto como invitado nuevamente
         localStorage.setItem('IDU', res.idUsuario);
         localStorage.setItem('TipoUsr', res.tipoUsuario);
 
@@ -99,7 +100,7 @@ export class InicioComponent implements OnInit {
       });
 
       map.addListener("mousedown", () => {
-        this.router.navigate(['/informacion/conoce-mas']) 
+        this.router.navigate(['/mapa-reportes']) 
       });
 
     });

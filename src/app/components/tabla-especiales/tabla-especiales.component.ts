@@ -35,8 +35,8 @@ export class TablaEspecialesComponent implements OnInit {
     this.usuarioEspecialService.getUsuarios().subscribe(
       res => {
         
-        let usuariosValidados = <UsuarioEspecial[]>res.usuarios1
-        let usuariosNoValidados = <UsuarioEspecial[]>res.usuarios2
+        let usuariosValidados = <UsuarioEspecial[]>res.usuarios1;
+        let usuariosNoValidados = <UsuarioEspecial[]>res.usuarios2;
         
         // recibe los usuarios validados y no validados y despues los concatena en un mismo arreglo
         this.usuarios = usuariosNoValidados.concat(usuariosValidados)
