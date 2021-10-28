@@ -33,8 +33,8 @@ export class ReportesService {
     return this.http.put<any>(this.URL_API + '/replicar-reporte/' + _id, formData);
   }
 
-  getTipoReportes() {
-    return this.http.get<any[]>(this.URL_API + '/reportes-tipo/');
+  getTipoReportes(tipo: string) {
+    return this.http.get<any[]>(this.URL_API + '/reportes-tipo/' + tipo);
   }
 
   getReportes() {

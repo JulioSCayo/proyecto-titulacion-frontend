@@ -309,3 +309,9 @@ form input {
     pointer-events: none;
     transition: all .5s;
 }
+
+
+
+.error {
+    margin: 5px 0 0 0;
+}

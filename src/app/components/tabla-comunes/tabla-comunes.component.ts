@@ -42,7 +42,7 @@ export class TablaComunesComponent implements OnInit {
 
         console.error(err);
       }
-      );
+    );
   }
 
   deleteUsuario(id?: string) {

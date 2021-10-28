@@ -1,6 +1,5 @@
 export interface Reporte {
     _id?: string;
-    folio?: string;
 	estado?: string;
 	ubicacion: {
 		longitud: number;
@@ -10,7 +9,11 @@ export interface Reporte {
 	fechaCreacion?: Date;
 	fechaSolucion?: Date;
 	credibilidad: number;
-	urgencia?: number;
+	urgenciaTiempo?: number;
+	comentario?: string,
+	vidaRiesgo?: number,
+	cronico?: boolean,
+	fantasma?: boolean,
 	usuarios: [
         {
             _id?: string;

@@ -59,6 +59,7 @@
         <form class="formReporteForm" (submit)="reportar()" [formGroup]="registrarForm" >
             <h3>Agrega un comentario (Opcional)</h3>
             <textarea name="comentario" rows="5" cols="30" placeholder="Comentario del problema" formControlName = "comentario"></textarea>
+            <p *ngIf="comentarioLargo" class="error">Comentario muy largo</p>
             <h3>Imagen (Opcional)</h3>
             <div class="container-input">
                 <input type="file" name="imagen" #file id="file" class="inputfile inputfile-2" (change)="onImageSelected($event)" formControlName = "imagen"/> 
@@ -69,8 +70,8 @@
             </div>
             <input type="checkbox" class="checkbox" id="cronico" name="cronico" value="cronico" formControlName = "cronico">
             <label class="checkboxLabel" for="cronico">Ha ocurrido este problema anteriormente</label><br>
-            <input type="checkbox" class="checkbox" id="riesgoVida" name="riesgoVida" value="riesgoVida" formControlName = "riesgoVida">
-            <label class="checkboxLabel" for="riesgoVida"> Considero que hay vidas en riesgo</label><br>
+            <input type="checkbox" class="checkbox" id="vidaRiesgo" name="vidaRiesgo" value="vidaRiesgo" formControlName = "vidaRiesgo">
+            <label class="checkboxLabel" for="vidaRiesgo"> Considero que hay vidas en riesgo</label><br>
             <input type="submit" class="enviar" value="Enviar Reporte">
         </form>
         <hr>

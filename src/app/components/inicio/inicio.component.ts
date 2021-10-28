@@ -60,6 +60,7 @@ export class InicioComponent implements OnInit {
     }
 
     let loader = new Loader({
+      // apiKey: 'AIzaSyAYN-jmRSHPR78rT0l1na0XchXlJT7_sDw'
       apiKey: ''
     });
 
