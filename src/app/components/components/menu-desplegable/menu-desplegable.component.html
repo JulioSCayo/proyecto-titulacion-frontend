@@ -12,11 +12,11 @@
     <hr>
     <ul>
         <li *ngIf="opciones('perfil')==true" [routerLink]="['/']"> Perfil </li>
-        <li *ngIf="opciones('historial')==true" [routerLink]="['/']"> Historial de reportes </li>
+        <li *ngIf="opciones('historial')==true" [routerLink]="['/reportes']"> Historial de reportes </li>
         <li *ngIf="opciones('crearResp')==true" [routerLink]="['/registro-responsable']"> Crear responsable </li>
         <li *ngIf="opciones('usuarios')==true" [routerLink]="['/usuarios']"> Lista de usuarios </li>
         <li *ngIf="opciones('generarReporte')==true" [routerLink]="['/mapa-reportes']"> Generar reporte </li>
-        <li *ngIf="opciones('generarRuta')==true" [routerLink]="['/']"> Generar ruta </li>
+        <li *ngIf="opciones('generarRuta')==true" [routerLink]="['/ruta-automatica']"> Generar ruta </li>
         <li *ngIf="opciones('informacion')==true" [routerLink]="['/informacion']"> Información </li>
         <li *ngIf="opciones('cerrarSesion')==true" (click)="cerrarSesion()"> Cerrar Sesión </li>
     </ul>

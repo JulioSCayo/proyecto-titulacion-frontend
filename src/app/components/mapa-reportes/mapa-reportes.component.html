@@ -58,7 +58,7 @@
         <div class="barra1"><h2>Completa el formulario</h2></div>
         <form class="formReporteForm" (submit)="reportar()" [formGroup]="registrarForm" >
             <h3>Agrega un comentario (Opcional)</h3>
-            <textarea name="comentario" rows="5" cols="30" placeholder="Comentario del problema" formControlName = "comentario"></textarea>
+            <textarea name="comentario" placeholder="Comentario del problema" formControlName = "comentario"></textarea>
             <p *ngIf="comentarioLargo" class="error">Comentario muy largo</p>
             <h3>Imagen (Opcional)</h3>
             <div class="container-input">

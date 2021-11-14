@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ruta Automática</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+
+        <app-barra-navegacion></app-barra-navegacion>
+
+        <div class="contenido">
+            <div class="mapa" id="mapa" [ngClass]="{'desactivarMapa': toggleDesactivarMapa}"></div>
+
+            <div class="crearRuta" [ngClass]="{'activeForm': toggleCrearRuta}">
+                <button (click)="this.formRuta()">Crear Ruta</button>
+            </div>
+
+            <div class="formRuta" [ngClass]="{'activeForm': toggleFormRuta}">
+                <div class="barra"><h2>Hora de término de la jornada</h2></div>
+                <input type="time">
+                <button (click)="this.crearRuta()">Crear Ruta</button>
+            </div>
+
+            <div class="opcionesRuta">
+                <div class="detallesRuta" [ngClass]="{'activeForm': toggleBotonDetallesRuta}">
+                    <img src="https://cdn-icons-png.flaticon.com/512/106/106869.png" class="botonDetallesTerminar" (click)="this.detallesRuta()">
+                </div>
+    
+                <div class="terminarRuta" [ngClass]="{'activeForm': toggleBotonTerminarRuta}">
+                    <img src="https://cdn-icons-png.flaticon.com/512/458/458594.png" class="botonDetallesTerminar" (click)="this.terminarRuta()">
+                </div>
+            </div>
+
+            <div class="detallesReporte" [ngClass]="{'activeForm': toggleDetallesRuta}">
+                <div class="contTipo">
+                    <h1 class="tipo">Tipo de problema</h1>
+                </div>
+        
+                <div class="contDatos">
+                    <h2>Puntos de prioridad</h2>
+                    <h2>Fecha de creación</h2>
+                    <h2>Ubicación</h2>
+                    <h3>Detalles</h3>
+                </div>
+        
+                <h2 class="cambiar">Cambiar de estado</h2>
+        
+                <div class="cambiarEstado">
+                    <input class="solucionado" type="button" value="Solucionado" (click)="this.cambioSolucionado()">
+                    <input class="denegado" type="button" value="Denegado" (click)="this.cambioDenegado()">
+                </div>
+                
+                <div class="columnaBtnOpciones">
+                    <input type="button" value="Saltar reporte" (click)="this.toggleSaltarReporte = true; this.toggleDesactivarMapa = true; this.toggleDetallesRuta = false">
+                    <input type="button" value="Solicitar refuerzos" (click)="this.refuerzos()">
+                    <input type="button" value="Incumbe otra institucion" (click)="this.toggleOtraInstitucion = true; this.toggleDesactivarMapa = true; this.toggleDetallesRuta = false">
+                </div>
+        
+                <div class="btnOcultar">
+                    <input type="button" value="Ocultar" (click)="this.toggleDetallesRuta = false; this.toggleBotonDetallesRuta = true; this.toggleBotonTerminarRuta = true">
+                </div>
+            </div>
+
+            <div class="saltarTerminar" [ngClass]="{'activeForm': toggleSaltarReporte}">
+                <img src="https://img.icons8.com/windows/32/000000/xbox-x.png" class="iconoCerrar" (click)="this.toggleSaltarReporte = false; this.toggleDesactivarMapa = false; this.toggleDetallesRuta = true"/>
+                <h2>Justifica el motivo para saltar el reporte actual</h2>
+                <textarea name="motivo" rows="5" cols="30" class="texto"></textarea>
+                <input type="button" value="Confirmar" class="boton">
+            </div>
+
+            <div class="saltarTerminar" [ngClass]="{'activeForm': toggleTerminarRuta}">
+                <img src="https://img.icons8.com/windows/32/000000/xbox-x.png" class="iconoCerrar" (click)="this.toggleTerminarRuta = false; this.toggleBotonDetallesRuta = true; this.toggleBotonTerminarRuta = true; this.toggleDesactivarMapa = false"/>
+                <h2>Justifica el motivo para terminar la ruta actual</h2>
+                <textarea name="motivo" rows="5" cols="30" class="texto"></textarea>
+                <input type="button" value="Confirmar" class="boton">
+            </div>
+
+            <div class="otraInstitucion" [ngClass]="{'activeForm': toggleOtraInstitucion}">
+                <div class="barra"><h2>Tipo de problema</h2></div>
+                <ul class="opciones">
+                    <li class="alumbrado">Alumbrado</li>
+                    <hr>
+                    <li class="agua">Agua</li>
+                    <hr>
+                    <li class="obstruccion">Obstrucción de circulación</li>
+                    <hr>
+                    <li class="incendio">Incendios</li>
+                    <hr>
+                </ul>
+                <p class="cerrar" (click)="this.toggleOtraInstitucion = false; this.toggleDesactivarMapa = false">Cerrar</p>
+            </div>
+
+        </div>
+
+     </body>
+ 
+ </html>

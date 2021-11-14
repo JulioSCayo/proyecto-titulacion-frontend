@@ -25,6 +25,8 @@ import { BtnsTablasUsuariosComponent } from './components/components/btns-tablas
 import { BusquedaUsuariosPipe } from './pipes/busqueda-usuarios.pipe';
 import { InformacionComponent } from './components/informacion/informacion/informacion.component';
 import { ConoceMasComponent } from './components/informacion/conoce-mas/conoce-mas.component';
+import { RutaAutomaticaComponent } from './components/ruta-automatica/ruta-automatica.component';
+import { TablaReportesComponent } from './components/tabla-reportes/tabla-reportes.component';
 
 
 @NgModule({
@@ -43,7 +45,9 @@ import { ConoceMasComponent } from './components/informacion/conoce-mas/conoce-m
     BtnsTablasUsuariosComponent,
     BusquedaUsuariosPipe,
     InformacionComponent,
-    ConoceMasComponent
+    ConoceMasComponent,
+    RutaAutomaticaComponent,
+    TablaReportesComponent
   ],
   imports: [
     BrowserModule,

@@ -5,6 +5,8 @@ import { RegistroComunComponent } from "./components/registro-comun/registro-com
 import { RegistroEspecialComponent } from "./components/registro-especial/registro-especial.component";
 import { RegistroResponsableComponent } from "./components/registro-responsable/registro-responsable.component";
 import { MapaReportesComponent } from "./components/mapa-reportes/mapa-reportes.component";
+import { RutaAutomaticaComponent } from "./components/ruta-automatica/ruta-automatica.component";
+import { TablaReportesComponent } from "./components/tabla-reportes/tabla-reportes.component";
 import { TablaComunesComponent } from "./components/tabla-comunes/tabla-comunes.component";
 import { TablaEspecialesComponent } from "./components/tabla-especiales/tabla-especiales.component";
 import { TablaResponsablesComponent } from "./components/tabla-responsables/tabla-responsables.component";
@@ -29,6 +31,8 @@ const routes: Routes = [
   {path: 'usuarios-especiales', component: TablaEspecialesComponent, canActivate: [AutenticacionGuard, AdminGuard]},
   {path: 'usuarios-responsables', component: TablaResponsablesComponent, canActivate: [AutenticacionGuard, AdminGuard]},
   {path: 'mapa-reportes', component: MapaReportesComponent},
+  {path: 'ruta-automatica', component: RutaAutomaticaComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
+  {path: 'reportes', component: TablaReportesComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
   {path: 'informacion', component: InformacionComponent},
   {path: 'informacion/conoce-mas', component: ConoceMasComponent},
   {path: '**', component: InicioComponent, canActivate: [InvitadoGuard]}
