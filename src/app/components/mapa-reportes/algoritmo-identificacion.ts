@@ -20,9 +20,17 @@ export class AlgoritmoIdentificacion {
     fecha = new Date();
     denegado: boolean = false;
     reportes: any[] = [];
+    tiempos: any[] = [];
 
      async Identificacion(reporte: any) : Promise<boolean>{
-        this.denegado = false;
+        // this.denegado = false;
+        this.Leer();
+        this.ChecarBan();
+        // if(this.denegado == true){
+        //     return this.denegado
+        // }
+        //this.VerificarFantasma();
+        /*
         if(this.Leer() == true){ // si existe la variable en el LS con algun reporte hace el resto de metodos
             // this.VerificarID(reporte._id);
             this.VerificarDistancia(reporte);
@@ -31,6 +39,7 @@ export class AlgoritmoIdentificacion {
         // guarda o no el id del nuevo reporte y da acceso a las siguientes validaciones y algoritmos
         // this.AccederYGuardar(reporte._id);
         await console.log("el estado de denegado es: " ,this.denegado)
+        */
         return await this.denegado;
     }
     
@@ -38,6 +47,7 @@ export class AlgoritmoIdentificacion {
     Leer() : boolean{
         if(localStorage.getItem("reportes")){   // si existe algun reporte aun si solucionar
             this.reportes = JSON.parse(localStorage.getItem('reportes') || '{}'); // convierte a arreglo la varible de LS
+            this.tiempos = JSON.parse(localStorage.getItem('tiempos') || '{}'); // convierte a arreglo la varible de LS
             // this.denegado = true
             return true
         }else{
@@ -140,19 +150,98 @@ export class AlgoritmoIdentificacion {
                 console.log(" El reporte se puede realizar")
                 this.denegado = false;
                 this.mensajeEror.text = "No se puede reportar mas un reporte cada 5 minutos."
-                
             }
     }
 
 
-    VerificarFantasma(){  // ESTE ES EL PASO 4
-        this.reportes.forEach(e => { // paso 2 del cuaderno
-            
+    async VerificarFantasma(): Promise<boolean>{  // ESTE ES EL PASO 4
+        let contador = 1;
+        this.tiempos.forEach(e => { // paso 2 del cuaderno
+            // console.log("iteracion ", e, " del foreach")
+            // console.log("el resultado de la resta es ", this.fecha.getTime() - 86400000)
+            if(e >= (this.fecha.getTime() - 86400000)){
+                console.log("Fue hace menos de 24 horas");
+                contador++;
+            }
         });
+
+        
+        if(contador == 3){
+            // console.log("deberia notificar que este reporte ya es fantasma y al siguiente sera baneado y se le restara reputacion")
+            Swal.fire({
+                title: 'Seguro?',
+                text: 'El siguiente reporte será fantasma y te restará 1 punto a tu fiabilidad',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Entiendo, enviar'
+                                // confirmButtonText: 'Ok'
+              }).then((result => {
+                if (result.isConfirmed){
+
+                }else{
+                    // this.denegado = false;
+                }
+              }));
+        }else if(contador == 4){
+            Swal.fire({
+                title: 'Seguro?',
+                text: 'Este reporte ya es fantasma, no pudes hacer ningun reporte desde este dispositivo',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, enviar reporte!'
+                    }).then((result => {
+                        if (result.isConfirmed){
+                            localStorage.setItem("Ban", this.fecha.getTime().toString()); // banea por 36 horas
+                            // console.log("y resta 1 punto a la fiabilidad")
+                            console.log("TRUE")
+                            return true
+                        }else{
+                            console.log("FALSE")
+                            return false
+                        }
+                    }));
+                    console.log("mando true")
+                    return true;  //////////////
+        }else if(contador > 4){
+            this.denegado = true;
+        }
+        console.log("mando false")
+        return false;
+    }
+
+
+    ChecarBan(): boolean{
+        let ban = JSON.parse(localStorage.getItem('Ban') || '{}');
+        // parseFloat(localStorage.getItem('Ban'))
+        console.log(typeof(ban))
+
+        if(localStorage.getItem("Ban")){ // significa que fue baneado
+            if(ban >= (this.fecha.getTime() - 129600000)){ // si han pasado menos de 36 desde que fue baneado no lo deja hacer reporte
+                console.log("No se puede generar");
+                this.denegado = true;
+                Swal.fire({
+                    title: 'Estas baneado',
+                    text: 'No puedes hacer ningun reporte por el momento',
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                  });
+                return true;
+            }else{
+                localStorage.removeItem("Ban");
+            }
+        }
+        
+        return false;
     }
 
 
     AccederYGuardar(idReporte: any){
+        console.log(this.reportes)
+        console.log(this.tiempos)
             if(this.denegado == true){
                 console.log("-- NO SE PUEDE HACER EL REPORTE --")
                 this.reportesService.deleteReporte(idReporte.toString()).subscribe(
@@ -167,7 +256,9 @@ export class AlgoritmoIdentificacion {
                 this.reportes.pop();
                 this.reportes.push(idReporte)
                 this.reportes.push(this.fecha.getTime())
+                this.tiempos.push(this.fecha.getTime())
                 localStorage.setItem("reportes", JSON.stringify(this.reportes));
+                localStorage.setItem("tiempos", JSON.stringify(this.tiempos));
                 console.log("-- SE GUARDO EL ID EN EL LOCALSTORAGE --")
                 Swal.fire({
                     title: 'Reporte enviado!',

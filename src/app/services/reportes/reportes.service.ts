@@ -45,9 +45,9 @@ export class ReportesService {
     return this.http.get<any>(this.URL_API + '/reporte/' + _id);
   }
 
-  // editReporte() {
-    
-  // }
+  editReporte(reporte: Reporte) {
+    return this.http.put(this.URL_API + '/reporte/' + reporte._id, reporte);
+  }
 
   deleteReporte(_id?: string) {
     return this.http.delete(this.URL_API + '/reporte/' + _id);

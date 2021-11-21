@@ -116,13 +116,21 @@
     align-items: center;
     border-radius: 1rem;
 }
+.opcionesRutaInterno {
+    margin: 15px;
+    padding: 10px;
+    border-radius: 1rem;
+    /* border: 3px solid #3A4049; */
+    backdrop-filter: brightness(.8);
+    -webkit-backdrop-filter: brightness(.8);
+    opacity: 0;
+    pointer-events: none;
+}
 .detallesRuta {
+    margin-bottom: 10px;
     z-index: 4;
     transition: all .5s;
     text-align: center;
-    margin: 20px;
-    opacity: 0;
-    pointer-events: none;
 }
     .detallesRuta button {
         width: 100%;
@@ -145,9 +153,6 @@
     z-index: 4;
     transition: all .5s;
     text-align: center;
-    margin: 20px;
-    opacity: 0;
-    pointer-events: none;
 }
     .terminarRuta button {
         width: 100%;
@@ -410,3 +415,47 @@
         pointer-events: auto;
         transition: all .5s;
     }
+
+
+
+
+
+
+.incendio:hover {
+    color: #fd8037;
+}
+.agua:hover {
+    color: #6cb7ce;
+}
+.obstruccion:hover {
+    color: #864109;
+}
+.alumbrado:hover {
+    color: #ccc547;
+}
+
+
+/* .incendio {
+    color: #fd8037;
+}
+.agua {
+    color: #6cb7ce;
+}
+.obstruccion {
+    color: #864109;
+}
+.alumbrado {
+    color: #ccc547;
+}
+.incendio:hover {
+    color: #000;
+}
+.agua:hover {
+    color: #000;
+}
+.obstruccion:hover {
+    color: #000;
+}
+.alumbrado:hover {
+    color: #000;
+} */

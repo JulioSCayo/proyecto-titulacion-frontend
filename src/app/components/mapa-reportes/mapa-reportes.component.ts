@@ -418,115 +418,134 @@ export class MapaReportesComponent implements OnInit {
     // ASI SE UTILIZA LA CLASE CON EL ALGORITMO DE IDENTIFICACION
     let pruebaIdentifiacion = new AlgoritmoIdentificacion(this.reportesService, this.http); // ---------------
 
-    // Revisa si el usuario es invitado o no
-    if(localStorage.getItem('TipoUsr') == 'invitado') {
-      this.registrarForm.value.usuarios._id = '000000000000000000000000'; // (PROVISIONAL)
-      
-    } else {
-      this.registrarForm.value.usuarios._id = this.loginService.getUsuarioActual();
-    }
-    
-    // SI ES REPLICA SE ENVIAN LOS DATOS PARA MODIFICAR EL REPORTE
-    if(this.replica == true) {
-      // SE INGRESA LA CREDIBILIDAD Y ID DEL USUARIO QUE VA A REPLICAR (FALTAN LOS ALGORITMOS)
-      // if(!pruebaIdentifiacion.VerificarID(this.replicaId)){ // si pasa el algoritmo de validacion hace el reporte ---------------
-        this.reportesService.replicarReporte(this.replicaId, this.registrarForm?.value).subscribe(
-          async res => {
-            Swal.fire({
-              title: 'Reporte replicado!',
-              text: 'Hemos recibido tu replica de un reporte ya existente',
-              icon: 'success',
-              confirmButtonText: 'Ok'
-            });
-            
-            // Algoritmo de urgencia de prueba
-            let pruebaUrgencia = new AlgoritmoUrgencia(this.reportesService);
-            console.log("URGENTE: " + await pruebaUrgencia.Urgente(res.toString()));
+    if(!pruebaIdentifiacion.ChecarBan()){ // primero revisa que el dispositivo no este baneado
+        // Revisa si el usuario es invitado o no
+        if(localStorage.getItem('TipoUsr') == 'invitado') {
+          this.registrarForm.value.usuarios._id = '000000000000000000000000'; // (PROVISIONAL)
+          
+        } else {
+          this.registrarForm.value.usuarios._id = this.loginService.getUsuarioActual();
+        }
+        
+        // SI ES REPLICA SE ENVIAN LOS DATOS PARA MODIFICAR EL REPORTE
+        if(this.replica == true) {
 
-            // pruebaIdentifiacion.AccederYGuardar(res.toString());
+          
+          // SE INGRESA LA CREDIBILIDAD Y ID DEL USUARIO QUE VA A REPLICAR (FALTAN LOS ALGORITMOS)
+          if(!pruebaIdentifiacion.VerificarID(this.replicaId)){ // si pasa el algoritmo de validacion hace el reporte ---------------
 
-            // CUANDO SE REPLICA UN REPORTE SE VA DIRECTO AL MAPA Y SE REFRESCA
-            this.toggleFormReporte = false; // SE ESCONDE EL FORM DE DETALLES
-            this.toggleDesactivarMapa = false; // SE ACTIVA EL MAPA
-            this.ngOnInit();
-          },
-          err => {
-            Swal.fire({
-              title: 'Oh no!',
-              text: 'Ocurrio un problema replicando el reporte',
-              icon: 'error',
-              confirmButtonText: 'Ok'
-            });
-
-            console.error(err);
-          }
-        );
-      }
-    // } // ---
-
-
-
-    // SI NO ES REPLICA ES REPORTE NUEVO
-    else {
-      if(this.registrarForm.value.comentario.length > 150) {
-        this.comentarioLargo = true;
-      }
-      else {
-        // if(await pruebaIdentifiacion.Identificacion(this.registrarForm?.value) == false){ // si pasa los algoritmos de validacion guarda el reporte
-          // SE OBTIENEN LAS COORDENADAS DEL MARKER COLOCADO POR EL USUARIO
-          const latitud = this.nuevoLatLng.lat();
-          const longitud = this.nuevoLatLng.lng();
-
-          // SE GUARDAN LA UBICACION, EL TIPO DE PROBLEMA Y EL ID DEL USUARIO
-          this.registrarForm.value.ubicacion.latitud = latitud;
-          this.registrarForm.value.ubicacion.longitud = longitud;
-          this.registrarForm.value.tipoProblema = this.nuevoProblema;
-          this.registrarForm.value.fantasma = false; // (Provisional)
-
-          // SE VA A NECESITAR PARA ENVIAR LA IMAGEN
-          // const formData = new FormData;
-          // formData.append('credibilidad', '5');
-          // formData.append('tipoProblema', this.nuevoProblema);
-          // formData.append('ubicacion.latitud', latitud);
-          // formData.append('ubicacion.longitud', longitud);
-          // formData.append('comentario', comentario.value);
-          // formData.append('cronico', cronico.value);
-          // formData.append('riesgoVida', riesgoVida.value);
-          // formData.append('imagen', this.file?.nativeElement.files[0]);
-
-          this.reportesService.createReporte(this.registrarForm?.value).subscribe(
-            async res => {
-              Swal.fire({
-                title: 'Reporte enviado!',
-                text: 'Hemos recibido tu reporte del problema',
-                icon: 'success',
-                confirmButtonText: 'Ok'
-              });
-
-              // Algoritmo de urgencia de prueba
-              let pruebaUrgencia = new AlgoritmoUrgencia(this.reportesService);
-              console.log("URGENTE: " + await pruebaUrgencia.Urgente(res.toString()));
-
-              // pruebaIdentifiacion.AccederYGuardar(res.toString());
+              // if(pruebaIdentifiacion.VerificarFantasma()){ // si retorna true significa que dicidio hacer el reporte fantasma
               
-              // CUANDO SE CREA UN REPORTE SE VA DIRECTO AL MAPA Y SE REFRESCA
-              this.toggleFormReporte = false; // SE ESCONDE EL FORM DE DETALLES
-              this.toggleDesactivarMapa = false; // SE ACTIVA EL MAPA
-              this.ngOnInit();
-            },
-            err => {
-              Swal.fire({
-                title: 'Oh no!',
-                text: 'Ocurrio un problema enviando tu reporte',
-                icon: 'error',
-                confirmButtonText: 'Ok'
-              });
+              // };
+            this.reportesService.replicarReporte(this.replicaId, this.registrarForm?.value).subscribe(
+              async res => {
+                Swal.fire({
+                  title: 'Reporte replicado!',
+                  text: 'Hemos recibido tu replica de un reporte ya existente',
+                  icon: 'success',
+                  confirmButtonText: 'Ok'
+                });
+                
+                // Algoritmo de urgencia de prueba
+                let pruebaUrgencia = new AlgoritmoUrgencia(this.reportesService);
+                console.log("URGENTE: " + await pruebaUrgencia.Urgente(res.toString()));
 
-              console.error(err);
-            }
-          );
-        // } // ---
-      }
+                pruebaIdentifiacion.AccederYGuardar(res.toString());
+
+                // CUANDO SE REPLICA UN REPORTE SE VA DIRECTO AL MAPA Y SE REFRESCA
+                this.toggleFormReporte = false; // SE ESCONDE EL FORM DE DETALLES
+                this.toggleDesactivarMapa = false; // SE ACTIVA EL MAPA
+                this.ngOnInit();
+              },
+              err => {
+                Swal.fire({
+                  title: 'Oh no!',
+                  text: 'Ocurrio un problema replicando el reporte',
+                  icon: 'error',
+                  confirmButtonText: 'Ok'
+                });
+
+                console.error(err);
+              }
+            );
+          }
+        } // ---
+
+
+
+        // SI NO ES REPLICA ES REPORTE NUEVO
+        else {
+          if(this.registrarForm.value.comentario.length > 150) {
+            this.comentarioLargo = true;
+          }
+          else {
+            if(await pruebaIdentifiacion.Identificacion(this.registrarForm?.value) == false){ // si pasa los algoritmos de validacion guarda el reporte
+
+              /*
+              if(pruebaIdentifiacion.VerificarFantasma()){ // si retorna true significa que dicidio hacer el reporte fantasma
+                this.registrarForm.value.fantasma = true;
+              }else{
+                this.registrarForm.value.fantasma = false;
+              };
+              */
+              
+              this.registrarForm.value.fantasma = await pruebaIdentifiacion.VerificarFantasma();
+
+              // SE OBTIENEN LAS COORDENADAS DEL MARKER COLOCADO POR EL USUARIO
+              const latitud = this.nuevoLatLng.lat();
+              const longitud = this.nuevoLatLng.lng();
+
+              // SE GUARDAN LA UBICACION, EL TIPO DE PROBLEMA Y EL ID DEL USUARIO
+              this.registrarForm.value.ubicacion.latitud = latitud;
+              this.registrarForm.value.ubicacion.longitud = longitud;
+              this.registrarForm.value.tipoProblema = this.nuevoProblema;
+
+              // SE VA A NECESITAR PARA ENVIAR LA IMAGEN
+              // const formData = new FormData;
+              // formData.append('credibilidad', '5');
+              // formData.append('tipoProblema', this.nuevoProblema);
+              // formData.append('ubicacion.latitud', latitud);
+              // formData.append('ubicacion.longitud', longitud);
+              // formData.append('comentario', comentario.value);
+              // formData.append('cronico', cronico.value);
+              // formData.append('riesgoVida', riesgoVida.value);
+              // formData.append('imagen', this.file?.nativeElement.files[0]);
+
+              this.reportesService.createReporte(this.registrarForm?.value).subscribe(
+                async res => {
+                  /*Swal.fire({
+                    title: 'Reporte enviado!',
+                    text: 'Hemos recibido tu reporte del problema',
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                  }); */
+
+                  // Algoritmo de urgencia de prueba
+                  let pruebaUrgencia = new AlgoritmoUrgencia(this.reportesService);
+                  console.log("URGENTE: " + await pruebaUrgencia.Urgente(res.toString()));
+
+                  pruebaIdentifiacion.AccederYGuardar(res.toString());
+                  
+                  // CUANDO SE CREA UN REPORTE SE VA DIRECTO AL MAPA Y SE REFRESCA
+                  this.toggleFormReporte = false; // SE ESCONDE EL FORM DE DETALLES
+                  this.toggleDesactivarMapa = false; // SE ACTIVA EL MAPA
+                  this.ngOnInit();
+                },
+                err => {
+                  Swal.fire({
+                    title: 'Oh no!',
+                    text: 'Ocurrio un problema enviando tu reporte',
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                  });
+
+                  console.error(err);
+                }
+              );
+            } // ---
+          }
+        }
     }
+
   }
 }
