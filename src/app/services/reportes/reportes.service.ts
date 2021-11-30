@@ -37,6 +37,10 @@ export class ReportesService {
     return this.http.get<any[]>(this.URL_API + '/reportes-tipo/' + tipo);
   }
 
+  getEstadoReportes(estado: string) {
+    return this.http.get<any[]>(this.URL_API + '/reportes-estado/' + estado);
+  }
+
   getReportes() {
     return this.http.get<any[]>(this.URL_API + '/reportes/');
   }

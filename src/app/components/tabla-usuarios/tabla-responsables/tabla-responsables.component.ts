@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { UsuarioResponsableService } from "../../services/usuario-responsable/usuario-responsable.service";
-import { UsuarioResponsable } from "../../models/usuario-responsable";
+import { UsuarioResponsableService } from "../../../services/usuario-responsable/usuario-responsable.service";
+import { UsuarioResponsable } from "../../../models/usuario-responsable";
 import Swal from 'sweetalert2';
 
 @Component({

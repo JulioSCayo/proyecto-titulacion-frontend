@@ -18,15 +18,19 @@ import { MapaReportesComponent } from './components/mapa-reportes/mapa-reportes.
 
 import { AutenticacionGuard } from './services/guard/autenticacion.guard';
 import { TokenInterceptorService } from './services/token-interceptor/token-interceptor.service';
-import { TablaComunesComponent } from './components/tabla-comunes/tabla-comunes.component';
-import { TablaEspecialesComponent } from './components/tabla-especiales/tabla-especiales.component';
-import { TablaResponsablesComponent } from './components/tabla-responsables/tabla-responsables.component';
+import { TablaComunesComponent } from './components/tabla-usuarios/tabla-comunes/tabla-comunes.component';
+import { TablaEspecialesComponent } from './components/tabla-usuarios/tabla-especiales/tabla-especiales.component';
+import { TablaResponsablesComponent } from './components/tabla-usuarios/tabla-responsables/tabla-responsables.component';
 import { BtnsTablasUsuariosComponent } from './components/components/btns-tablas-usuarios/btns-tablas-usuarios.component';
-import { BusquedaUsuariosPipe } from './pipes/busqueda-usuarios.pipe';
+import { BusquedaUsuariosPipe } from './pipes/busqueda-usuarios/busqueda-usuarios.pipe';
+import { BusquedaReportesPipe } from './pipes/busqueda-reportes/busqueda-reportes.pipe';
 import { InformacionComponent } from './components/informacion/informacion/informacion.component';
 import { ConoceMasComponent } from './components/informacion/conoce-mas/conoce-mas.component';
 import { RutaAutomaticaComponent } from './components/ruta-automatica/ruta-automatica.component';
-import { TablaReportesComponent } from './components/tabla-reportes/tabla-reportes.component';
+import { BtnsTablasReportesComponent } from './components/components/btns-tablas-reportes/btns-tablas-reportes.component';
+import { TablaDesatendidosComponent } from './components/tabla-reportes/tabla-desatendidos/tabla-desatendidos.component';
+import { TablaEnProcesoComponent } from './components/tabla-reportes/tabla-en-proceso/tabla-en-proceso.component';
+import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
 
 
 @NgModule({
@@ -47,7 +51,11 @@ import { TablaReportesComponent } from './components/tabla-reportes/tabla-report
     InformacionComponent,
     ConoceMasComponent,
     RutaAutomaticaComponent,
-    TablaReportesComponent
+    BusquedaReportesPipe,
+    BtnsTablasReportesComponent,
+    TablaDesatendidosComponent,
+    TablaEnProcesoComponent,
+    TablaSolucionadosComponent
   ],
   imports: [
     BrowserModule,

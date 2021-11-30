@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TablaReportesComponent } from './tabla-reportes.component';
+import { BtnsTablasReportesComponent } from './btns-tablas-reportes.component';
 
-describe('TablaReportesComponent', () => {
-  let component: TablaReportesComponent;
-  let fixture: ComponentFixture<TablaReportesComponent>;
+describe('BtnsTablasReportesComponent', () => {
+  let component: BtnsTablasReportesComponent;
+  let fixture: ComponentFixture<BtnsTablasReportesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TablaReportesComponent ]
+      declarations: [ BtnsTablasReportesComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TablaReportesComponent);
+    fixture = TestBed.createComponent(BtnsTablasReportesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -74,8 +74,8 @@ export class RutaAutomaticaComponent implements OnInit {
 
     // DECLARAR LOADER DEL MAPA CON LA APIKEY
     let loader = new Loader({
-      // apiKey: 'AIzaSyAYN-jmRSHPR78rT0l1na0XchXlJT7_sDw'
-      apiKey: ''
+      apiKey: 'AIzaSyAYN-jmRSHPR78rT0l1na0XchXlJT7_sDw'
+      // apiKey: ''
     });
 
     // SE CARGA EL MAPA CENTRADO EN LA UBICACION DEL USUARIO
@@ -343,6 +343,7 @@ export class RutaAutomaticaComponent implements OnInit {
         this.reporte.estado = "Solucionado";
         let hoy = new Date(Date.now());
         this.reporte.fechaSolucion = hoy;
+
         this.reportesService.editReporte(this.reporte).subscribe(
           async res => {
             Swal.fire({

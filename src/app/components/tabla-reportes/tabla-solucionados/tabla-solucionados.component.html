@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Reportes</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+
+        <app-barra-navegacion></app-barra-navegacion>
+
+        <app-btns-tablas-reportes></app-btns-tablas-reportes>
+
+        <div class="buscador"  *ngIf="reportes.length">
+            <input type="text" name="busqueda" placeholder="Buscar" [(ngModel)]="busqueda">
+        </div>
+        
+        <div class="div-tabla">
+            <table class="tabla">
+                <tr class="cabecera">
+                    <th>Folio</th>
+                    <th>Puntos de credibilidad</th>
+                    <th>Fecha de creación</th>
+                    <th>Fecha de solución</th>
+                    <th class="acciones">Detalles</th>
+                </tr>
+                <tr *ngFor="let reporte of reportes | busquedaReportes: busqueda">
+                    <td>{{ reporte._id }}</td>
+                    <th>{{ reporte.credibilidad }}</th>
+                    <td>{{ reporte.fechaCreacion | date:'dd-MM-yyyy' }}</td>
+                    <th>{{ reporte.fechaSolucion | date:'dd-MM-yyyy' }}</th>
+                    <td class="acciones"><a class="imagen-especial">Ver más</a></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="div-tabla" *ngIf="!reportes.length">
+            <h1>No hay reportes solucionados</h1>
+        </div>
+
+     </body>
+ 
+ </html>

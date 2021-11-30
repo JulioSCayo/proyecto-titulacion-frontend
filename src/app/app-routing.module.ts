@@ -6,10 +6,9 @@ import { RegistroEspecialComponent } from "./components/registro-especial/regist
 import { RegistroResponsableComponent } from "./components/registro-responsable/registro-responsable.component";
 import { MapaReportesComponent } from "./components/mapa-reportes/mapa-reportes.component";
 import { RutaAutomaticaComponent } from "./components/ruta-automatica/ruta-automatica.component";
-import { TablaReportesComponent } from "./components/tabla-reportes/tabla-reportes.component";
-import { TablaComunesComponent } from "./components/tabla-comunes/tabla-comunes.component";
-import { TablaEspecialesComponent } from "./components/tabla-especiales/tabla-especiales.component";
-import { TablaResponsablesComponent } from "./components/tabla-responsables/tabla-responsables.component";
+import { TablaComunesComponent } from "./components/tabla-usuarios/tabla-comunes/tabla-comunes.component";
+import { TablaEspecialesComponent } from "./components/tabla-usuarios/tabla-especiales/tabla-especiales.component";
+import { TablaResponsablesComponent } from "./components/tabla-usuarios/tabla-responsables/tabla-responsables.component";
 import { InformacionComponent } from "./components/informacion/informacion/informacion.component";
 import { ConoceMasComponent } from "./components/informacion/conoce-mas/conoce-mas.component";
 
@@ -20,6 +19,9 @@ import { AdminGuard } from './services/guard/guard-usuario-admin/admin.guard';
 import { ComunGuard } from './services/guard/guard-usuario-comun/comun.guard';
 import { EspecialGuard } from './services/guard/guard-usuario-especial/especial.guard';
 import { ResponsableGuard } from './services/guard/guard-usuario-responsable/responsable.guard';
+import { TablaDesatendidosComponent } from './components/tabla-reportes/tabla-desatendidos/tabla-desatendidos.component';
+import { TablaEnProcesoComponent } from './components/tabla-reportes/tabla-en-proceso/tabla-en-proceso.component';
+import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
 
 const routes: Routes = [
   {path: '', component: InicioComponent, canActivate: [InvitadoGuard]},
@@ -32,7 +34,10 @@ const routes: Routes = [
   {path: 'usuarios-responsables', component: TablaResponsablesComponent, canActivate: [AutenticacionGuard, AdminGuard]},
   {path: 'mapa-reportes', component: MapaReportesComponent},
   {path: 'ruta-automatica', component: RutaAutomaticaComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
-  {path: 'reportes', component: TablaReportesComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
+  {path: 'reportes', component: TablaDesatendidosComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
+  {path: 'reportes-desatendidos', component: TablaDesatendidosComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
+  {path: 'reportes-en-proceso', component: TablaEnProcesoComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
+  {path: 'reportes-solucionados', component: TablaSolucionadosComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
   {path: 'informacion', component: InformacionComponent},
   {path: 'informacion/conoce-mas', component: ConoceMasComponent},
   {path: '**', component: InicioComponent, canActivate: [InvitadoGuard]}

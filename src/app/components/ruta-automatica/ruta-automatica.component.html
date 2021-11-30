@@ -40,7 +40,7 @@
         
                 <div class="contDatos">
                     <h2>Urgencia: {{ urgenciaReporte }} puntos</h2>
-                    <h2>Fecha de creación: {{ reporte.fechaCreacion }}</h2>
+                    <h2>Fecha de creación: {{ reporte.fechaCreacion | date:'dd-MM-yyyy' }}</h2>
                     <h2>Ubicación</h2>
                 </div>
         
@@ -65,14 +65,14 @@
             <div class="saltarTerminar" [ngClass]="{'activeForm': toggleSaltarReporte}">
                 <img src="https://img.icons8.com/windows/32/000000/xbox-x.png" class="iconoCerrar" (click)="this.toggleSaltarReporte = false; this.toggleDesactivarMapa = false; this.toggleDetallesRuta = true"/>
                 <h2>Justifica el motivo para saltar el reporte actual</h2>
-                <textarea name="motivo" rows="5" cols="30" class="texto"></textarea>
+                <textarea name="motivo" rows="5" cols="30" class="texto" placeholder="Motivo"></textarea>
                 <input type="button" value="Confirmar" class="boton" (click)="this.saltarReporte()">
             </div>
 
             <div class="saltarTerminar" [ngClass]="{'activeForm': toggleTerminarRuta}">
                 <img src="https://img.icons8.com/windows/32/000000/xbox-x.png" class="iconoCerrar" (click)="this.toggleTerminarRuta = false; this.toggleOpcionesRuta = true; this.toggleDesactivarMapa = false"/>
                 <h2>Justifica el motivo para terminar la ruta actual</h2>
-                <textarea name="motivo" rows="5" cols="30" class="texto"></textarea>
+                <textarea name="motivo" rows="5" cols="30" class="texto" placeholder="Motivo"></textarea>
                 <input type="button" value="Confirmar" class="boton" (click)="this.terminarRuta()">
             </div>
 

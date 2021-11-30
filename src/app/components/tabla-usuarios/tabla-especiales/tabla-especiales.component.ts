@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { UsuarioEspecialService } from "../../services/usuario-especial/usuario-especial.service";
-import { UsuarioEspecial } from "../../models/usuario-especial";
+import { UsuarioEspecialService } from "../../../services/usuario-especial/usuario-especial.service";
+import { UsuarioEspecial } from "../../../models/usuario-especial";
 import Swal from 'sweetalert2';
 import { RouterLink } from '@angular/router';
 
