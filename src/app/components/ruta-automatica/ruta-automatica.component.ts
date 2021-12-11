@@ -6,6 +6,9 @@ import { Reporte } from 'src/app/models/reporte';
 import { ReportesService } from 'src/app/services/reportes/reportes.service';
 import { AlgoritmoUrgencia } from "src/app/components/mapa-reportes/algoritmo-urgencia";
 import Swal from 'sweetalert2';
+import { HttpClient } from '@angular/common/http'
+import { CrearRuta } from "src/app/components/ruta-automatica/crear-ruta";
+
 
 @Component({
   selector: 'app-ruta-automatica',
@@ -14,8 +17,8 @@ import Swal from 'sweetalert2';
 })
 export class RutaAutomaticaComponent implements OnInit {
 
-  toggleDesactivarMapa: boolean = true;
-  toggleCrearRuta: boolean = true;
+  toggleDesactivarMapa: boolean = false;
+  toggleCrearRuta: boolean = false;
   toggleFormRuta: boolean = false;
   toggleOpcionesRuta: boolean = false;
   toggleDetallesRuta: boolean = false;
@@ -51,10 +54,14 @@ export class RutaAutomaticaComponent implements OnInit {
 
   urgenciaReporte = 0;
 
-  constructor(public reportesService: ReportesService) { }
+  constructor(public reportesService: ReportesService, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.mapa();
+
+    let ruta = new CrearRuta(this.reportesService, this.http);
+
+    ruta.CrearRuta();
   }
 
   mapa() {
@@ -162,34 +169,6 @@ export class RutaAutomaticaComponent implements OnInit {
 
       console.log("Hora actual: " + hoy.getHours() + ":" + hoy.getMinutes());
       console.log("Fin de jornada: " + fin[0] + ":" + fin[1]);
-
-      let algoritmoUrgencia = new AlgoritmoUrgencia(this.reportesService);
-
-      new Promise((resolve, reject) => {
-        this.reportesService.getReportes().subscribe(
-            async res => {
-                this.reportes = <Reporte[]>res;
-
-                for(let reporte of this.reportes) {
-                  let urgenciaReporte = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);
-
-                  console.log("id: " + reporte._id + " | urgencia: " + urgenciaReporte);
-
-                  if(urgenciaReporte > this.urgenciaReporte) {
-                    this.reporte = reporte;
-                    this.urgenciaReporte = urgenciaReporte;
-                  }
-                }
-
-                console.log("Reporte ruta: " + this.reporte._id)
-                console.log("Urgencia reporte ruta: " + this.urgenciaReporte)
-            }, 
-            err => {
-                console.log('No se pudo cargar los reportes');
-                console.error(err);
-            }
-        );
-      });
     }
   }
 

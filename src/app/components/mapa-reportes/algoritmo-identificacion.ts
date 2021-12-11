@@ -157,17 +157,13 @@ export class AlgoritmoIdentificacion {
     async VerificarFantasma(): Promise<boolean>{  // ESTE ES EL PASO 4
         let contador = 1;
         this.tiempos.forEach(e => { // paso 2 del cuaderno
-            // console.log("iteracion ", e, " del foreach")
-            // console.log("el resultado de la resta es ", this.fecha.getTime() - 86400000)
             if(e >= (this.fecha.getTime() - 86400000)){
                 console.log("Fue hace menos de 24 horas");
                 contador++;
             }
         });
 
-        
         if(contador == 3){
-            // console.log("deberia notificar que este reporte ya es fantasma y al siguiente sera baneado y se le restara reputacion")
             Swal.fire({
                 title: 'Seguro?',
                 text: 'El siguiente reporte será fantasma y te restará 1 punto a tu fiabilidad',
@@ -176,7 +172,6 @@ export class AlgoritmoIdentificacion {
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Entiendo, enviar'
-                                // confirmButtonText: 'Ok'
               }).then((result => {
                 if (result.isConfirmed){
 
@@ -216,8 +211,6 @@ export class AlgoritmoIdentificacion {
 
     ChecarBan(): boolean{
         let ban = JSON.parse(localStorage.getItem('Ban') || '{}');
-        // parseFloat(localStorage.getItem('Ban'))
-        console.log(typeof(ban))
 
         if(localStorage.getItem("Ban")){ // significa que fue baneado
             if(ban >= (this.fecha.getTime() - 129600000)){ // si han pasado menos de 36 desde que fue baneado no lo deja hacer reporte

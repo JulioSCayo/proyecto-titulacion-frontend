@@ -41,6 +41,15 @@ export class ReportesService {
     return this.http.get<any[]>(this.URL_API + '/reportes-estado/' + estado);
   }
 
+  getReportesNoAsignados() {
+    return this.http.get<any[]>(this.URL_API + '/reportes-no-asignados/');
+  }
+
+  getReporteAsignado() {
+    let id = localStorage.getItem("IDU");
+    return this.http.get<any>(this.URL_API + '/reporte-asignado/' +  id);
+  }
+
   getReportes() {
     return this.http.get<any[]>(this.URL_API + '/reportes/');
   }
