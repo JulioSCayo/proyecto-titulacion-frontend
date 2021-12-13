@@ -1,0 +1,28 @@
+select{
+    font-size: 18px;
+    width: 160px;
+    height: 36px;
+    margin: 10px;
+    padding: 6px;
+}
+
+.selects{
+    margin: 10px 0px 0px 25%;
+}
+
+#descargas{
+    margin: 0 0 0 40px;
+    margin: 10px;
+    padding: 6px;
+    font-size: 18px;
+}
+
+#contenedor{
+    display: inline-block;
+}
+
+#contenedorGrafica{
+    height: 600px;
+    width: 600px;
+    margin: 60px 0 0 300px;
+}

@@ -60,6 +60,7 @@ export class CrearRuta {
                         navigator.geolocation.getCurrentPosition(//este metodo recibe 3 parametros,dos metodos y un objeto
                             (pos) =>{
                                 this.TrazarRuta(pos.coords, res[0].ubicacion);
+                                this.reporte = res;
                             }, 
                             (err) =>{
                                 console.warn('ERROR(' + err.code + '): ' + err.message);
@@ -151,6 +152,7 @@ export class CrearRuta {
 
                                 try {
                                     let update = this.reportes.find(element => element._id == idReporteMasCercano);
+                                    this.reporte = this.reportes.find(element => element._id == idReporteMasCercano)!;
                                     if(update != undefined){
                                         update.asignado = localStorage.getItem('IDU')!;
                                         update.estado = "En ruta";

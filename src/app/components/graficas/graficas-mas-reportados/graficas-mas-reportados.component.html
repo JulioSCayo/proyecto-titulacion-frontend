@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Graficas</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+    <app-barra-navegacion></app-barra-navegacion>
+
+    <div class="selects">
+        <select name="tipoGrafica" id="">
+            <option value="Grafica 1">Grafica 1</option>
+            <option value="Grafica 2">Grafica 2</option>
+            <option value="Grafica 3">Grafica 3</option>
+            <option value="Grafica 4">Grafica 4</option>
+            <option value="Grafica 5">Grafica 5</option>
+        </select>
+    
+        <select name="mes" id="">
+            <option value="enero">Enero</option>
+            <option value="febrero">Febreo</option>
+            <option value="marzo">Marzo</option>
+            <option value="abril">Abril</option>
+            <option value="mayo">Mayo</option>
+            <option value="junio">Junio</option>
+            <option value="julio">Julio</option>
+            <option value="agosto">Agosto</option>
+            <option value="septiempbre">Septiembre</option>
+            <option value="octubre">Octubre</option>
+            <option value="noviembre">Noviembre</option>
+            <option value="diciembre">Diciembre</option>
+        </select>
+    
+        <select name="año" id="">
+            <option value="2021">2021</option>
+            <option value="2020">2020</option>
+            <option value="2019">2019</option>
+        </select>
+    
+        <button id="descargas">Descargar</button>
+    </div>
+
+    <div id="contenedor">
+        <div id="contenedorGrafica">
+            <h2>Titulo Graficas</h2>
+            <div id="grafica">
+                        <!-- [plugins]="barChartPlugins" -->
+                        <canvas baseChart
+                          [data]="barChartData"
+                          [options]="barChartOptions"
+                          [type]="barChartType">
+                        </canvas>
+                      <!-- <button mat-button mat-raised-button color="primary" (click)="randomize()">Update</button> -->
+                      <div id="piechart" style="width: 700px; height: 450px;"></div>
+
+            </div>
+        </div>
+
+        <div>
+            <!-- <h3>Conclusiones</h3> -->
+
+        </div>
+
+    </div>
+    
+
+
+
+
+</body>
+</html>

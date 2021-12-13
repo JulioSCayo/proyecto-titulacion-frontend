@@ -3,6 +3,12 @@ import { Reporte } from 'src/app/models/reporte';
 import { ReportesService } from 'src/app/services/reportes/reportes.service';
 import Swal from 'sweetalert2';
 import { AlgoritmoUrgencia } from '../../mapa-reportes/algoritmo-urgencia';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { stringify } from '@angular/compiler/src/util';
+import { FormBuilder, FormArray } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-tabla-desatendidos',
@@ -25,11 +31,71 @@ export class TablaDesatendidosComponent implements OnInit {
 
   busqueda = ""; // Pipe
 
-  constructor(public reportesService: ReportesService) { }
+  registrarForm!: FormGroup;
+  submitted = false;
+
+
+  // orden: string[] = ['Más reciente', 'Más antiguo', 'Más urgente', 'Menos urgente'];
+  // default: string = 'Selecciona una opción';
+
+  // ordenFormulario: FormGroup;
+  // ordenFormulario!: FormGroup;
+  // formBuilder: any;
+
+
+  constructor(public reportesService: ReportesService,private formBuilder: FormBuilder, private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     this.getReportes();
+
+
+    this.registrarForm = this.formBuilder.group({
+      ordenar: ['', Validators.required]
+    },{ 
+        validator: [this.modificacion]
+      }); 
+
   }
+
+
+  modificacion(control: AbstractControl){
+    let opc = String(control.value);
+    // console.log(opc);
+
+    if(opc == "urgentes"){
+      console.log("Entro al if")
+    }
+
+
+    switch (opc) {
+      case 'reciente':
+        
+      break;
+
+      case 'urgentes':
+        
+        let calis = this.reportes.sort(function (a: any, b: any){
+            return (b.urgencia - a.urgencia)
+          }).slice(0,5);
+
+          this.reportes = calis;
+
+          for(let reporte of this.reportes) {
+            console.log(reporte);
+          }
+      break;
+    
+      default:
+        console.log("entro por el default")
+        break;
+    }
+
+  }
+  
+  chechar(): any {
+    console.log(this.registrarForm?.value);
+  }
+
 
   getReportes() {
     let algoritmoUrgencia = new AlgoritmoUrgencia(this.reportesService);

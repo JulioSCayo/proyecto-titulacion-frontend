@@ -20,6 +20,8 @@
     "@angular/router": "~12.1.2",
     "@googlemaps/js-api-loader": "^1.12.2",
     "@ngneat/error-tailor": "^1.4.3",
+    "chart.js": "^3.6.2",
+    "ng2-charts": "^3.0.1",
     "rxjs": "~6.6.0",
     "sweetalert2": "^11.0.19",
     "tslib": "^2.2.0",

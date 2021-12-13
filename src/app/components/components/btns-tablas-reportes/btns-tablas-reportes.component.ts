@@ -11,6 +11,7 @@ export class BtnsTablasReportesComponent implements OnInit {
   toggleDesatendidos: boolean = true;
   toggleEnProceso: boolean = true;
   toggleSolucionados: boolean = true;
+  toggleGraficas: boolean = true;
 
   constructor(private router: Router) { }
 
@@ -22,6 +23,8 @@ export class BtnsTablasReportesComponent implements OnInit {
       this.toggleEnProceso = false;
     else if(this.router.url == '/reportes-solucionados')
       this.toggleSolucionados = false;
+    else if(this.router.url == '/grafica-mas-reportados')
+      this.toggleGraficas == false
   }
 
   tablaDesatendidos() {
@@ -35,4 +38,9 @@ export class BtnsTablasReportesComponent implements OnInit {
   tablaSolucionados() {
     this.router.navigate(['/reportes-solucionados']);
   }
+
+  graficas() {
+    this.router.navigate(['/grafica-mas-reportados']);
+  }
+
 }

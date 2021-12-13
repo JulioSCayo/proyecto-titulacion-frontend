@@ -22,6 +22,9 @@ import { ResponsableGuard } from './services/guard/guard-usuario-responsable/res
 import { TablaDesatendidosComponent } from './components/tabla-reportes/tabla-desatendidos/tabla-desatendidos.component';
 import { TablaEnProcesoComponent } from './components/tabla-reportes/tabla-en-proceso/tabla-en-proceso.component';
 import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
+import { GraficasMasReportadosComponent } from './components/graficas/graficas-mas-reportados/graficas-mas-reportados.component';
+// import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
+// import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
 
 const routes: Routes = [
   {path: '', component: InicioComponent, canActivate: [InvitadoGuard]},
@@ -40,6 +43,7 @@ const routes: Routes = [
   {path: 'reportes-solucionados', component: TablaSolucionadosComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
   {path: 'informacion', component: InformacionComponent},
   {path: 'informacion/conoce-mas', component: ConoceMasComponent},
+  {path: 'grafica-mas-reportados', component: GraficasMasReportadosComponent},
   {path: '**', component: InicioComponent, canActivate: [InvitadoGuard]}
 ];
 

@@ -1,7 +1,7 @@
 .buscador {
-    float: right;
+    float: left;
     text-align: center;
-    margin: 50px 100px;
+    margin: 50px 50px 10px 0px;
 }
     .buscador input {
         margin: 0;
@@ -29,8 +29,9 @@
     }
 
 .div-tabla {
-    margin: 100px;
+    margin: 100px 20px 100px 40px;
     margin-top: 0;
+    width: 75%;
 }
 
 .tabla {
@@ -46,12 +47,13 @@
     border-bottom: 2px solid #999999;
 }
 
-th, td {
+tr, td {
     text-align: left;
     padding: .5em;
     border-bottom: 1px solid #999999;
     width: auto;
 }
+
 
 .acciones {
     text-align: center;

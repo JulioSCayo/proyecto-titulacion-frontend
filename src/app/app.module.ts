@@ -31,7 +31,9 @@ import { BtnsTablasReportesComponent } from './components/components/btns-tablas
 import { TablaDesatendidosComponent } from './components/tabla-reportes/tabla-desatendidos/tabla-desatendidos.component';
 import { TablaEnProcesoComponent } from './components/tabla-reportes/tabla-en-proceso/tabla-en-proceso.component';
 import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
-
+import { GraficasMasReportadosComponent } from './components/graficas/graficas-mas-reportados/graficas-mas-reportados.component';
+import { GraficasComparacionComponent } from './components/graficas/graficas-comparacion/graficas-comparacion.component';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -55,12 +57,15 @@ import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-so
     BtnsTablasReportesComponent,
     TablaDesatendidosComponent,
     TablaEnProcesoComponent,
-    TablaSolucionadosComponent
+    TablaSolucionadosComponent,
+    GraficasMasReportadosComponent,
+    GraficasComparacionComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    NgChartsModule,
     FormsModule,
     ReactiveFormsModule,
     ErrorTailorModule.forRoot({

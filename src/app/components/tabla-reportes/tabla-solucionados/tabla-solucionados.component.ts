@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Reporte } from 'src/app/models/reporte';
 import { ReportesService } from 'src/app/services/reportes/reportes.service';
 import { AlgoritmoUrgencia } from '../../mapa-reportes/algoritmo-urgencia';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-tabla-solucionados',
@@ -24,9 +25,19 @@ export class TablaSolucionadosComponent implements OnInit {
 
   busqueda = ""; // Pipe
 
-  constructor(public reportesService: ReportesService) { }
+  // lista:string[] = ["Más reciente", "Antiguos", "Más urgentes", "Menos urgentes"];
+
+  paises: string[] = ['Mexico', 'España', 'Venezuela'];
+  default: string = 'Mexico';
+  
+
+  // paisFormulario: FormGroup;
+
+  constructor(public reportesService: ReportesService) {}
+
 
   ngOnInit(): void {
+
     this.getReportes();
   }
 

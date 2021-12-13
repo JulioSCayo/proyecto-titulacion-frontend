@@ -25,7 +25,7 @@
                 </tr>
                 <tr *ngFor="let reporte of reportes | busquedaReportes: busqueda">
                     <td>{{ reporte._id }}</td>
-                    <th>{{ reporte.credibilidad }}</th>
+                    <td>{{ reporte.credibilidad }}</td>
                     <td>{{ reporte.fechaCreacion | date:'dd-MM-yyyy' }}</td>
                     <td class="acciones"><a class="imagen-especial">Ver más</a></td>
                     <td class="acciones">
@@ -34,6 +34,77 @@
                     </td>
                 </tr>
             </table>
+        </div>
+
+        <div>
+            <h3>Ordenar por</h3>
+
+            <form (submit)="chechar()" [formGroup]="registrarForm" >
+                <select name="ordenar" id="ordenar" formControlName = "ordenar">
+                    <option value="">Selecciona una opción</option>
+                    <option value="reciente">Más reciente</option>
+                    <option value="antiguos">Antiguos</option>
+                    <option value="urgentes">Más urgentes</option>
+                    <option value="noUrgentes">Menos urgentes</option>
+                </select>
+
+                 <!-- <input type="text" id="" placeholder="Nombre" formControlName = "nombre"> -->
+                 
+                 <!-- <button  class="registrate" [disabled]="registrarForm.invalid" >Registrarte</button> -->
+             </form>
+
+            <!-- <form [formGroup]="ordenFormulario">
+                <select id="orden" formControlName="orden">
+                    <option *ngFor="let p of orden" [ngValue]="p">{{ p }}</option>
+                </select>
+            </form> -->
+   
+            <!-- <select name="ordenar" id="ordenar" >
+                <option value="">Selecciona una opción</option>
+                <option value="reciente">Más reciente</option>
+                <option value="antiguos">Antiguos</option>
+                <option value="urgentes">Más urgentes</option>
+                <option value="noUrgentes">Menos urgentes</option>
+            </select> -->
+
+            <!-- <form [formGroup]="paisFormulario">
+                <select id="pais" formControlName="pais">
+                    <option *ngFor="let p of paises" [ngValue]="p">{{ p }}</option>
+                </select>
+            </form> -->
+
+            <!-- <div ng-app="unaApp" ng-controller="SelectEjemplo">
+                <pre>Ejemplo tipo: -etiqueta- for -valor- in -array-</pre>
+                <select
+                  ng-options="elemento for elemento in elementos"
+                  ng-model="elegido">
+                  <option value="">-- seleccione una opción --</option>
+                </select>
+                <hr>
+                <label>Valor elegido:</label>
+                <input type="text" ng-model="elegido">
+                
+                <pre>{{ elementos | json }}</pre>
+                </div> -->
+            
+
+            <!-- {{seleccionado}} -->
+<!-- 
+            <h3>Filtrar por</h3>
+            <select name="tipo" id="">
+                <option value=""></option>
+            </select>
+            <select name="municipios" id="">
+                <option value=""></option>
+            </select>
+
+            <button>Zona especial</button>
+            
+            <input type="checkbox" name="cronicos" id="">
+
+            <h3>Seleccionar Fecha</h3>
+            <input type="date" name="" id=""> -->
+            
         </div>
 
         <div class="div-tabla" *ngIf="!reportes.length">
