@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit,ViewChild } from '@angular/core';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
-import { BaseChartDirective } from 'ng2-charts';
+// import { BaseChartDirective } from 'ng2-charts';
 import { ReportesService } from 'src/app/services/reportes/reportes.service';
 import { Reporte } from 'src/app/models/reporte';
 
@@ -95,7 +95,7 @@ export class GraficasMasReportadosComponent implements OnInit{
       );
   }
 
-  @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
+  // @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
 
   public barChartOptions: ChartConfiguration['options'] = {
     responsive: true,

@@ -1,0 +1,66 @@
+h1 {
+    text-align: center;
+    margin-top: 35px;
+}
+
+.infoPersonal {
+    float: left;
+    margin: 50px 100px;
+}
+.infoPersonal button {
+    margin-top: 10px;
+    width: 200px;
+    height: 35px;
+    padding: 0%;
+    text-align: center;
+    border: none;
+    background: #3A4049;
+    color: #FFFFFF;
+    cursor: pointer;
+    border-radius: 1rem;
+    font-weight: bold;
+    font-size: 16px;
+}
+    .infoPersonal button:hover {
+        background: #444a55;
+        color: #FFFFFF;
+        box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.45);
+    }
+
+
+.reputacion {
+    float: right;
+    margin: 50px 100px;
+}
+
+#progressbar {
+    width: 250px;
+    border: 3px solid #3A4049;
+    border-radius: 1rem;
+    /* (height of inner div) / 2 + padding */
+    padding: 3px;
+  }
+  
+    #progressbar .progress {
+        background-color: #04CAB3;
+        /* Adjust with JavaScript */
+        height: 20px;
+        border-radius: 10px;
+    }
+
+    #divPuntosReputacion {
+        text-align: center;
+        width: 100%;
+    }
+
+    .puntosReputacion {
+        font-weight: bolder;
+        font-size: 20px;
+        color: #3A4049;
+    }
+
+.tabla {
+    text-align: center;
+    margin-top: 250px;
+    width: 100%;
+}

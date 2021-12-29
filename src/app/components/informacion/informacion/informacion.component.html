@@ -8,9 +8,21 @@
 
         <app-barra-navegacion></app-barra-navegacion>
         
-        <h1>Informacion</h1>
+        <h1>Usuarios especiales</h1>
+        <p>Los usuarios especiales son creados para los servidores públicos, tales como policías, tránsito, bomberos, etc. Esto para poder contar con una reputación del 100% de forma permanente, haciendo valer más los reportes que estos usuarios realizan. Para registrarse como usuario especial se deben completar los datos personales y enviar una imagen que compruebe que se es un servidor público dentro del siguiente formulario.</p>
+        <p><a href='/registro-especial'>Solicitar registro como Usuario especial</a></p>
 
-        <h2 [routerLink]="['/informacion/conoce-mas']">Conoce más</h2>
+        <h1>Comentarios y sugerencias</h1>
+        <form class="form" id="form">
+             <input type="text" id="nombre" placeholder="Nombre">
+             <input type="email" name="correoElectronico" id="" placeholder="Correo electrónico">
+             <textarea name="comentario" rows="5" cols="30" class="texto" placeholder="Comentario"></textarea>
+             <button class="enviar-comentario">Enviar comentario</button>
+         </form>
+
+        <h1>Conoce más</h1>
+        <p>¿Te gustaría saber más acerca de Map Hop y quienes somos?</p>
+        <p class="final"><a href='/informacion/conoce-mas'>Entra aquí</a></p>
 
     </body>
 

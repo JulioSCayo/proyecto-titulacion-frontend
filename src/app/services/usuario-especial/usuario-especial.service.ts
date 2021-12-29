@@ -34,6 +34,10 @@ export class UsuarioEspecialService {
     return this.http.get<any>('http://localhost:4000/buscarEspecial');
   }
 
+  getUsuario(_id?: string) {
+    return this.http.get<UsuarioEspecial>("http://localhost:4000/registro/" + _id);
+  }
+
   editUsuario(usuarios: UsuarioEspecial) {
     let url = "http://localhost:4000/registro/" + usuarios._id
     return this.http.put(url, usuarios);

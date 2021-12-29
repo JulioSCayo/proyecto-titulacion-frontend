@@ -11,6 +11,13 @@ import { TablaEspecialesComponent } from "./components/tabla-usuarios/tabla-espe
 import { TablaResponsablesComponent } from "./components/tabla-usuarios/tabla-responsables/tabla-responsables.component";
 import { InformacionComponent } from "./components/informacion/informacion/informacion.component";
 import { ConoceMasComponent } from "./components/informacion/conoce-mas/conoce-mas.component";
+import { TablaDesatendidosComponent } from './components/tabla-reportes/tabla-desatendidos/tabla-desatendidos.component';
+import { TablaEnProcesoComponent } from './components/tabla-reportes/tabla-en-proceso/tabla-en-proceso.component';
+import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
+import { GraficasMasReportadosComponent } from './components/graficas/graficas-mas-reportados/graficas-mas-reportados.component';
+// import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
+// import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
+import { PerfilComponent } from "./components/perfil/perfil.component";
 
 
 import { AutenticacionGuard } from './services/guard/autenticacion.guard';
@@ -19,12 +26,6 @@ import { AdminGuard } from './services/guard/guard-usuario-admin/admin.guard';
 import { ComunGuard } from './services/guard/guard-usuario-comun/comun.guard';
 import { EspecialGuard } from './services/guard/guard-usuario-especial/especial.guard';
 import { ResponsableGuard } from './services/guard/guard-usuario-responsable/responsable.guard';
-import { TablaDesatendidosComponent } from './components/tabla-reportes/tabla-desatendidos/tabla-desatendidos.component';
-import { TablaEnProcesoComponent } from './components/tabla-reportes/tabla-en-proceso/tabla-en-proceso.component';
-import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
-import { GraficasMasReportadosComponent } from './components/graficas/graficas-mas-reportados/graficas-mas-reportados.component';
-// import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
-// import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
 
 const routes: Routes = [
   {path: '', component: InicioComponent, canActivate: [InvitadoGuard]},
@@ -44,6 +45,7 @@ const routes: Routes = [
   {path: 'informacion', component: InformacionComponent},
   {path: 'informacion/conoce-mas', component: ConoceMasComponent},
   {path: 'grafica-mas-reportados', component: GraficasMasReportadosComponent},
+  {path: 'perfil', component: PerfilComponent},
   {path: '**', component: InicioComponent, canActivate: [InvitadoGuard]}
 ];
 

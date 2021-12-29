@@ -30,8 +30,8 @@ export class UsuarioComunService {
     return this.http.get<any[]>('http://localhost:4000/buscarComun');
   }
   
-  getUsuario() {
-    // return this.http.get<UsuarioComun[]>(this.URL_API, this.usuarios);
+  getUsuario(_id?: string) {
+    return this.http.get<UsuarioComun>(this.URL_API + '/' + _id);
   }
 
   editUsuario() {

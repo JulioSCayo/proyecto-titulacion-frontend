@@ -11,7 +11,7 @@
 <div class="cont-menu active" id="menu" [ngClass]="{'active': !toggleMenu, 'opacity': !toggleMenu}">
     <hr>
     <ul>
-        <li *ngIf="opciones('perfil')==true" [routerLink]="['/']"> Perfil </li>
+        <li *ngIf="opciones('perfil')==true" [routerLink]="['/perfil']"> Perfil </li>
         <li *ngIf="opciones('historial')==true" [routerLink]="['/reportes']"> Historial de reportes </li>
         <li *ngIf="opciones('crearResp')==true" [routerLink]="['/registro-responsable']"> Crear responsable </li>
         <li *ngIf="opciones('usuarios')==true" [routerLink]="['/usuarios']"> Lista de usuarios </li>

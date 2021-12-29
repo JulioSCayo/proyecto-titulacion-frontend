@@ -33,7 +33,7 @@ import { TablaEnProcesoComponent } from './components/tabla-reportes/tabla-en-pr
 import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
 import { GraficasMasReportadosComponent } from './components/graficas/graficas-mas-reportados/graficas-mas-reportados.component';
 import { GraficasComparacionComponent } from './components/graficas/graficas-comparacion/graficas-comparacion.component';
-import { NgChartsModule } from 'ng2-charts';
+import { PerfilComponent } from './components/perfil/perfil.component';
 
 @NgModule({
   declarations: [
@@ -59,13 +59,13 @@ import { NgChartsModule } from 'ng2-charts';
     TablaEnProcesoComponent,
     TablaSolucionadosComponent,
     GraficasMasReportadosComponent,
-    GraficasComparacionComponent
+    GraficasComparacionComponent,
+    PerfilComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    NgChartsModule,
     FormsModule,
     ReactiveFormsModule,
     ErrorTailorModule.forRoot({
