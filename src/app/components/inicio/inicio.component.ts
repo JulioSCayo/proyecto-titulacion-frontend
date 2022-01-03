@@ -29,12 +29,14 @@ export class InicioComponent implements OnInit {
   login() {
     this.loginService.ingresar(this.usuario).subscribe(
       res => {
+        console.log(res)
         console.log("usuario valido")
         console.log(res.token)
         console.log(this.usuario);
         localStorage.setItem('token',res.token); // cuando el usuario cierre su sesion debe colocarse esto como invitado nuevamente
         localStorage.setItem('IDU', res.idUsuario);
         localStorage.setItem('TipoUsr', res.tipoUsuario);
+        localStorage.setItem('Usr', res.nombreUsuario);
 
         this.router.navigate(['/mapa-reportes']) 
       },

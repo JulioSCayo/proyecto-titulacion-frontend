@@ -56,12 +56,18 @@ export class RutaAutomaticaComponent implements OnInit {
 
   constructor(public reportesService: ReportesService, private http: HttpClient) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.mapa();
 
     let ruta = new CrearRuta(this.reportesService, this.http);
 
-    ruta.CrearRuta();
+    console.log("Paso 1");
+
+    let aux = ruta.CrearRuta()
+    
+    // await console.log("Paso ultimo");
+    console.log(" ------ el reporte asignado fue:", aux);
+
   }
 
   mapa() {

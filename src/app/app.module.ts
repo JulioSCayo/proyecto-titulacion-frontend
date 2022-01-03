@@ -4,7 +4,7 @@ import { HttpClientModule, HttpInterceptor, HTTP_INTERCEPTORS } from '@angular/c
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ErrorTailorModule } from '@ngneat/error-tailor';
-
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
@@ -34,6 +34,7 @@ import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-so
 import { GraficasMasReportadosComponent } from './components/graficas/graficas-mas-reportados/graficas-mas-reportados.component';
 import { GraficasComparacionComponent } from './components/graficas/graficas-comparacion/graficas-comparacion.component';
 import { PerfilComponent } from './components/perfil/perfil.component';
+
 
 @NgModule({
   declarations: [

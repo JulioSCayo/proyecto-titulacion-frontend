@@ -33,8 +33,9 @@ export class TablaEnProcesoComponent implements OnInit {
 
   getReportes() {
     let algoritmoUrgencia = new AlgoritmoUrgencia(this.reportesService);
+    let estado = "En proceso$"+ localStorage.getItem("Usr");
     
-    this.reportesService.getEstadoReportes("En proceso").subscribe(
+    this.reportesService.getEstadoReportes(estado).subscribe(
       async res => {
           this.reportes = <Reporte[]>res;
 

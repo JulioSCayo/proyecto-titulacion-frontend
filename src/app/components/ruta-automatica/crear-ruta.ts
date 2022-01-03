@@ -41,10 +41,12 @@ export class CrearRuta {
     urgenciaReporte = 0;
 
 
-    CrearRuta(){
+    async CrearRuta(){
+        console.log("uno");
+
         this.reportesService.getReporteAsignado().subscribe(
             res => {
-                console.log(res);
+                // console.log(res);
                 if(res == false){
                     this.toggleCrearRuta = true;
                     this.AsignarReporte();
@@ -58,9 +60,11 @@ export class CrearRuta {
                             maximumAge: 0
                           };
                         navigator.geolocation.getCurrentPosition(//este metodo recibe 3 parametros,dos metodos y un objeto
-                            (pos) =>{
+                            async (pos) =>{
                                 this.TrazarRuta(pos.coords, res[0].ubicacion);
                                 this.reporte = res;
+                                console.log("finalizo todo y en este momento debe retornar el valor de reporte");
+                                return await this.reporte;
                             }, 
                             (err) =>{
                                 console.warn('ERROR(' + err.code + '): ' + err.message);
@@ -73,6 +77,10 @@ export class CrearRuta {
                 console.warn('error al obtener reporte ', err);
             }
         )
+        // return await this.reporte;
+        console.log("dos");
+
+
     }
 
 
@@ -163,7 +171,8 @@ export class CrearRuta {
                                                 console.log(res)
                                                 this.TrazarRuta(coordenadasActuales, update?.ubicacion);
 
-                                            
+                                            console.log("finalizo la asignacion del reporte");
+                                                
                                             },
                                             err => {
                                                 console.warn("Error al momento de asignar el reporte")
@@ -207,6 +216,7 @@ export class CrearRuta {
           },(response, status) => {
             if (status == "OK") {
               directionsRenderer.setDirections(response);
+              console.log("finalizo a trazar ruta");
             } else {
               console.warn("Ocurrio un error al trazar la ruta " + status);
             }

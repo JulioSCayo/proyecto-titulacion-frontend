@@ -43,8 +43,9 @@ export class TablaSolucionadosComponent implements OnInit {
 
   getReportes() {
     let algoritmoUrgencia = new AlgoritmoUrgencia(this.reportesService);
+    let estado = "Solucionado$"+ localStorage.getItem("Usr");
     
-    this.reportesService.getEstadoReportes("Solucionado").subscribe(
+    this.reportesService.getEstadoReportes(estado).subscribe(
       async res => {
           this.reportes = <Reporte[]>res;
 

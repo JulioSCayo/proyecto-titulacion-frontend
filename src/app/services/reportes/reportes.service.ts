@@ -54,6 +54,10 @@ export class ReportesService {
     return this.http.get<any[]>(this.URL_API + '/reportes/');
   }
 
+  getReportesSegunUsr(institucion: string){
+    return this.http.get<any[]>(this.URL_API + '/reportes/');
+  }
+
   getReporte(_id?: string) {
     return this.http.get<any>(this.URL_API + '/reporte/' + _id);
   }

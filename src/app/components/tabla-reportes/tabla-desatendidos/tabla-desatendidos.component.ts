@@ -8,7 +8,7 @@ import { stringify } from '@angular/compiler/src/util';
 import { FormBuilder, FormArray } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-tabla-desatendidos',
@@ -17,6 +17,9 @@ import { Router } from '@angular/router';
 })
 export class TablaDesatendidosComponent implements OnInit {
 
+  // title = 'appBootstrap';
+  // closeResult: string = '';
+
   reportes: Reporte[] = [{
     ubicacion: {
       latitud: 0,
@@ -24,6 +27,7 @@ export class TablaDesatendidosComponent implements OnInit {
     },
     tipoProblema: "",
     credibilidad: 0,
+    urgencia: 0,
     usuarios: [{
       _id: ""
     }]
@@ -35,78 +39,105 @@ export class TablaDesatendidosComponent implements OnInit {
   submitted = false;
 
 
-  // orden: string[] = ['Más reciente', 'Más antiguo', 'Más urgente', 'Menos urgente'];
+  public orden: string[] = ['Más reciente', 'Más antiguo', 'Más urgente', 'Menos urgente'];
+  public seleccionado!: "ninguno";
   // default: string = 'Selecciona una opción';
 
-  // ordenFormulario: FormGroup;
-  // ordenFormulario!: FormGroup;
-  // formBuilder: any;
+  constructor(public reportesService: ReportesService,
+              private formBuilder: FormBuilder, 
+              private http: HttpClient, 
+              private router: Router,
+              private modalService: NgbModal) {}
 
-
-  constructor(public reportesService: ReportesService,private formBuilder: FormBuilder, private http: HttpClient, private router: Router) {}
-
+  
   ngOnInit(): void {
-    this.getReportes();
-
-
-    this.registrarForm = this.formBuilder.group({
-      ordenar: ['', Validators.required]
-    },{ 
-        validator: [this.modificacion]
-      }); 
+    try {
+      localStorage.getItem("Usr");
+      this.getReportes();
+      
+    } catch (error) {
+      console.error(error);
+    }
 
   }
 
 
-  modificacion(control: AbstractControl){
-    let opc = String(control.value);
-    // console.log(opc);
+  // open(content:any) {
+  //   this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+  //     this.closeResult = `Closed with: ${result}`;
+  //   }, (reason) => {
+  //     this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+  //   });
+  // }
 
-    if(opc == "urgentes"){
-      console.log("Entro al if")
-    }
+  
+
+  // private getDismissReason(reason: any): string {
+  //   if (reason === ModalDismissReasons.ESC) {
+  //     return 'by pressing ESC';
+  //   } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+  //     return 'by clicking on a backdrop';
+  //   } else {
+  //     return  `with: ${reason}`;
+  //   }
+  // }
 
 
-    switch (opc) {
-      case 'reciente':
-        
+
+  async onSelect(orden:any): Promise<void> {
+    // console.log(orden)
+    let cont = 0, aux;
+    let algoritmoUrgencia = new AlgoritmoUrgencia(this.reportesService);
+
+    switch (orden) {
+      case "Más urgente":
+        cont = 0;
+
+        for(let reporte of this.reportes) {  // calcula la urgencia de cada reporte y la guarda en un arreglo junto su id
+          reporte.urgencia = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);
+        }
+
+        aux = this.reportes;
+        this.reportes = aux.sort(function (a: any, b: any){
+          return (b.urgencia - a.urgencia)
+        });
+
+        console.log(this.reportes)
       break;
 
-      case 'urgentes':
-        
-        let calis = this.reportes.sort(function (a: any, b: any){
-            return (b.urgencia - a.urgencia)
-          }).slice(0,5);
+      case "Menos urgente":
+        cont = 0;
 
-          this.reportes = calis;
+        for(let reporte of this.reportes) {  // calcula la urgencia de cada reporte y la guarda en un arreglo junto su id
+          reporte.urgencia = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);
+        }
 
-          for(let reporte of this.reportes) {
-            console.log(reporte);
-          }
+        aux = this.reportes;
+        this.reportes = aux.sort(function (a: any, b: any){
+          return (a.urgencia - b.urgencia)
+        });
+
+        console.log(this.reportes)
       break;
     
       default:
-        console.log("entro por el default")
+        console.log("Opción no valida")
         break;
     }
 
   }
-  
-  chechar(): any {
-    console.log(this.registrarForm?.value);
-  }
 
+
+  //DEPENDIENDO EL USUARIO (INSTITUCION) SON LOS REPORTES QUE VA A PEDIR
 
   getReportes() {
     let algoritmoUrgencia = new AlgoritmoUrgencia(this.reportesService);
-    
-    this.reportesService.getEstadoReportes("Desatendido").subscribe(
+    let estado = "Desatendido$"+ localStorage.getItem("Usr");
+
+    this.reportesService.getEstadoReportes(estado).subscribe(
       async res => {
           this.reportes = <Reporte[]>res;
 
-          for(let reporte of this.reportes) {
-            console.log(reporte);
-          }
       }, 
       err => {
           console.log('No se pudo cargar los reportes');
