@@ -35,6 +35,7 @@ export class InicioComponent implements OnInit {
         localStorage.setItem('token',res.token); // cuando el usuario cierre su sesion debe colocarse esto como invitado nuevamente
         localStorage.setItem('IDU', res.idUsuario);
         localStorage.setItem('TipoUsr', res.tipoUsuario);
+        localStorage.setItem('Usr', res.nombreUsuario);
 
         this.router.navigate(['/mapa-reportes']) 
       },

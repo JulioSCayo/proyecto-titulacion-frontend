@@ -4,6 +4,7 @@ import { HttpClientModule, HttpInterceptor, HTTP_INTERCEPTORS } from '@angular/c
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ErrorTailorModule } from '@ngneat/error-tailor';
+import { DataTablesModule } from "angular-datatables";
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -34,6 +35,7 @@ import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-so
 import { GraficasMasReportadosComponent } from './components/graficas/graficas-mas-reportados/graficas-mas-reportados.component';
 import { GraficasComparacionComponent } from './components/graficas/graficas-comparacion/graficas-comparacion.component';
 import { PerfilComponent } from './components/perfil/perfil.component';
+import { PruebaDatatableComponent } from './components/tabla-reportes/prueba-datatable/prueba-datatable.component';
 
 @NgModule({
   declarations: [
@@ -60,13 +62,15 @@ import { PerfilComponent } from './components/perfil/perfil.component';
     TablaSolucionadosComponent,
     GraficasMasReportadosComponent,
     GraficasComparacionComponent,
-    PerfilComponent
+    PerfilComponent,
+    PruebaDatatableComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    DataTablesModule,
     ReactiveFormsModule,
     ErrorTailorModule.forRoot({
       errors: {

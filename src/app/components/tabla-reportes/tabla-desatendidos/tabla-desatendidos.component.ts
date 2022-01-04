@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Reporte } from 'src/app/models/reporte';
 import { ReportesService } from 'src/app/services/reportes/reportes.service';
 import Swal from 'sweetalert2';
@@ -8,6 +8,7 @@ import { stringify } from '@angular/compiler/src/util';
 import { FormBuilder, FormArray } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
 
 
 @Component({
@@ -15,7 +16,7 @@ import { Router } from '@angular/router';
   templateUrl: './tabla-desatendidos.component.html',
   styleUrls: ['./tabla-desatendidos.component.css']
 })
-export class TablaDesatendidosComponent implements OnInit {
+export class TablaDesatendidosComponent implements OnDestroy,OnInit {
 
   reportes: Reporte[] = [{
     ubicacion: {
@@ -34,79 +35,100 @@ export class TablaDesatendidosComponent implements OnInit {
   registrarForm!: FormGroup;
   submitted = false;
 
+  // dtOptions: DataTables.Settings = {};
+  // dtTrigger: Subject<any > = new Subject<any>();
+  // data: any;
 
-  // orden: string[] = ['Más reciente', 'Más antiguo', 'Más urgente', 'Menos urgente'];
-  // default: string = 'Selecciona una opción';
-
-  // ordenFormulario: FormGroup;
-  // ordenFormulario!: FormGroup;
-  // formBuilder: any;
-
+  public orden: string[] = ['Más reciente', 'Más antiguo', 'Más urgente', 'Menos urgente'];
+  public seleccionado!: "ninguno";
 
   constructor(public reportesService: ReportesService,private formBuilder: FormBuilder, private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
-    this.getReportes();
+    // this.dtOptions = {
+    //   pagingType: 'full_numbers',
+    //   pageLength: 5
+    // };
+    // this.http.get('http://dummy.restapiexample.com/api/v1/employees')
+    //   .subscribe((res:any) => {
+    //     this.data =res.data;
+    //     console.log(res)
+    //     // Calling the DT trigger to manually render the table
+    //     this.dtTrigger.next();
+    //   });
 
-
-    this.registrarForm = this.formBuilder.group({
-      ordenar: ['', Validators.required]
-    },{ 
-        validator: [this.modificacion]
-      }); 
-
+    try {
+      localStorage.getItem("Usr");
+      this.getReportes();
+      
+    } catch (error) {
+      console.error(error);
+    }
   }
 
 
-  modificacion(control: AbstractControl){
-    let opc = String(control.value);
-    // console.log(opc);
-
-    if(opc == "urgentes"){
-      console.log("Entro al if")
-    }
+  ngOnDestroy(): void {
+    // Do not forget to unsubscribe the event
+    // this.dtTrigger.unsubscribe();
+  }
 
 
-    switch (opc) {
-      case 'reciente':
-        
+  async onSelect(orden:any): Promise<void> {
+    // console.log(orden)
+    let cont = 0, aux;
+    let algoritmoUrgencia = new AlgoritmoUrgencia(this.reportesService);
+
+    switch (orden) {
+      case "Más urgente":
+        cont = 0;
+
+        for(let reporte of this.reportes) {  // calcula la urgencia de cada reporte y la guarda en un arreglo junto su id
+          reporte.urgencia = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);
+        }
+
+        aux = this.reportes;
+        this.reportes = aux.sort(function (a: any, b: any){
+          return (b.urgencia - a.urgencia)
+        });
+
+        console.log(this.reportes)
       break;
 
-      case 'urgentes':
-        
-        let calis = this.reportes.sort(function (a: any, b: any){
-            return (b.urgencia - a.urgencia)
-          }).slice(0,5);
+      case "Menos urgente":
+        cont = 0;
 
-          this.reportes = calis;
+        for(let reporte of this.reportes) {  // calcula la urgencia de cada reporte y la guarda en un arreglo junto su id
+          reporte.urgencia = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);
+        }
 
-          for(let reporte of this.reportes) {
-            console.log(reporte);
-          }
+        aux = this.reportes;
+        this.reportes = aux.sort(function (a: any, b: any){
+          return (a.urgencia - b.urgencia)
+        });
+
+        console.log(this.reportes)
       break;
     
       default:
-        console.log("entro por el default")
+        console.log("Opción no valida")
         break;
     }
 
   }
-  
-  chechar(): any {
-    console.log(this.registrarForm?.value);
-  }
 
 
+
+  //DEPENDIENDO EL USUARIO (INSTITUCION) SON LOS REPORTES QUE VA A PEDIR
   getReportes() {
     let algoritmoUrgencia = new AlgoritmoUrgencia(this.reportesService);
-    
-    this.reportesService.getEstadoReportes("Desatendido").subscribe(
+    let estado = "Desatendido$"+ localStorage.getItem("Usr");
+
+    this.reportesService.getEstadoReportes(estado).subscribe(
       async res => {
           this.reportes = <Reporte[]>res;
+          // this.data = <Reporte[]>res;
 
-          for(let reporte of this.reportes) {
-            console.log(reporte);
-          }
+          // this.dtTrigger.next();
       }, 
       err => {
           console.log('No se pudo cargar los reportes');
@@ -114,6 +136,8 @@ export class TablaDesatendidosComponent implements OnInit {
       }
     );
   }
+
+
 
   cambioEnProceso(reporte: Reporte) {
     Swal.fire({

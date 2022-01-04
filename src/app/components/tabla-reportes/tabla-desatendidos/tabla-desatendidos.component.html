@@ -15,96 +15,89 @@
         </div>
         
         <div class="div-tabla">
-            <table class="tabla">
-                <tr class="cabecera">
-                    <th>Folio</th>
-                    <th>Puntos de credibilidad</th>
-                    <th>Fecha de creación</th>
-                    <th class="acciones">Detalles</th>
-                    <th class="acciones">Cambiar estado</th>
-                </tr>
-                <tr *ngFor="let reporte of reportes | busquedaReportes: busqueda">
-                    <td>{{ reporte._id }}</td>
-                    <td>{{ reporte.credibilidad }}</td>
-                    <td>{{ reporte.fechaCreacion | date:'dd-MM-yyyy' }}</td>
-                    <td class="acciones"><a class="imagen-especial">Ver más</a></td>
-                    <td class="acciones">
-                        <button class="boton-aceptar" (click)="cambioEnProceso(reporte);">En proceso</button>
-                        <button class="boton-eliminar" (click)="cambioDenegado(reporte);">Denegado</button>
-                    </td>
-                </tr>
+
+            <table class="class="table table-striped table-bordered row-border hover>
+                <thead>
+                    <tr class="cabecera">
+                        <th>Folio</th>
+                        <th>Puntos de credibilidad</th>
+                        <th>Fecha de creación</th>
+                        <th class="acciones">Detalles</th>
+                        <th class="acciones">Cambiar estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let reporte of reportes | busquedaReportes: busqueda">
+                        <td>{{ reporte._id }}</td>
+                        <td>{{ reporte.credibilidad }}</td>
+                        <td>{{ reporte.fechaCreacion | date:'dd-MM-yyyy' }}</td>
+                        <td class="acciones"><a class="imagen-especial">Ver más</a></td>
+                        <td class="acciones">
+                            <button class="boton-aceptar" (click)="cambioEnProceso(reporte);">En proceso</button>
+                            <button class="boton-eliminar" (click)="cambioDenegado(reporte);">Denegado</button>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
+
+
+            <!-- <div class="container">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-striped table-bordered row-border hover">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>First name</th>
+                        <th>Last name</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr >
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div> -->
+            
         </div>
+
+
+        <!-- <button class="btn btn-lg btn-outline-primary" (click)="open(mymodal)">Open My Modal</button> -->
+
+   
+
+<!-- <ng-template #mymodal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Bootstrap Modal</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    This is example from ItSolutionStuff.com
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Ok</button>
+  </div>
+</ng-template> -->
+
 
         <div>
             <h3>Ordenar por</h3>
 
-            <form (submit)="chechar()" [formGroup]="registrarForm" >
-                <select name="ordenar" id="ordenar" formControlName = "ordenar">
+                <select name="" id="" [(ngModel)]="seleccionado" (change)="onSelect($any($event.target).value )">
                     <option value="">Selecciona una opción</option>
-                    <option value="reciente">Más reciente</option>
+                    <option *ngFor="let o of orden" value="{{o}}" >
+                        {{o}}
+                    </option>
+                    <!-- <option value="reciente">Más reciente</option>
                     <option value="antiguos">Antiguos</option>
                     <option value="urgentes">Más urgentes</option>
-                    <option value="noUrgentes">Menos urgentes</option>
+                    <option value="noUrgentes">Menos urgentes</option> -->
                 </select>
 
-                 <!-- <input type="text" id="" placeholder="Nombre" formControlName = "nombre"> -->
-                 
-                 <!-- <button  class="registrate" [disabled]="registrarForm.invalid" >Registrarte</button> -->
-             </form>
 
-            <!-- <form [formGroup]="ordenFormulario">
-                <select id="orden" formControlName="orden">
-                    <option *ngFor="let p of orden" [ngValue]="p">{{ p }}</option>
-                </select>
-            </form> -->
-   
-            <!-- <select name="ordenar" id="ordenar" >
-                <option value="">Selecciona una opción</option>
-                <option value="reciente">Más reciente</option>
-                <option value="antiguos">Antiguos</option>
-                <option value="urgentes">Más urgentes</option>
-                <option value="noUrgentes">Menos urgentes</option>
-            </select> -->
-
-            <!-- <form [formGroup]="paisFormulario">
-                <select id="pais" formControlName="pais">
-                    <option *ngFor="let p of paises" [ngValue]="p">{{ p }}</option>
-                </select>
-            </form> -->
-
-            <!-- <div ng-app="unaApp" ng-controller="SelectEjemplo">
-                <pre>Ejemplo tipo: -etiqueta- for -valor- in -array-</pre>
-                <select
-                  ng-options="elemento for elemento in elementos"
-                  ng-model="elegido">
-                  <option value="">-- seleccione una opción --</option>
-                </select>
-                <hr>
-                <label>Valor elegido:</label>
-                <input type="text" ng-model="elegido">
-                
-                <pre>{{ elementos | json }}</pre>
-                </div> -->
-            
-
-            <!-- {{seleccionado}} -->
-<!-- 
-            <h3>Filtrar por</h3>
-            <select name="tipo" id="">
-                <option value=""></option>
-            </select>
-            <select name="municipios" id="">
-                <option value=""></option>
-            </select>
-
-            <button>Zona especial</button>
-            
-            <input type="checkbox" name="cronicos" id="">
-
-            <h3>Seleccionar Fecha</h3>
-            <input type="date" name="" id=""> -->
-            
         </div>
 
         <div class="div-tabla" *ngIf="!reportes.length">

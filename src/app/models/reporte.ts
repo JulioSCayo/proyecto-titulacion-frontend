@@ -10,6 +10,7 @@ export interface Reporte {
 	fechaSolucion?: Date;
 	credibilidad: number;
 	urgenciaTiempo?: number;
+	urgencia?: number,
 	comentario?: string,
 	vidaRiesgo?: number,
 	asignado?: string,

@@ -27,6 +27,10 @@ import { ComunGuard } from './services/guard/guard-usuario-comun/comun.guard';
 import { EspecialGuard } from './services/guard/guard-usuario-especial/especial.guard';
 import { ResponsableGuard } from './services/guard/guard-usuario-responsable/responsable.guard';
 
+
+import { PruebaDatatableComponent } from './components/tabla-reportes/prueba-datatable/prueba-datatable.component'
+
+
 const routes: Routes = [
   {path: '', component: InicioComponent, canActivate: [InvitadoGuard]},
   {path: 'registro', component: RegistroComunComponent},
@@ -45,6 +49,7 @@ const routes: Routes = [
   {path: 'informacion', component: InformacionComponent},
   {path: 'informacion/conoce-mas', component: ConoceMasComponent},
   {path: 'grafica-mas-reportados', component: GraficasMasReportadosComponent},
+  {path: 'datatable-prueba', component: PruebaDatatableComponent},
   {path: 'perfil', component: PerfilComponent},
   {path: '**', component: InicioComponent, canActivate: [InvitadoGuard]}
 ];
