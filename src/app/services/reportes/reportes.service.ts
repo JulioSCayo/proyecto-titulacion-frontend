@@ -33,6 +33,14 @@ export class ReportesService {
     return this.http.put<any>(this.URL_API + '/replicar-reporte/' + _id, formData);
   }
 
+  reasignarReporte(_id?: string, tipoProblema?: string) {
+    return this.http.get<any>(this.URL_API + '/reasignar-reporte/' + _id + "$" + tipoProblema);
+  }
+
+  refuerzoReporte(_id?: string) {
+    return this.http.get<any>(this.URL_API + '/refuerzo-reporte/' + _id);
+  }
+
   getTipoReportes(tipo: string) {
     return this.http.get<any[]>(this.URL_API + '/reportes-tipo/' + tipo);
   }

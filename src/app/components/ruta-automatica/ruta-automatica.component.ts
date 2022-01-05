@@ -1,6 +1,6 @@
 import { NodeWithI18n, ThisReceiver } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
-import { Form, FormControl, FormGroup } from '@angular/forms';
+import { Form, FormBuilder, FormControl } from '@angular/forms';
 import { Loader } from '@googlemaps/js-api-loader';
 import { Reporte } from 'src/app/models/reporte';
 import { ReportesService } from 'src/app/services/reportes/reportes.service';
@@ -17,8 +17,8 @@ import { CrearRuta } from "src/app/components/ruta-automatica/crear-ruta";
 })
 export class RutaAutomaticaComponent implements OnInit {
 
-  toggleDesactivarMapa: boolean = false;
-  toggleCrearRuta: boolean = false;
+  toggleDesactivarMapa: boolean = true;
+  toggleCrearRuta: boolean = true;
   toggleFormRuta: boolean = false;
   toggleOpcionesRuta: boolean = false;
   toggleDetallesRuta: boolean = false;
@@ -50,7 +50,7 @@ export class RutaAutomaticaComponent implements OnInit {
       usuarios: [{
           _id: ""
       }]
-  }];
+  }]; 
 
   urgenciaReporte = 0;
 
@@ -58,10 +58,6 @@ export class RutaAutomaticaComponent implements OnInit {
 
   ngOnInit(): void {
     this.mapa();
-
-    let ruta = new CrearRuta(this.reportesService, this.http);
-
-    ruta.CrearRuta();
   }
 
   mapa() {
@@ -130,7 +126,7 @@ export class RutaAutomaticaComponent implements OnInit {
     this.toggleFormRuta = true;
   }
 
-  crearRuta() {
+  async crearRuta() {
     let hoy = new Date;
     let horaValida = true;
     let fin;
@@ -159,7 +155,6 @@ export class RutaAutomaticaComponent implements OnInit {
     }
     else {
       let durJornada = Math.abs((hoy.getHours() - fin[0])*60 + (hoy.getMinutes() - fin[1]))*60000;
-      console.log("Duracion jornada: " + durJornada)
 
       this.finTiempoJornada(durJornada);
 
@@ -167,8 +162,22 @@ export class RutaAutomaticaComponent implements OnInit {
       this.toggleDesactivarMapa = false;
       this.toggleOpcionesRuta = true;
 
-      console.log("Hora actual: " + hoy.getHours() + ":" + hoy.getMinutes());
-      console.log("Fin de jornada: " + fin[0] + ":" + fin[1]);
+      let ruta = new CrearRuta(this.reportesService, this.http);
+      await ruta.CrearRuta();
+
+      await this.reportesService.getReporteAsignado().subscribe(
+        res => {
+            console.log("...");
+            console.log(this.reporte);
+            this.reporte = <Reporte>res[0];
+            console.log("...");
+            console.log(this.reporte._id);
+            console.log("...");
+        },
+        err => {
+            console.warn('error al obtener reporte ', err);
+        }
+      );
     }
   }
 
@@ -281,31 +290,7 @@ export class RutaAutomaticaComponent implements OnInit {
     this.toggleTerminarRuta = true;
   }
 
-  otraInstitucion(tipoProblema: string) {
-    Swal.fire({
-      title: 'Enviar reporte?',
-      text: "Se enviará este reporte a otra institución",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Si!',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if(result.isConfirmed) {
-        Swal.fire({
-          title: 'Reporte reasignado!',
-          text: 'Se ha enviado este reporte a otra institución',
-          icon: 'success',
-          confirmButtonText: 'Ok'
-        });
-
-        this.toggleOtraInstitucion = false;
-        this.toggleDesactivarMapa = false;
-        this.toggleDetallesRuta = true;
-      }
-    });
-  }
+  
 
   cambioSolucionado() {
     Swal.fire({
@@ -384,6 +369,45 @@ export class RutaAutomaticaComponent implements OnInit {
     });
   }
 
+
+
+  otraInstitucion(tipoProblema: string) {
+    Swal.fire({
+      title: 'Enviar reporte?',
+      text: "Se enviará este reporte a otra institución",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si!',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if(result.isConfirmed) {
+        console.log("Otra institucion:");
+        console.log(this.reporte._id);
+        console.log("Tipo de problema nuevo: " + tipoProblema);
+
+        this.reportesService.reasignarReporte(this.reporte._id, tipoProblema).subscribe(
+          res => {
+            Swal.fire({
+              title: 'Reporte reasignado!',
+              text: 'Se ha enviado este reporte a otra institución',
+              icon: 'success',
+              confirmButtonText: 'Ok'
+            });
+    
+            this.toggleOtraInstitucion = false;
+            this.toggleDesactivarMapa = false;
+            this.toggleDetallesRuta = true;
+          },
+          err => {
+              console.warn('error al reasignar reporte ', err);
+          }
+        );
+      }
+    });
+  }
+
   refuerzos() {
     Swal.fire({
       title: 'Pedir refuerzos?',
@@ -394,6 +418,29 @@ export class RutaAutomaticaComponent implements OnInit {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Si!',
       cancelButtonText: 'Cancelar'
-    });
+    }).then((result) => {
+      if(result.isConfirmed) {
+        console.log("Refuerzo:");
+        console.log(this.reporte._id);
+
+        this.reportesService.refuerzoReporte(this.reporte._id).subscribe(
+          res => {
+            Swal.fire({
+              title: 'Refuerzos llamados!',
+              text: 'Se ha solicitado otra cuadrilla a este problema',
+              icon: 'success',
+              confirmButtonText: 'Ok'
+            });
+    
+            this.toggleOtraInstitucion = false;
+            this.toggleDesactivarMapa = false;
+            this.toggleDetallesRuta = true;
+          },
+          err => {
+              console.warn('error al pedir el refuerzo del reporte ', err);
+          }
+        );
+      };
+    })
   }
 }
