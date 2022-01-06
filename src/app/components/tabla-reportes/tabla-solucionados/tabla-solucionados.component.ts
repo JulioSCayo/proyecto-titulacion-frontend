@@ -3,6 +3,8 @@ import { Reporte } from 'src/app/models/reporte';
 import { ReportesService } from 'src/app/services/reportes/reportes.service';
 import { AlgoritmoUrgencia } from '../../mapa-reportes/algoritmo-urgencia';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+
 
 @Component({
   selector: 'app-tabla-solucionados',
@@ -25,6 +27,8 @@ export class TablaSolucionadosComponent implements OnInit {
 
   busqueda = ""; // Pipe
 
+  usuariosInfo: any;
+
   // lista:string[] = ["Más reciente", "Antiguos", "Más urgentes", "Menos urgentes"];
 
   paises: string[] = ['Mexico', 'España', 'Venezuela'];
@@ -33,7 +37,7 @@ export class TablaSolucionadosComponent implements OnInit {
 
   // paisFormulario: FormGroup;
 
-  constructor(public reportesService: ReportesService) {}
+  constructor(public reportesService: ReportesService, private modal:NgbModal) {}
 
 
   ngOnInit(): void {
@@ -59,4 +63,30 @@ export class TablaSolucionadosComponent implements OnInit {
       }
     );
   }
+
+
+  openCentrado(contenido: any, reporte: any){
+    this.reportesService.getInfoUsuariosReporte(reporte.usuarios).subscribe(
+      async res => {
+          this.usuariosInfo = res;
+          for(let i = 0; i < (reporte.usuarios.length - this.usuariosInfo.length);  i++){
+            this.usuariosInfo.push({
+              _id: "Usuario Anonimo",
+              nombreUsuario: "---",
+              reputacion: "---"
+            })
+          }
+      }, 
+      err => {
+          console.log('No se pudo cargar los reportes');
+          console.error(err);
+      }
+    );
+
+    this.modal.open(contenido,{centered:true});
+  }
+
+
+
+
 }

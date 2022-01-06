@@ -3,6 +3,8 @@ import { Reporte } from 'src/app/models/reporte';
 import { ReportesService } from 'src/app/services/reportes/reportes.service';
 import Swal from 'sweetalert2';
 import { AlgoritmoUrgencia } from '../../mapa-reportes/algoritmo-urgencia';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+
 
 @Component({
   selector: 'app-tabla-en-proceso',
@@ -25,10 +27,33 @@ export class TablaEnProcesoComponent implements OnInit {
 
   busqueda = ""; // Pipe
 
-  constructor(public reportesService: ReportesService) { }
+  usuariosInfo: any;
+
+  constructor(public reportesService: ReportesService, private modal:NgbModal) { }
 
   ngOnInit(): void {
     this.getReportes();
+  }
+
+  openCentrado(contenido: any, reporte: any){
+    this.reportesService.getInfoUsuariosReporte(reporte.usuarios).subscribe(
+      async res => {
+          this.usuariosInfo = res;
+          for(let i = 0; i < (reporte.usuarios.length - this.usuariosInfo.length);  i++){
+            this.usuariosInfo.push({
+              _id: "Usuario Anonimo",
+              nombreUsuario: "---",
+              reputacion: "---"
+            })
+          }
+      }, 
+      err => {
+          console.log('No se pudo cargar los reportes');
+          console.error(err);
+      }
+    );
+
+    this.modal.open(contenido,{centered:true});
   }
 
   getReportes() {

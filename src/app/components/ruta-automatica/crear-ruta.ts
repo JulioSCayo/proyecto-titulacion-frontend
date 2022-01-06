@@ -82,11 +82,20 @@ export class CrearRuta {
 
         new Promise((resolve, reject) => {
             // Obtiene  U-N-I-C-A-M-E-N-T-E LOS REPORTES QUE NO HAN SIDO ASIGNADOS
-          this.reportesService.getReportesNoAsignados().subscribe(  
+            
+          this.reportesService.getReportesNoAsignados(localStorage.getItem('Usr')).subscribe(  
               async res => {
                   this.reportes = <Reporte[]>res;  //obtiene todos los reportes
-
                   let list: Object[] = [];
+                  if(this.reportes.length == 0){
+                    Swal.fire({
+                        title: 'No se puede asignar ruta',
+                        text: "No hay reportes por asignar",
+                        icon: 'info',
+                        confirmButtonColor: '#3085d6',
+                      })
+                      return
+                  }
   
                   for(let reporte of this.reportes) {  // calcula la urgencia de cada reporte y la guarda en un arreglo junto su id
                     let urgenciaReporte = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);

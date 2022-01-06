@@ -49,8 +49,8 @@ export class ReportesService {
     return this.http.get<any[]>(this.URL_API + '/reportes-estado/' + estado);
   }
 
-  getReportesNoAsignados() {
-    return this.http.get<any[]>(this.URL_API + '/reportes-no-asignados/');
+  getReportesNoAsignados(nombreUsuario: any) {
+    return this.http.get<any[]>(this.URL_API + '/reportes-no-asignados/' + nombreUsuario);
   }
 
   getReporteAsignado() {
@@ -77,4 +77,10 @@ export class ReportesService {
   deleteReporte(_id?: string) {
     return this.http.delete(this.URL_API + '/reporte/' + _id);
   }
+
+  getInfoUsuariosReporte(ids: any){
+    return this.http.post<any[]>(this.URL_API + '/infoUsuariosReporte/', ids)
+  }
+
+
 }

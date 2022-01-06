@@ -9,6 +9,7 @@ import { FormBuilder, FormArray } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
@@ -30,6 +31,8 @@ export class TablaDesatendidosComponent implements OnDestroy,OnInit {
     }]
   }];
 
+  usuariosInfo: any;
+
   busqueda = ""; // Pipe
 
   registrarForm!: FormGroup;
@@ -42,20 +45,14 @@ export class TablaDesatendidosComponent implements OnDestroy,OnInit {
   public orden: string[] = ['Más reciente', 'Más antiguo', 'Más urgente', 'Menos urgente'];
   public seleccionado!: "ninguno";
 
-  constructor(public reportesService: ReportesService,private formBuilder: FormBuilder, private http: HttpClient, private router: Router) {}
+  constructor(public reportesService: ReportesService,
+              private formBuilder: FormBuilder,
+              private http: HttpClient,
+              private router: Router,
+              private modal:NgbModal
+            ) {}
 
   ngOnInit(): void {
-    // this.dtOptions = {
-    //   pagingType: 'full_numbers',
-    //   pageLength: 5
-    // };
-    // this.http.get('http://dummy.restapiexample.com/api/v1/employees')
-    //   .subscribe((res:any) => {
-    //     this.data =res.data;
-    //     console.log(res)
-    //     // Calling the DT trigger to manually render the table
-    //     this.dtTrigger.next();
-    //   });
 
     try {
       localStorage.getItem("Usr");
@@ -68,13 +65,33 @@ export class TablaDesatendidosComponent implements OnDestroy,OnInit {
 
 
   ngOnDestroy(): void {
-    // Do not forget to unsubscribe the event
     // this.dtTrigger.unsubscribe();
   }
 
 
+  openCentrado(contenido: any, reporte: any){
+    this.reportesService.getInfoUsuariosReporte(reporte.usuarios).subscribe(
+      async res => {
+          this.usuariosInfo = res;
+          for(let i = 0; i < (reporte.usuarios.length - this.usuariosInfo.length);  i++){
+            this.usuariosInfo.push({
+              _id: "Usuario Anonimo",
+              nombreUsuario: "---",
+              reputacion: "---"
+            })
+          }
+      }, 
+      err => {
+          console.log('No se pudo cargar los reportes');
+          console.error(err);
+      }
+    );
+
+    this.modal.open(contenido,{centered:true});
+  }
+
+
   async onSelect(orden:any): Promise<void> {
-    // console.log(orden)
     let cont = 0, aux;
     let algoritmoUrgencia = new AlgoritmoUrgencia(this.reportesService);
 

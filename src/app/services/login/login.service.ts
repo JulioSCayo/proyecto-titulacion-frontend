@@ -42,6 +42,7 @@ export class LoginService {
   logout(){
     localStorage.removeItem('token');
     localStorage.removeItem('IDU');
+    localStorage.removeItem('FinJornada');
     localStorage.setItem('TipoUsr','invitado');
     this.router.navigate(['/']);
   }

@@ -28,7 +28,43 @@
                     <th>{{ reporte.credibilidad }}</th>
                     <td>{{ reporte.fechaCreacion | date:'dd-MM-yyyy' }}</td>
                     <th>{{ reporte.fechaSolucion | date:'dd-MM-yyyy' }}</th>
-                    <td class="acciones"><a class="imagen-especial">Ver más</a></td>
+                    <td class="acciones"><a class="imagen-especial" (click)="openCentrado(contenido, reporte)">Ver más</a></td>
+
+                    <ng-template #contenido let-modal>
+                        <div class="modal-header">
+                            <h4 class="modal-title">Reporte <b>{{reporte._id}}</b> </h4>
+                            <button class="" aria-label="close" type="button" (click)="modal.dismiss()">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div> 
+                        <div class="modal-body"> 
+                          <h5> <b>Tipo de problema: </b> {{reporte.tipoProblema}} <br></h5>
+                          <h5> <b>Estado: </b>   {{reporte.estado}} <br></h5>
+                          <h5> <b>Fecha de creación: </b>  {{reporte.fechaCreacion | date:'dd-MM-yyyy'}} <br></h5>
+                          <h5> <b>Fecha de solución: </b>  {{reporte.fechaSolucion | date:'dd-MM-yyyy'}} <br></h5>
+                          <h5> <b>Comentarios: </b> <br></h5>
+                          <p *ngIf="reporte.comentario == ''" >   No hay comentarios  <br></p>
+                          <p *ngIf="reporte.comentario.length > 0">   {{reporte.comentario}}  <br></p>
+                          <h5> <b>Usuarios que lo reportaron:</b> </h5>
+                          <table class="tablaUsuariosDentroReporteInfo table table-bordered row-border hover">
+                            <thead>
+                              <tr>
+                                <th>Idenficador</th>
+                                <th>Nombre</th>
+                                <th>Reputación</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let u of usuariosInfo">
+                                <td>{{u._id}}</td>
+                                <td>{{u.nombreUsuario}}</td>
+                                <td>{{u.reputacion}}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </ng-template>
+
                 </tr>
             </table>
         </div>

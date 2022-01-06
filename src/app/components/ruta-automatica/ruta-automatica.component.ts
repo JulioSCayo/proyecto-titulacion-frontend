@@ -119,31 +119,46 @@ export class RutaAutomaticaComponent implements OnInit {
         ]
       });
     });
+
+
+    if(localStorage.getItem("FinJornada")){
+      this.toggleDesactivarMapa = false;
+      this.toggleCrearRuta = false;
+      this.crearRuta();
+    }
+
   }
+
 
   formRuta() {
     this.toggleCrearRuta = false;
     this.toggleFormRuta = true;
   }
 
+
   async crearRuta() {
     let hoy = new Date;
     let horaValida = true;
     let fin;
 
-    if(this.finJornada.value == null) {
-      horaValida = false;
-    }
-    else {
-      fin = this.finJornada.value.split(":");
+    //si existe el item entonces va a hacer la ruta luego luego
+    // en caso contrario sale el form de jornada
+    if(!localStorage.getItem("FinJornada")){
+              if(this.finJornada.value == null) {
+                horaValida = false;
+              }
+              else {
+                fin = this.finJornada.value.split(":");
 
-      if(hoy.getHours() == fin[0]) {
-        if(hoy.getMinutes() >= fin[1])
-          horaValida = false;
-      }
-      else if(hoy.getHours() > fin[0])
-        horaValida = false;
+                if(hoy.getHours() == fin[0]) {
+                  if(hoy.getMinutes() >= fin[1])
+                    horaValida = false;
+                }
+                else if(hoy.getHours() > fin[0])
+                  horaValida = false;
+              }
     }
+
 
     if(horaValida == false) {
       Swal.fire({
@@ -154,9 +169,10 @@ export class RutaAutomaticaComponent implements OnInit {
       });
     }
     else {
-      let durJornada = Math.abs((hoy.getHours() - fin[0])*60 + (hoy.getMinutes() - fin[1]))*60000;
-
-      this.finTiempoJornada(durJornada);
+      if(!localStorage.getItem("FinJornada")){
+        let durJornada = Math.abs((hoy.getHours() - fin[0])*60 + (hoy.getMinutes() - fin[1]))*60000;
+        this.finTiempoJornada(durJornada);
+      }
 
       this.toggleFormRuta = false;
       this.toggleDesactivarMapa = false;
@@ -186,6 +202,7 @@ export class RutaAutomaticaComponent implements OnInit {
 
 
   finTiempoJornada(durJornada: number) {
+    localStorage.setItem("FinJornada", durJornada.toString())
     setTimeout(() => {
       Swal.fire({
         title: 'Tiempo de jornada terminado',
@@ -198,6 +215,7 @@ export class RutaAutomaticaComponent implements OnInit {
         cancelButtonText: 'No, continuar!'
       }).then((result) => {
         if(result.isConfirmed) {
+          localStorage.removeItem("FinJornada")
           Swal.fire({
             title: 'Terminó su jornada!',
             text: 'Se ha guardado el último reporte de la ruta para su próxima jornada.',
@@ -208,6 +226,7 @@ export class RutaAutomaticaComponent implements OnInit {
           });
         }
         else {
+          localStorage.removeItem("FinJornada")
           Swal.fire({
             title: 'Continúa con el reporte actual!',
             text: 'No se le asignarán más reportes al terminar con este último.',
@@ -316,6 +335,7 @@ export class RutaAutomaticaComponent implements OnInit {
               icon: 'success',
               confirmButtonText: 'Ok'
             });
+            window.location.reload();
           },
           err => {
             Swal.fire({
@@ -353,6 +373,7 @@ export class RutaAutomaticaComponent implements OnInit {
               icon: 'success',
               confirmButtonText: 'Ok'
             });
+            window.location.reload();
           },
           err => {
             Swal.fire({
