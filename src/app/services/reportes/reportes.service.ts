@@ -66,11 +66,15 @@ export class ReportesService {
     return this.http.get<any[]>(this.URL_API + '/reportes/');
   }
 
+  getReportesUsuario(usuario: string) {
+    return this.http.get<any[]>(this.URL_API + '/reportes-usuario/' + usuario);
+  }
+
   getReporte(_id?: string) {
     return this.http.get<any>(this.URL_API + '/reporte/' + _id);
   }
 
-  editReporte(reporte: Reporte) {
+  editReporte(reporte: any) {
     return this.http.put(this.URL_API + '/reporte/' + reporte._id, reporte);
   }
 

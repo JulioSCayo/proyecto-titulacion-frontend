@@ -34,13 +34,12 @@ export class UsuarioComunService {
     return this.http.get<UsuarioComun>(this.URL_API + '/' + _id);
   }
 
-  editUsuario() {
-
+  editUsuario(_id?: string, usuario?: any) {
+    return this.http.put(this.URL_API + '/' + _id, usuario);
   }
 
   deleteUsuario(_id?: string) {
-    this.URL_API = this.URL_API + '/' + _id;
-    return this.http.delete(this.URL_API);
+    return this.http.delete(this.URL_API + '/' + _id);
   }
 
   verUsuarioUnico(nombre: String){

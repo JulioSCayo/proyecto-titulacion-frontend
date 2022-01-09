@@ -51,7 +51,7 @@ export class MenuDesplegableComponent implements OnInit {
     }
     
     else if(tipoUsuario == "responsable") {
-      if(opcion == "perfil" || opcion == "historial" || opcion == "generarRuta" || opcion == "informacion" || opcion == "cerrarSesion") {
+      if(opcion == "historial" || opcion == "generarRuta" || opcion == "informacion" || opcion == "cerrarSesion") {
         return true;
       }
     }
