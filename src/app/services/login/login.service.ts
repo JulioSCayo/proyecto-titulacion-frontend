@@ -47,5 +47,11 @@ export class LoginService {
     this.router.navigate(['/']);
   }
 
+  usuarioRepetido(nombreUsuario: any){
+    return this.http.post<any>(this.URL_API + "usuarioRepetido/", {nombreUsuario});
+  }
 
+  compararContrasenas(idContrasena: any){
+    return this.http.post<any>(this.URL_API + "comparar/", idContrasena);
+  }
 }
