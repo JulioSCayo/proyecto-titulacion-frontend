@@ -57,6 +57,8 @@ export class RutaAutomaticaComponent implements OnInit {
   constructor(public reportesService: ReportesService, private http: HttpClient) { }
 
   ngOnInit(): void {
+        // this.reverseGeocoding()
+
     this.mapa();
   }
 
@@ -464,4 +466,18 @@ export class RutaAutomaticaComponent implements OnInit {
       };
     })
   }
+
+
+  reverseGeocoding(){
+    this.reportesService.reverseGeocoding().subscribe(
+      res => {
+        console.log(res)
+      },
+      err => {
+          console.warn('error al hacer el geocoding ', err);
+      }
+    );
+  }
+
+
 }

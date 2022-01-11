@@ -26,13 +26,12 @@ export class RegistroResponsableComponent implements OnInit {
   
   
   CreateUsuario() {
-    
     this.usuarioResponsableService.createUsuario(this.registrarForm.value).subscribe(
       res => {
         console.log("Respuesta de la peticion")
         Swal.fire({
           title: 'Responsable de mantenimiento registrado!',
-          text: 'El nombre de usuario y contraseña son: ' + res,
+          html: 'El nombre de usuario y contraseña son: <b>' + res + '</b>',
           icon: 'success',
           confirmButtonText: 'Ok'
         });
@@ -44,10 +43,10 @@ export class RegistroResponsableComponent implements OnInit {
           icon: 'error',
           confirmButtonText: 'Ok'
         });
-
+        
         console.error(err)
       }
-    );
+      );
   }
 
 

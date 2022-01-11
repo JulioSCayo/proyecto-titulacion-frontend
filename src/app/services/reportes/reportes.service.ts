@@ -86,5 +86,11 @@ export class ReportesService {
     return this.http.post<any[]>(this.URL_API + '/infoUsuariosReporte/', ids)
   }
 
+  reverseGeocoding(){
+    // AIzaSyD8LFh53VddzDev0C6A5Jhln9KgpmpoExg
+    // return this.http.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&amp;key=AIzaSyC6fYd8wgc8L8L9GDxRZlEUZim4JnhBJh4")
+    return this.http.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&amp;key=AIzaSyAYN-jmRSHPR78rT0l1na0XchXlJT7_sDw")
+  }
+  
 
 }

@@ -4,6 +4,7 @@ import { Reporte } from "../../models/reporte";
 import { ReportesService } from 'src/app/services/reportes/reportes.service';
 import { AlgoritmoUrgencia } from "src/app/components/mapa-reportes/algoritmo-urgencia";
 import Swal from 'sweetalert2';
+import { error } from 'jquery';
 
 
 export class CrearRuta {
@@ -129,21 +130,8 @@ export class CrearRuta {
                                 // calcula la distancia en km que hay entre la posicion actual y la ubicacion de cada reporte
                                 // mediante la formula de haversine
                                 top5.forEach( (e: any)=>{
-                                    const RadioTierraKm = 6371.0;
-                                  
-                                    let difLatitud = (Math.PI / 180) * (coordenadasActuales.latitude - parseFloat(e.ubicacion.latitud));
-                                    let difLongitud = (Math.PI / 180) * (coordenadasActuales.longitude - parseFloat(e.ubicacion.longitud));
-
-                                    let a = Math.pow(Math.sin(difLatitud/2), 2) +
-                                            Math.cos(((coordenadasActuales.latitude)*(Math.PI / 180))) *
-                                            Math.cos((parseFloat(e.ubicacion.latitud)*(Math.PI / 180)))*
-                                            Math.pow(Math.sin(difLongitud/2), 2);
-
-                                    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-
-                                    let distanciaKM = RadioTierraKm * c;
-                                    
-                                    e.distancia = distanciaKM;
+                                    e.distancia = this.CalcularDistancia(e, coordenadasActuales);
+                                    console.log(e.distancia)
                                 })
 
                                 //ordena el top 5 por distancia, del mas cercano al mas lejano
@@ -172,6 +160,29 @@ export class CrearRuta {
                                                 console.log(res)
                                                 this.TrazarRuta(coordenadasActuales, update?.ubicacion);
 
+                                                                                                // crear aqui el setinterval time para checar y cambiar el estado del reporte asignado
+                                                // una vez llegue a la ubicacion del problema
+                                                let cambioEnProceso = setInterval( () => {
+                                                    navigator.geolocation.getCurrentPosition(//este metodo recibe 3 parametros,dos metodos y un objeto
+                                                        (pos) =>{                               
+                                                            if(this.CalcularDistancia(pos.coords, update?.ubicacion) <= 0.040){
+                                                                clearInterval(cambioEnProceso);
+                                                                update!.estado = "En proceso";
+                                                                this.reportesService.editReporte(update!).subscribe(
+                                                                    res => {
+                                                                        console.log("EL REPORTE ", update?._id, " HA PASADO A EN PROCESO")
+                                                                    },
+                                                                    error => {
+                                                                        console.error(error)
+                                                                    })
+                                                            }
+                                                        }, 
+                                                        (err) =>{
+                                                            console.warn('ERROR(' + err.code + '): ' + err.message);
+                                                        },  {enableHighAccuracy: true,
+                                                            timeout: 5000,
+                                                            maximumAge: 0});
+                                                }, 3000000)
                                             
                                             },
                                             err => {
@@ -198,6 +209,29 @@ export class CrearRuta {
     }
 
 
+    
+    // Calcula la distancia en Km entre dos ubicaciones, mediante la formula de haversine
+    // 'e' representa el objeto con la ubicacion de llegada (destino) y 
+    // 'coordenadasActuales' representa el objeot con la ubicaccion actual (orginen) 
+    CalcularDistancia(e: any, coordenadasActuales: any){
+        const RadioTierraKm = 6371.0;
+                                  
+        let difLatitud = (Math.PI / 180) * (coordenadasActuales.latitude - parseFloat(e.ubicacion.latitud));
+        let difLongitud = (Math.PI / 180) * (coordenadasActuales.longitude - parseFloat(e.ubicacion.longitud));
+
+        let a = Math.pow(Math.sin(difLatitud/2), 2) +
+                Math.cos(((coordenadasActuales.latitude)*(Math.PI / 180))) *
+                Math.cos((parseFloat(e.ubicacion.latitud)*(Math.PI / 180)))*
+                Math.pow(Math.sin(difLongitud/2), 2);
+
+        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        
+        return RadioTierraKm * c;
+    }
+
+
+    // Este metodo utiliza la API de maps para poder trazar la ruta entre la distancia actual
+    // y la ubicacion del problema asignado a resolver
     TrazarRuta(origen:any, destino:any){
       // inicia la Configuración
         const directionsRenderer = new google.maps.DirectionsRenderer();
