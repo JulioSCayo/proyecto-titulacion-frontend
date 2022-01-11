@@ -210,7 +210,7 @@
     margin-right:75px;
     width: 300px;
     height: auto;
-    background-color: #A0A2A1;
+    background-color: #FAFAFA;
     align-items: center;
     border-radius: 1rem;
     box-shadow: 4px 4px 10px 2px rgba(0, 0, 0, .45);
@@ -228,6 +228,14 @@
 }
     .tipo{
         text-align: center;
+    }
+    h1 {
+        padding: 0;
+        margin: 0;
+    }
+    h2 {
+        padding: 0;
+        margin: 0;
     }
 
 
@@ -252,7 +260,7 @@
         font-weight: lighter;
     }
         .solucionado{
-            background: #2ecc70c4;
+            background: #04CAB3;
             border-radius: .8rem;
             padding: 8px 16px;
             margin: 2px;
@@ -260,10 +268,10 @@
             box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, .45);
         }
             .solucionado:hover{
-                background: #2ecc70fd;
+                background: #00a592;
             }
         .denegado{
-            background: #fe214ab7;
+            background: #FE2148;
             border-radius: .8rem;
             padding: 8px 16px;
             margin: 2px;
@@ -271,7 +279,7 @@
             box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, .45);
         }
             .denegado:hover{
-                background: #fe214a;
+                background: #CA1F3D;
             }
 
 
@@ -383,12 +391,25 @@
         opacity: 0;
         pointer-events: none;
         box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, .45);
+        padding: 0;
+        margin: 0;
     }
         .otraInstitucion .opciones {
+            padding: 0;
+            margin: 0;
             list-style: none;
         }
+        .otraInstitucion u {
+            padding: 0;
+            margin: 0;
+        }
+        .otraInstitucion hr {
+            padding: 0;
+            margin: 0;
+        }
         .otraInstitucion .opciones li {        
-            padding: 10px 40px;
+            padding: 5px 50px;
+            margin: 0;
             font-size: 22px;
             font-weight: bold;
             cursor: pointer;

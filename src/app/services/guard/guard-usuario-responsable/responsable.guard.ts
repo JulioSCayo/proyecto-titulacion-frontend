@@ -27,7 +27,7 @@ export class ResponsableGuard implements CanActivate {
     // caso contrario un false
       let u = this.loginService.getTipoUsuario();
 
-      if(u == "responsable") return true;
+      if(u == "responsable" || u == "admin") return true;
       
       console.log("lo siento, no cuentas con los permisos");
       //console.log(route);

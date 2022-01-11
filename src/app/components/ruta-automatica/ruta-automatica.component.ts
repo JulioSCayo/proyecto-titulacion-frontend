@@ -57,12 +57,12 @@ export class RutaAutomaticaComponent implements OnInit {
   constructor(public reportesService: ReportesService, private http: HttpClient) { }
 
   ngOnInit(): void {
-        // this.reverseGeocoding()
+    // this.reverseGeocoding()
 
     this.mapa();
   }
 
-  mapa() {
+  async mapa() {
     // COORDENADAS DEL USUARIO PARA CENTRAR EL MAPA
     let longitud: number;
     let latitud: number;
@@ -77,6 +77,7 @@ export class RutaAutomaticaComponent implements OnInit {
       }, {enableHighAccuracy: true});
     }
 
+    setTimeout(() => {
     // DECLARAR LOADER DEL MAPA CON LA APIKEY
     let loader = new Loader({
       apiKey: 'AIzaSyAYN-jmRSHPR78rT0l1na0XchXlJT7_sDw'
@@ -128,6 +129,8 @@ export class RutaAutomaticaComponent implements OnInit {
       this.toggleCrearRuta = false;
       this.crearRuta();
     }
+
+    }, 1000);
 
   }
 
@@ -184,13 +187,15 @@ export class RutaAutomaticaComponent implements OnInit {
       await ruta.CrearRuta();
 
       await this.reportesService.getReporteAsignado().subscribe(
-        res => {
-            console.log("...");
-            console.log(this.reporte);
+        async res => {
             this.reporte = <Reporte>res[0];
             console.log("...");
             console.log(this.reporte._id);
             console.log("...");
+
+            // Obtenemos la urgencia del problema
+            let urgencia = new AlgoritmoUrgencia(this.reportesService);
+            this.urgenciaReporte = await urgencia.PuntosUrgencia(this.reporte._id!);
         },
         err => {
             console.warn('error al obtener reporte ', err);
@@ -441,12 +446,15 @@ export class RutaAutomaticaComponent implements OnInit {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Si!',
       cancelButtonText: 'Cancelar'
-    }).then((result) => {
+    }).then(async (result) => {
       if(result.isConfirmed) {
-        console.log("Refuerzo:");
-        console.log(this.reporte._id);
 
-        this.reportesService.refuerzoReporte(this.reporte._id).subscribe(
+        const urgencia = new AlgoritmoUrgencia(this.reportesService);
+        const masUrgente = await urgencia.MasUrgente();
+
+        const datos = this.reporte._id + "$" + masUrgente;
+
+        this.reportesService.refuerzoReporte(datos).subscribe(
           res => {
             Swal.fire({
               title: 'Refuerzos llamados!',

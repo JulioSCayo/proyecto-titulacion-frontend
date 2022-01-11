@@ -107,140 +107,149 @@ export class MapaReportesComponent implements OnInit {
 
 
 //||||||||||||||||||||||||||||||||||||| SE CARGA EL MAPA |||||||||||||||||||||||||||||||||||||
-  mapa() {
-    // COORDENADAS DEL USUARIO PARA CENTRAR EL MAPA
-    let longitud: number;
-    let latitud: number;
+mapa() {
+  // COORDENADAS DEL USUARIO PARA CENTRAR EL MAPA
+  let longitud: number =  -103.3479102;
+  let latitud: number = 20.6763989;
 
-    // CONSEGUIR COORDENADAS DEL USUARIO
-    if(navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        latitud = position.coords.latitude;
-        longitud = position.coords.longitude;
-      }, function(err){
-        console.error(err);
-      }, {enableHighAccuracy: true});
-    }
+  // DECLARAR LOADER DEL MAPA CON LA APIKEY
+  let loader = new Loader({
+    // apiKey: 'AIzaSyAYN-jmRSHPR78rT0l1na0XchXlJT7_sDw'
+    apiKey: ''
+  });
+  console.log("UNO")
+  // CONSEGUIR COORDENADAS DEL USUARIO
+  if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(position => {
+      latitud = position.coords.latitude;
+      longitud = position.coords.longitude;
+      console.log(position.coords)
+    }, function(err){
+      console.error(err);
+    }, {enableHighAccuracy: true});
+  }
+  
+  console.log("DOS")
 
-    // DECLARAR LOADER DEL MAPA CON LA APIKEY
-    let loader = new Loader({
-      // apiKey: 'AIzaSyAYN-jmRSHPR78rT0l1na0XchXlJT7_sDw'
-      apiKey: ''
+  setTimeout(() => {
+    console.log("NUEVO")
+  // SE CARGA EL MAPA CENTRADO EN LA UBICACION DEL USUARIO
+  loader.load().then(() => {
+    const map = new google.maps.Map(document.getElementById("mapa")!, {
+      center: { lat: latitud, lng: longitud},
+      disableDefaultUI: true,
+      zoomControl: true,
+      zoom: 15,
+      styles: [
+        {
+          "featureType": "administrative.land_parcel",
+          "elementType": "labels",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        },
+        {
+          "featureType": "poi",
+          "elementType": "labels.text",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        },
+        {
+          "featureType": "road.local",
+          "elementType": "labels",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        }
+      ]
     });
 
-    // SE CARGA EL MAPA CENTRADO EN LA UBICACION DEL USUARIO
-    loader.load().then(() => {
-      const map = new google.maps.Map(document.getElementById("mapa")!, {
-        center: { lat: latitud, lng: longitud},
-        disableDefaultUI: true,
-        zoomControl: true,
-        zoom: 15,
-        styles: [
-          {
-            "featureType": "administrative.land_parcel",
-            "elementType": "labels",
-            "stylers": [
-              {
-                "visibility": "off"
-              }
-            ]
-          },
-          {
-            "featureType": "poi",
-            "elementType": "labels.text",
-            "stylers": [
-              {
-                "visibility": "off"
-              }
-            ]
-          },
-          {
-            "featureType": "road.local",
-            "elementType": "labels",
-            "stylers": [
-              {
-                "visibility": "off"
-              }
-            ]
-          }
-        ]
+  console.log("TRES")
+
+    // ESTO ES PARA INTENTAR HACER EL BUSCADOR EN UN FUTURO
+    // const buscador = <HTMLInputElement>document.getElementById("buscador")!;
+    // const buscar = new google.maps.places.Autocomplete(buscador);
+    // buscar.bindTo("bounds", map);
+
+    // INFOWINDOW
+    const infoWindow = new google.maps.InfoWindow();
+    // ARREGLO DE MARKERS PARA CAMBIAR DE POSICION EL MARCADOR CUANDO EL USUARIO PRESIONA EL MAPA
+    let newMarker: google.maps.Marker[] = [];
+
+
+
+    // SE CREAN LOS MARCADORES DE LOS REPORTES YA EXISTENTES
+    this.reportesExistentes(map);
+
+
+
+    // ICONO DEL MARKER DEL NUEVO REPORTE
+    const nuevoReporteMarker = {
+      path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
+      fillColor: "#04CAB3",
+      fillOpacity: 1,
+      strokeWeight: 0,
+      rotation: 0,
+      scale: 2,
+      anchor: new google.maps.Point(15, 30)
+    };
+
+
+
+    // SE CREA EL LISTENER DEL MAPA PARA CREAR NUEVOS REPORTES
+    google.maps.event.addListener(map, "click", (event: any) => {
+      let boton = document.getElementById('botonReportar')
+      this.nuevoLatLng = event.latLng; // SE OBTIENE LA UBICACIÓN SELECCIONADA
+      
+      // SI YA EXISTE EL MARKER SE BORRA
+      if(newMarker.length > 0) {
+        newMarker[0].setMap(null);
+        newMarker = [];
+      }
+
+      // SE CREA EL MARKER
+      const addMarker = new google.maps.Marker({
+        position: this.nuevoLatLng,
+        map,
+        title: "Has un reporte!",
+        optimized: true,
+        icon: nuevoReporteMarker,
+        draggable: true
       });
 
-      // ESTO ES PARA INTENTAR HACER EL BUSCADOR EN UN FUTURO
-      // const buscador = <HTMLInputElement>document.getElementById("buscador")!;
-      // const buscar = new google.maps.places.Autocomplete(buscador);
-      // buscar.bindTo("bounds", map);
+      // SE AGREGA EL MARKER AL ARREGLO PARA SABER CUANDO SE CREA
+      newMarker.push(addMarker);
 
-      // INFOWINDOW
-      const infoWindow = new google.maps.InfoWindow();
-      // ARREGLO DE MARKERS PARA CAMBIAR DE POSICION EL MARCADOR CUANDO EL USUARIO PRESIONA EL MAPA
-      let newMarker: google.maps.Marker[] = [];
-
-
-
-      // SE CREAN LOS MARCADORES DE LOS REPORTES YA EXISTENTES
-      this.reportesExistentes(map);
-
-
-
-      // ICONO DEL MARKER DEL NUEVO REPORTE
-      const nuevoReporteMarker = {
-        path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
-        fillColor: "#04CAB3",
-        fillOpacity: 1,
-        strokeWeight: 0,
-        rotation: 0,
-        scale: 2,
-        anchor: new google.maps.Point(15, 30)
-      };
-
-
-
-      // SE CREA EL LISTENER DEL MAPA PARA CREAR NUEVOS REPORTES
-      google.maps.event.addListener(map, "click", (event: any) => {
-        let boton = document.getElementById('botonReportar')
-        this.nuevoLatLng = event.latLng; // SE OBTIENE LA UBICACIÓN SELECCIONADA
-        
-        // SI YA EXISTE EL MARKER SE BORRA
-        if(newMarker.length > 0) {
-          newMarker[0].setMap(null);
-          newMarker = [];
+      // SE CIERRA EL INFOWINDOW DEL OTRO MARKER EN CASO DE EXISTIR Y SE MUESTRA EL BOTON EN EL NUEVO MARCADOR
+      setTimeout(() => {
+        infoWindow.close();
+        if(localStorage.getItem('TipoUsr') == 'admin' || localStorage.getItem('TipoUsr') == 'responsable'){
+          infoWindow.setContent('<h2>No tiene permitido realizar reportes</h2>');
+        }
+        else {
+          infoWindow.setContent(boton);
+          this.toggleShowBotonReportar = true;
         }
 
-        // SE CREA EL MARKER
-        const addMarker = new google.maps.Marker({
-          position: this.nuevoLatLng,
-          map,
-          title: "Has un reporte!",
-          optimized: true,
-          icon: nuevoReporteMarker,
-          draggable: true
-        });
-
-        // SE AGREGA EL MARKER AL ARREGLO PARA SABER CUANDO SE CREA
-        newMarker.push(addMarker);
-
-        // SE CIERRA EL INFOWINDOW DEL OTRO MARKER EN CASO DE EXISTIR Y SE MUESTRA EL BOTON EN EL NUEVO MARCADOR
-        setTimeout(() => {
-          infoWindow.close();
-          if(localStorage.getItem('TipoUsr') == 'admin' || localStorage.getItem('TipoUsr') == 'responsable'){
-            infoWindow.setContent('<h2>No tiene permitido realizar reportes</h2>');
-          }
-          else {
-            infoWindow.setContent(boton);
-            this.toggleShowBotonReportar = true;
-          }
-
-          infoWindow.open(newMarker[0].getMap(), newMarker[0]);
-        }, 100);
-        
-        // AL PRESIONAR EL BOTON SE USA EL METODO
-        boton?.addEventListener('click', () => {
-          this.tipoProblema();
-        })
+        infoWindow.open(newMarker[0].getMap(), newMarker[0]);
+      }, 100);
+      
+      // AL PRESIONAR EL BOTON SE USA EL METODO
+      boton?.addEventListener('click', () => {
+        this.tipoProblema();
       })
-    });
-  }
+    })
+  });
+  }, 100);
+  
+}
 // |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 

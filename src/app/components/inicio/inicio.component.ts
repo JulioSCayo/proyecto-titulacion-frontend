@@ -49,16 +49,8 @@ export class InicioComponent implements OnInit {
   }
 
   mapa() {
-    let latitud: number;
-    let longitud: number;
-
-    if(navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-
-        latitud = position.coords.latitude;
-        longitud = position.coords.longitude;
-      });
-    }
+    let longitud: number =  -103.3491014;
+    let latitud: number = 20.6524009;
 
     let loader = new Loader({
       // apiKey: 'AIzaSyAYN-jmRSHPR78rT0l1na0XchXlJT7_sDw'

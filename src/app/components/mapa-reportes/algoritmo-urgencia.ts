@@ -92,6 +92,30 @@ export class AlgoritmoUrgencia {
         return puntosUrgencia;
     }
 
+    // Se obtienen los puntos del reporte más urgente
+    async MasUrgente(): Promise<number> {
+        return new Promise((resolve, reject) => {
+            let masUrgente = 0;
+
+            this.reportesService.getReportes().subscribe(
+                async res => {
+                    this.reportes = <Reporte[]>res;
+
+                    for(let reporte of this.reportes) {
+                        if(await this.PuntosUrgencia(reporte._id!) > masUrgente)
+                            masUrgente = await this.PuntosUrgencia(reporte._id!);
+                    }
+
+                    resolve(masUrgente);
+                }, 
+                err => {
+                    console.log('No se pudo cargar los reportes');
+                    console.error(err);
+                }
+            );
+        });
+    }
+
 
     // ----------------------------------------------------------------------------------------
 

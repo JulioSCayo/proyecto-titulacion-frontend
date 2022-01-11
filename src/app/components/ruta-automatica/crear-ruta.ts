@@ -154,41 +154,44 @@ export class CrearRuta {
                                         update.asignado = localStorage.getItem('IDU')!;
                                         update.estado = "En ruta";
 
-                                        this.reportesService.editReporte(update).subscribe(  
-                                            async res => {
-                                                console.log("El reporte fue asignado")
-                                                console.log(res)
-                                                this.TrazarRuta(coordenadasActuales, update?.ubicacion);
-
-                                                                                                // crear aqui el setinterval time para checar y cambiar el estado del reporte asignado
-                                                // una vez llegue a la ubicacion del problema
-                                                let cambioEnProceso = setInterval( () => {
-                                                    navigator.geolocation.getCurrentPosition(//este metodo recibe 3 parametros,dos metodos y un objeto
-                                                        (pos) =>{                               
-                                                            if(this.CalcularDistancia(pos.coords, update?.ubicacion) <= 0.040){
-                                                                clearInterval(cambioEnProceso);
-                                                                update!.estado = "En proceso";
-                                                                this.reportesService.editReporte(update!).subscribe(
-                                                                    res => {
-                                                                        console.log("EL REPORTE ", update?._id, " HA PASADO A EN PROCESO")
-                                                                    },
-                                                                    error => {
-                                                                        console.error(error)
-                                                                    })
-                                                            }
-                                                        }, 
-                                                        (err) =>{
-                                                            console.warn('ERROR(' + err.code + '): ' + err.message);
-                                                        },  {enableHighAccuracy: true,
-                                                            timeout: 5000,
-                                                            maximumAge: 0});
-                                                }, 3000000)
-                                            
-                                            },
-                                            err => {
-                                                console.warn("Error al momento de asignar el reporte")
-                                            }
-                                        );
+                                        setTimeout(() => {
+                                            this.reportesService.editReporte(update).subscribe(  
+                                                async res => {
+                                                    console.log("El reporte fue asignado")
+                                                    console.log(res)
+                                                    this.TrazarRuta(coordenadasActuales, update?.ubicacion);
+    
+                                                                                                    // crear aqui el setinterval time para checar y cambiar el estado del reporte asignado
+                                                    // una vez llegue a la ubicacion del problema
+                                                    let cambioEnProceso = setInterval( () => {
+                                                        navigator.geolocation.getCurrentPosition(//este metodo recibe 3 parametros,dos metodos y un objeto
+                                                            (pos) =>{                               
+                                                                if(this.CalcularDistancia(pos.coords, update?.ubicacion) <= 0.040){
+                                                                    clearInterval(cambioEnProceso);
+                                                                    update!.estado = "En proceso";
+                                                                    this.reportesService.editReporte(update!).subscribe(
+                                                                        res => {
+                                                                            console.log("EL REPORTE ", update?._id, " HA PASADO A EN PROCESO")
+                                                                        },
+                                                                        error => {
+                                                                            console.error(error)
+                                                                        })
+                                                                }
+                                                            }, 
+                                                            (err) =>{
+                                                                console.warn('ERROR(' + err.code + '): ' + err.message);
+                                                            },  {enableHighAccuracy: true,
+                                                                timeout: 5000,
+                                                                maximumAge: 0});
+                                                    }, 3000000)
+                                                
+                                                },
+                                                err => {
+                                                    console.warn("Error al momento de asignar el reporte")
+                                                }
+                                            );
+                                        }, 1000);
+                                        
                                     }
                                 } catch (error) {
                                     console.warn(error);
