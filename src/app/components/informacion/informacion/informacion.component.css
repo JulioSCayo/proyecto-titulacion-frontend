@@ -12,12 +12,16 @@ p {
 }
 
 form {
-    padding-top: 25px;
-    padding-bottom: 25px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+input {
+    margin: 25px 0px 10px 0px;
 }
 
 form .enviar-comentario {
-    margin: 5px auto auto auto;
+    margin: 25px auto 25px auto;
     width: 60%;
     height: 40px;
     padding: 0%;
@@ -42,7 +46,7 @@ form .enviar-comentario {
     border-radius: 1rem;
     resize: none;
     padding: 10px;
-    margin-bottom: 30px;
+    margin: 25px 0px 10px 0px;
     font-size: 16px;
 }
 

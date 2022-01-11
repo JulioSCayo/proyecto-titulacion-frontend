@@ -293,7 +293,7 @@ export class PerfilComponent implements OnInit {
         this.coincideNombre = false;
         this.coincideContrasena = false;
         this.nombreLargo = false;
-        this.nombreLargo = false;
+        this.contrasenaLarga = false;
       }
     }
       
