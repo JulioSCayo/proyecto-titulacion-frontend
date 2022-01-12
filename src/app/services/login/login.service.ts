@@ -13,7 +13,7 @@ export class LoginService {
   constructor(private http: HttpClient, private router: Router) { }
 
   ingresar(usuario: any){
-    return this.http.post<any>(this.URL_API, usuario)
+    return this.http.post<any>(this.URL_API, usuario);
   }
 
   ingresado(){

@@ -25,8 +25,8 @@ export class ReportesService {
 
   constructor(private http: HttpClient) { }
 
-  createReporte(formData: FormData) {
-    return this.http.post(this.URL_API + '/nuevo-reporte/', formData);
+  createReporte(usuario: string, formData: FormData) {
+    return this.http.post(this.URL_API + '/nuevo-reporte/' + usuario, formData);
   }
 
   replicarReporte(_id?: string, formData?: FormData) {
@@ -76,6 +76,10 @@ export class ReportesService {
 
   editReporte(reporte: any) {
     return this.http.put(this.URL_API + '/reporte/' + reporte._id, reporte);
+  }
+
+  editImagenReporte(id?: string, formData?: FormData) {
+    return this.http.put(this.URL_API + '/imagen-reporte/' + id, formData);
   }
 
   deleteReporte(_id?: string) {

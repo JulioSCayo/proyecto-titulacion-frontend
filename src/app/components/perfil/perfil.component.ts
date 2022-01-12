@@ -25,8 +25,10 @@ export class PerfilComponent implements OnInit {
   toggleEditarReporteForm = false;
   toggleConfirmarIdentidadForm = false;
   toggleDesactivarFondo = false;
+  togglebloquearScroll = false;
 
   idReporteEditar?: string = "";
+  tipoReporteEditar?: string = "";
   editar: string = "";
 
   coincideNombre = false;
@@ -95,8 +97,8 @@ export class PerfilComponent implements OnInit {
     }); 
 
     this.editarReporteForm = this.formBuilder.group({
-      comentario: ['', ]
-      // imagen: ['', ] // En lo que se soluciona lo de las imagenes
+      comentario: ['', ],
+      imagen: ['', ]
     }); 
 
     this.confirmarIdentidadForm = this.formBuilder.group({
@@ -113,6 +115,9 @@ export class PerfilComponent implements OnInit {
 
     if(this.selectedImage?.name) {
 			this.span = this.selectedImage?.name;
+    }
+    else {
+      this.span = "Selecciona archivo de imagen";
     }
   }
 
@@ -310,11 +315,17 @@ export class PerfilComponent implements OnInit {
         else {
           this.comentarioLargo = false;
         }
-        
-        if(siguienteForm == true) {
-          this.toggleEditarReporteForm = false;
-          this.toggleConfirmarIdentidadForm = true;
-        }
+      }
+      else {
+        siguienteForm = false;
+      }
+      if(this.selectedImage?.name) {
+        siguienteForm = true;
+      }
+
+      if(siguienteForm == true) {
+        this.toggleEditarReporteForm = false;
+        this.toggleConfirmarIdentidadForm = true;
       }
       else {
         this.comentarioLargo = false;
@@ -333,7 +344,7 @@ export class PerfilComponent implements OnInit {
         const contrasenaCorrecta = res.coinciden;
 
         if(contrasenaCorrecta) {
-          if(this.editar == "informacion") {            
+          if(this.editar == "informacion") {
             this.usuarioComunService.editUsuario(this.idUsuario, this.editarInfoForm.value).subscribe(
               res => {
                 Swal.fire({
@@ -361,37 +372,77 @@ export class PerfilComponent implements OnInit {
           }
           
           else {
-            const reporte = {
-              _id: this.idReporteEditar,
-              comentario: this.editarReporteForm.value.comentario
+            let correcto = false;
+
+            if(this.editarReporteForm.value.comentario.length > 1) {
+              const reporte = {
+                _id: this.idReporteEditar,
+                comentario: this.editarReporteForm.value.comentario
+              }
+  
+              this.reportesService.editReporte(reporte).subscribe(
+                res => {
+                  Swal.fire({
+                    title: 'Reporte actualizado!',
+                    text: 'Se ha editado el comentario del reporte correctamente',
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                  });
+    
+                  this.toggleConfirmarIdentidadForm = false;
+                  this.toggleDesactivarFondo = false;
+    
+                  this.ngOnInit();
+                },
+                err => {
+                  Swal.fire({
+                    title: 'Oh no!',
+                    text: 'Ocurrio un problema editando el comentario del reporte reporte',
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                  });
+                  console.error(err);
+                }
+              );
             }
 
-            this.reportesService.editReporte(reporte).subscribe(
-              res => {
-                Swal.fire({
-                  title: 'Reporte actualizado!',
-                  text: 'Se ha editado el reporte correctamente',
-                  icon: 'success',
-                  confirmButtonText: 'Ok'
-                });
+            if(this.selectedImage?.name) {
+              const formData = new FormData;
+              formData.append('imagen', "prueba");
+              formData.append('imagenReporte', this.file?.nativeElement.files[0]);
 
-                this.toggleConfirmarIdentidadForm = false;
-                this.toggleDesactivarFondo = false;
+              console.log("Si entra al de imagen");
 
-                this.ngOnInit();
-              },
-              err => {
-                Swal.fire({
-                  title: 'Oh no!',
-                  text: 'Ocurrio un problema editando el reporte',
-                  icon: 'error',
-                  confirmButtonText: 'Ok'
-                });
-                console.error(err);
-              }
-            );
+              this.reportesService.editImagenReporte(this.idReporteEditar, formData).subscribe(
+                res => {
+                  Swal.fire({
+                    title: 'Reporte actualizado!',
+                    text: 'Se ha editado la imagen del reporte correctamente',
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                  });
+    
+                  this.toggleConfirmarIdentidadForm = false;
+                  this.toggleDesactivarFondo = false;
+    
+                  this.ngOnInit();
+                },
+                err => {
+                  Swal.fire({
+                    title: 'Oh no!',
+                    text: 'Ocurrio un problema editando la imagen del reporte',
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                  });
+                  console.error(err);
+                }
+              );
+            }
           }
         }
+
+
+
         else {
           Swal.fire({
             title: 'Oh no!',

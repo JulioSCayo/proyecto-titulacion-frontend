@@ -510,17 +510,18 @@ mapa() {
               this.registrarForm.value.tipoProblema = this.nuevoProblema;
 
               // SE VA A NECESITAR PARA ENVIAR LA IMAGEN
-              // const formData = new FormData;
-              // formData.append('credibilidad', '5');
-              // formData.append('tipoProblema', this.nuevoProblema);
-              // formData.append('ubicacion.latitud', latitud);
-              // formData.append('ubicacion.longitud', longitud);
-              // formData.append('comentario', comentario.value);
-              // formData.append('cronico', cronico.value);
-              // formData.append('riesgoVida', riesgoVida.value);
-              // formData.append('imagen', this.file?.nativeElement.files[0]);
+              const formData = new FormData;
+              formData.append('credibilidad', '0');
+              formData.append('tipoProblema', this.nuevoProblema);
+              formData.append('ubicacion.latitud', latitud);
+              formData.append('ubicacion.longitud', longitud);
+              formData.append('comentario', this.registrarForm.value.comentario);
+              formData.append('cronico', this.registrarForm.value.cronico);
+              formData.append('riesgoVida', this.registrarForm.value.vidaRiesgo);
+              formData.append('imagen', "prueba");
+              formData.append('imagenReporte', this.file?.nativeElement.files[0]);
 
-              this.reportesService.createReporte(this.registrarForm?.value).subscribe(
+              this.reportesService.createReporte(this.registrarForm.value.usuarios._id, formData).subscribe(
                 async res => {
                   /*Swal.fire({
                     title: 'Reporte enviado!',

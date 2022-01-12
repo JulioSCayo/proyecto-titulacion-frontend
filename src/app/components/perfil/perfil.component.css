@@ -11,6 +11,10 @@ h1 {
     position: absolute;
 }
 
+.bloquearScroll {
+	overflow-y: hidden;
+}
+
 .infoPersonal {
     float: left;
     margin: 50px 250px;
@@ -133,6 +137,10 @@ h1 {
     }
 
     .divEditarForm .barra1 h2{
+        margin: 0;
+        padding: 0;
+    }
+    .divEditarForm .barra1 h4{
         margin: 0;
         padding: 0;
     }
