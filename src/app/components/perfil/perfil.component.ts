@@ -372,7 +372,7 @@ export class PerfilComponent implements OnInit {
           }
           
           else {
-            let correcto = false;
+            let correcto = true;
 
             if(this.editarReporteForm.value.comentario.length > 1) {
               const reporte = {
@@ -382,19 +382,10 @@ export class PerfilComponent implements OnInit {
   
               this.reportesService.editReporte(reporte).subscribe(
                 res => {
-                  Swal.fire({
-                    title: 'Reporte actualizado!',
-                    text: 'Se ha editado el comentario del reporte correctamente',
-                    icon: 'success',
-                    confirmButtonText: 'Ok'
-                  });
-    
-                  this.toggleConfirmarIdentidadForm = false;
-                  this.toggleDesactivarFondo = false;
-    
-                  this.ngOnInit();
                 },
                 err => {
+                  correcto = false;
+
                   Swal.fire({
                     title: 'Oh no!',
                     text: 'Ocurrio un problema editando el comentario del reporte reporte',
@@ -415,19 +406,10 @@ export class PerfilComponent implements OnInit {
 
               this.reportesService.editImagenReporte(this.idReporteEditar, formData).subscribe(
                 res => {
-                  Swal.fire({
-                    title: 'Reporte actualizado!',
-                    text: 'Se ha editado la imagen del reporte correctamente',
-                    icon: 'success',
-                    confirmButtonText: 'Ok'
-                  });
-    
-                  this.toggleConfirmarIdentidadForm = false;
-                  this.toggleDesactivarFondo = false;
-    
-                  this.ngOnInit();
                 },
                 err => {
+                  correcto = false;
+
                   Swal.fire({
                     title: 'Oh no!',
                     text: 'Ocurrio un problema editando la imagen del reporte',
@@ -437,6 +419,20 @@ export class PerfilComponent implements OnInit {
                   console.error(err);
                 }
               );
+            }
+
+            if(correcto) {
+              Swal.fire({
+                title: 'Reporte actualizado!',
+                text: 'Se ha editado el correctamente',
+                icon: 'success',
+                confirmButtonText: 'Ok'
+              });
+
+              this.toggleConfirmarIdentidadForm = false;
+              this.toggleDesactivarFondo = false;
+
+              this.ngOnInit();
             }
           }
         }

@@ -101,6 +101,9 @@ export class MapaReportesComponent implements OnInit {
     if(this.selectedImage?.name) {
 			this.span = this.selectedImage?.name;
     }
+    else {
+      this.span = "Selecciona archivo de imagen";
+    }
   }
 
 
@@ -488,7 +491,7 @@ mapa() {
             this.comentarioLargo = true;
           }
           else {
-            if(await pruebaIdentifiacion.Identificacion(this.registrarForm?.value) == false){ // si pasa los algoritmos de validacion guarda el reporte
+            // if(await pruebaIdentifiacion.Identificacion(this.registrarForm?.value) == false){ // si pasa los algoritmos de validacion guarda el reporte
 
               /*
               if(pruebaIdentifiacion.VerificarFantasma()){ // si retorna true significa que dicidio hacer el reporte fantasma
@@ -509,20 +512,9 @@ mapa() {
               this.registrarForm.value.ubicacion.longitud = longitud;
               this.registrarForm.value.tipoProblema = this.nuevoProblema;
 
-              // SE VA A NECESITAR PARA ENVIAR LA IMAGEN
-              const formData = new FormData;
-              formData.append('credibilidad', '0');
-              formData.append('tipoProblema', this.nuevoProblema);
-              formData.append('ubicacion.latitud', latitud);
-              formData.append('ubicacion.longitud', longitud);
-              formData.append('comentario', this.registrarForm.value.comentario);
-              formData.append('cronico', this.registrarForm.value.cronico);
-              formData.append('riesgoVida', this.registrarForm.value.vidaRiesgo);
-              formData.append('imagen', "prueba");
-              formData.append('imagenReporte', this.file?.nativeElement.files[0]);
-
-              this.reportesService.createReporte(this.registrarForm.value.usuarios._id, formData).subscribe(
+              this.reportesService.createReporte(this.registrarForm.value).subscribe(
                 async res => {
+                  let correcto = true;
                   /*Swal.fire({
                     title: 'Reporte enviado!',
                     text: 'Hemos recibido tu reporte del problema',
@@ -530,16 +522,36 @@ mapa() {
                     confirmButtonText: 'Ok'
                   }); */
 
-                  // Algoritmo de urgencia de prueba
-                  let pruebaUrgencia = new AlgoritmoUrgencia(this.reportesService);
-                  console.log("URGENTE: " + await pruebaUrgencia.Urgente(res.toString()));
+                  if(this.selectedImage?.name) {
+                    const formData = new FormData;
+                    formData.append('imagen', "prueba");
+                    formData.append('imagenReporte', this.file?.nativeElement.files[0]);
+      
+                    this.reportesService.editImagenReporte(res.toString(), formData).subscribe(
+                      res => {
+                        correcto = true;
+                      },
+                      err => {
+                        correcto = false;
 
-                  pruebaIdentifiacion.AccederYGuardar(res.toString());
+                        Swal.fire({
+                          title: 'Oh no!',
+                          text: 'Ocurrio un problema editando la imagen del reporte',
+                          icon: 'error',
+                          confirmButtonText: 'Ok'
+                        });
+                        console.error(err);
+                      }
+                    );
+                  }
                   
-                  // CUANDO SE CREA UN REPORTE SE VA DIRECTO AL MAPA Y SE REFRESCA
-                  this.toggleFormReporte = false; // SE ESCONDE EL FORM DE DETALLES
-                  this.toggleDesactivarMapa = false; // SE ACTIVA EL MAPA
-                  this.ngOnInit();
+                  if(correcto) {
+                    pruebaIdentifiacion.AccederYGuardar(res.toString());
+                    // CUANDO SE CREA UN REPORTE SE VA DIRECTO AL MAPA Y SE REFRESCA
+                    this.toggleFormReporte = false; // SE ESCONDE EL FORM DE DETALLES
+                    this.toggleDesactivarMapa = false; // SE ACTIVA EL MAPA
+                    this.ngOnInit();
+                  }
                 },
                 err => {
                   Swal.fire({
@@ -552,7 +564,7 @@ mapa() {
                   console.error(err);
                 }
               );
-            } // ---
+            // } // ---
           }
         }
     }

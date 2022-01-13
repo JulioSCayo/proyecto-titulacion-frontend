@@ -25,8 +25,8 @@ export class ReportesService {
 
   constructor(private http: HttpClient) { }
 
-  createReporte(usuario: string, formData: FormData) {
-    return this.http.post(this.URL_API + '/nuevo-reporte/' + usuario, formData);
+  createReporte(reporte: Reporte) {
+    return this.http.post(this.URL_API + '/nuevo-reporte/', reporte);
   }
 
   replicarReporte(_id?: string, formData?: FormData) {
