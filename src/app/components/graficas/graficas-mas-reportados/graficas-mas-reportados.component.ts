@@ -39,47 +39,47 @@ export class GraficasMasReportadosComponent implements OnInit{
             this.reportes.forEach(e => {
               // e.tipoProblema
               switch (e.tipoProblema) {
-                case "alumbrado":
+                case "Alumbrado":
                   this.cantidadReportes[0]++;
                 break;
 
-                case "inundacion":
+                case "Inundación":
                   this.cantidadReportes[1]++;
                 break;
 
-                case "fuga":
+                case "Fuga de agua":
                   this.cantidadReportes[2]++;
                 break;
 
-                case "faltaAlcantarilla":
+                case "Falta de alcantarilla":
                   this.cantidadReportes[3]++;
                 break;
 
-                case "alcantarillaObstruida":
+                case "Alcantarilla obstruida":
                   this.cantidadReportes[4]++;
                 break;
 
-                case "escombros":
+                case "Escombros tirados":
                   this.cantidadReportes[5]++;
                 break;
 
-                case "vehiculo":
+                case "Vehículo abandonado":
                   this.cantidadReportes[6]++;
                 break;
 
-                case "arbol":
+                case "Árbol caído":
                   this.cantidadReportes[7]++;
                 break;
 
-                case "socavon":
+                case "Socavón":
                   this.cantidadReportes[8]++;
                 break;
 
-                case "cables":
+                case "Cables caídos":
                   this.cantidadReportes[9]++;
                 break;
               
-                case "incendio":
+                case "Incendio":
                   this.cantidadReportes[10]++;
                 break;
               

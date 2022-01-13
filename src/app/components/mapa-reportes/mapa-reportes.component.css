@@ -1,6 +1,12 @@
 textarea {
     resize: none;
     padding: 5px;
+    align-items: center;
+    width: 250px;
+    height: 100px;
+    border-radius: 1rem;
+    resize: none;
+    padding: 10px;
 }
 
 .contenido {
@@ -110,6 +116,10 @@ textarea {
         background-color: #3A4049;
         padding: 10px;
     }
+        .reportar .barra1 h2 {
+            margin: 0;
+            padding: 0;
+        }
     .reportar .barra2 {
         border-radius: 1rem 1rem 0rem 0rem;
         color: #FFFFFF;
@@ -126,12 +136,21 @@ textarea {
 
 
 
-
-    .reportar .opciones li {        
+    .reportar .opciones {      
+        margin: 0;
+        padding: 0;
+    }
+    .reportar .opciones li {      
+        margin: 0;
+        padding: 0;  
         padding: 10px 40px;
         font-size: 22px;
         font-weight: bold;
         cursor: pointer;
+    }
+    .reportar hr {      
+        margin: 0;
+        padding: 0;
     }
     .reportar .incendio {
         color: #3A4049;

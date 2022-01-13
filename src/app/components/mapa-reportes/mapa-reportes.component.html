@@ -10,13 +10,13 @@
     <div class="reportar tipoProblema" [ngClass]="{'activeTipoProblema': toggleTipoProblema}">
         <div class="barra1"><h2>Tipo de problema</h2></div>
         <ul class="opciones">
-            <li class="alumbrado" (click)="this.formReporte('alumbrado')">Alumbrado</li>
+            <li class="alumbrado" (click)="this.formReporte('Alumbrado')">Alumbrado</li>
             <hr>
             <li class="agua" (click)="this.tipoAgua()">Agua</li>
             <hr>
             <li class="obstruccion" (click)="this.tipoObstruccion()">Obstrucción de circulación</li>
             <hr>
-            <li class="incendio" (click)="this.formReporte('incendio')">Incendio</li>
+            <li class="incendio" (click)="this.formReporte('Incendio')">Incendio</li>
             <hr>
         </ul>
         <p class="cerrar" (click)="this.toggleTipoProblema = false; this.toggleDesactivarMapa = false">Cerrar</p>
@@ -25,13 +25,13 @@
     <div class="reportar tipoAgua" [ngClass]="{'activeTipoAgua': toggleTipoAgua}">
         <div class="barra2"><h2>Problema de agua</h2></div>
         <ul class="opciones">
-            <li class="agua" (click)="this.formReporte('inundacion')">Inundación</li>
+            <li class="agua" (click)="this.formReporte('Inundación')">Inundación</li>
             <hr>
-            <li class="agua" (click)="this.formReporte('fuga')">Fuga de agua</li>
+            <li class="agua" (click)="this.formReporte('Fuga de agua')">Fuga de agua</li>
             <hr>
-            <li class="agua" (click)="this.formReporte('faltaAlcantarilla')">Falta de alcantarilla</li>
+            <li class="agua" (click)="this.formReporte('Falta de alcantarilla')">Falta de alcantarilla</li>
             <hr>
-            <li class="agua" (click)="this.formReporte('alcantarillaObstruida')">Alcantarilla obstruida</li>
+            <li class="agua" (click)="this.formReporte('Alcantarilla obstruida')">Alcantarilla obstruida</li>
             <hr>
             <p class="cerrar" (click)="this.toggleTipoAgua = false; this.toggleTipoProblema = true">Cerrar</p>
         </ul>
@@ -40,15 +40,15 @@
     <div class="reportar tipoObstruccion" [ngClass]="{'activeTipoObstruccion': toggleTipoObstruccion}">
         <div class="barra3"><h2>Problema de obstrucción</h2></div>
         <ul class="opciones">
-            <li class="obstruccion" (click)="this.formReporte('escombros')">Escombros tirados</li>
+            <li class="obstruccion" (click)="this.formReporte('Escombros tirados')">Escombros tirados</li>
             <hr>
-            <li class="obstruccion" (click)="this.formReporte('vehiculo')">Vehículo abandonado</li>
+            <li class="obstruccion" (click)="this.formReporte('Vehículo abandonado')">Vehículo abandonado</li>
             <hr>
-            <li class="obstruccion" (click)="this.formReporte('arbol')">Árbol caído</li>
+            <li class="obstruccion" (click)="this.formReporte('Árbol caído')">Árbol caído</li>
             <hr>
-            <li class="obstruccion" (click)="this.formReporte('socavon')">Socavón</li>
+            <li class="obstruccion" (click)="this.formReporte('Socavón')">Socavón</li>
             <hr>
-            <li class="obstruccion" (click)="this.formReporte('cables')">Cables caídos</li>
+            <li class="obstruccion" (click)="this.formReporte('Cables caídos')">Cables caídos</li>
             <hr>
             <p class="cerrar" (click)="this.toggleTipoObstruccion = false; this.toggleTipoProblema = true">Cerrar</p>
         </ul>

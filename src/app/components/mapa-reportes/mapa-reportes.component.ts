@@ -282,26 +282,26 @@ mapa() {
     
           // SE IDENTIFICA EL TIPO DE REPORTE PARA ASIGNAR UN COLOR
           switch (this.reportes[i].tipoProblema) {
-            case "alumbrado":
+            case "Alumbrado":
               markerColor = markerAlumbrado;
               break;
     
-            case "inundacion":
-            case "fuga":
-            case "faltaAlcantarilla":
-            case "alcantarillaObstruida":
+            case "Inundación":
+            case "Fuga de agua":
+            case "Falta de alcantarilla":
+            case "Alcantarilla obstruida":
               markerColor = markerAgua;
               break;
     
-            case "escombros":
-            case "vehiculo":
-            case "arbol":
-            case "socavon":
-            case "cables":
+            case "Escombros tirados":
+            case "Vehículo abandonado":
+            case "Árbol caído":
+            case "Socavón":
+            case "Cables caídos":
               markerColor = markerObstruccion;
               break;
     
-            case "incendio":
+            case "Incendio":
               markerColor = markerIncendio;
               break;
           }
