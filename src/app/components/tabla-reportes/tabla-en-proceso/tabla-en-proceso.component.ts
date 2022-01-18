@@ -4,6 +4,9 @@ import { ReportesService } from 'src/app/services/reportes/reportes.service';
 import Swal from 'sweetalert2';
 import { AlgoritmoUrgencia } from '../../mapa-reportes/algoritmo-urgencia';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { Notificacion } from 'src/app/models/notificacion';
+import { NotificacionesService } from 'src/app/services/notificaciones/notificaciones.service';
+import { UsuarioComunService } from 'src/app/services/usuario-comun/usuario-comun.service';
 
 
 @Component({
@@ -29,7 +32,11 @@ export class TablaEnProcesoComponent implements OnInit {
 
   usuariosInfo: any;
 
-  constructor(public reportesService: ReportesService, private modal:NgbModal) { }
+  constructor(
+              public reportesService: ReportesService, 
+              public notificacionesService: NotificacionesService,
+              public usuarioComunService: UsuarioComunService,
+              private modal:NgbModal) { }
 
   ngOnInit(): void {
     this.getReportes();
@@ -87,37 +94,69 @@ export class TablaEnProcesoComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
+        let correcto = true;
         let hoy = new Date(Date.now());
         reporte.fechaSolucion = hoy;
         reporte.estado = "Solucionado";
         
         this.reportesService.editReporte(reporte)?.subscribe(
           res => {
-            Swal.fire({
-              title: 'Solucionado!',
-              text: "Se cambió el estado del reporte a 'Solucionado'",
-              icon: 'success',
-              showCancelButton: false,
-              confirmButtonColor: '#3085d6',
-              confirmButtonText: 'Ok'
-            }).then((result) => {
-              if (result.isConfirmed || result.isDismissed) {
-                window.location.reload();
+            let notificacion: Notificacion = {
+                tipoProblema: reporte.tipoProblema,
+                folioReporte: reporte._id,
+                tipoNotificacion: 'estadoSolucionado',
+                usuarios: reporte.usuarios
               }
-            });
+
+            this.notificacionesService.createNotificacion(notificacion).subscribe(
+              res => {
+                const reputacionUsr = {
+                  reputacion: 1,
+                  usuarios: reporte.usuarios
+                }
+
+                this.usuarioComunService.reputacionUsuario(reputacionUsr).subscribe(
+                  res => {
+                    Swal.fire({
+                      title: 'Solucionado!',
+                      text: "Se cambió el estado del reporte a 'Solucionado'",
+                      icon: 'success',
+                      showCancelButton: false,
+                      confirmButtonColor: '#3085d6',
+                      confirmButtonText: 'Ok'
+                    }).then((result) => {
+                      if (result.isConfirmed || result.isDismissed) {
+                        window.location.reload();
+                      }
+                    });
+                  },
+                  err => {
+                    correcto = false;
+                    console.error(err);
+                  }
+                );
+              },
+              err => {
+                correcto = false;
+                console.error(err);
+              }
+            );
           },
           err => {
-            reporte.estado = "En proceso";
+            correcto = false;
+            console.error(err);
+          }
+        );
+
+        if(!correcto){
+          reporte.estado = "En proceso";
             Swal.fire({
               title: 'Oh no!',
               text: 'Ocurrio un problema cambiando el estado del reporte',
               icon: 'error',
               confirmButtonText: 'Ok'
             });
-    
-            console.error(err);
-          }
-          );
+        }
       }
     });
   }
@@ -134,34 +173,67 @@ export class TablaEnProcesoComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
+        let correcto = true;
         reporte.estado = "Denegado";
+        
         this.reportesService.editReporte(reporte)?.subscribe(
           res => {
-            Swal.fire({
-              title: 'Denegado!',
-              text: "Se cambió el estado del reporte a 'Denegado'",
-              icon: 'success',
-              showCancelButton: false,
-              confirmButtonColor: '#3085d6',
-              confirmButtonText: 'Ok'
-            }).then((result) => {
-              if (result.isConfirmed || result.isDismissed) {
-                window.location.reload();
+            let notificacion: Notificacion = {
+                tipoProblema: reporte.tipoProblema,
+                folioReporte: reporte._id,
+                tipoNotificacion: 'estadoDenegado',
+                usuarios: reporte.usuarios
               }
-            });
+
+            this.notificacionesService.createNotificacion(notificacion).subscribe(
+              res => {
+                const reputacionUsr = {
+                  reputacion: -1,
+                  usuarios: reporte.usuarios
+                }
+
+                this.usuarioComunService.reputacionUsuario(reputacionUsr).subscribe(
+                  res => {
+                    Swal.fire({
+                      title: 'Denegado!',
+                      text: "Se cambió el estado del reporte a 'Denegado'",
+                      icon: 'success',
+                      showCancelButton: false,
+                      confirmButtonColor: '#3085d6',
+                      confirmButtonText: 'Ok'
+                    }).then((result) => {
+                      if (result.isConfirmed || result.isDismissed) {
+                        window.location.reload();
+                      }
+                    });
+                  },
+                  err => {
+                    correcto = false;
+                    console.error(err);
+                  }
+                );
+              },
+              err => {
+                correcto = false;
+                console.error(err);
+              }
+            );
           },
           err => {
-            reporte.estado = "Desatendido";
+            correcto = false;
+            console.error(err);
+          }
+        );
+
+        if(!correcto){
+          reporte.estado = "En proceso";
             Swal.fire({
               title: 'Oh no!',
               text: 'Ocurrio un problema cambiando el estado del reporte',
               icon: 'error',
               confirmButtonText: 'Ok'
             });
-    
-            console.error(err);
-          }
-          );
+        }
       }
     });
   }

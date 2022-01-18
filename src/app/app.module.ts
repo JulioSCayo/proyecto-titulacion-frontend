@@ -36,6 +36,7 @@ import { GraficasMasReportadosComponent } from './components/graficas/graficas-m
 import { GraficasComparacionComponent } from './components/graficas/graficas-comparacion/graficas-comparacion.component';
 import { PerfilComponent } from './components/perfil/perfil.component';
 import { PruebaDatatableComponent } from './components/tabla-reportes/prueba-datatable/prueba-datatable.component';
+import { NotificacionesComponent } from './components/components/notificaciones/notificaciones.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { PruebaDatatableComponent } from './components/tabla-reportes/prueba-dat
     GraficasMasReportadosComponent,
     GraficasComparacionComponent,
     PerfilComponent,
-    PruebaDatatableComponent
+    PruebaDatatableComponent,
+    NotificacionesComponent
   ],
   imports: [
     BrowserModule,

@@ -8,6 +8,9 @@ import { AlgoritmoUrgencia } from "src/app/components/mapa-reportes/algoritmo-ur
 import Swal from 'sweetalert2';
 import { HttpClient } from '@angular/common/http'
 import { CrearRuta } from "src/app/components/ruta-automatica/crear-ruta";
+import { Notificacion } from 'src/app/models/notificacion';
+import { NotificacionesService } from 'src/app/services/notificaciones/notificaciones.service';
+import { UsuarioComunService } from 'src/app/services/usuario-comun/usuario-comun.service';
 
 
 @Component({
@@ -54,7 +57,12 @@ export class RutaAutomaticaComponent implements OnInit {
 
   urgenciaReporte = 0;
 
-  constructor(public reportesService: ReportesService, private http: HttpClient) { }
+  constructor(
+              public reportesService: ReportesService,
+              public notificacionesService: NotificacionesService,
+              public usuarioComunService: UsuarioComunService,
+              private http: HttpClient
+            ) { }
 
   ngOnInit(): void {
     // this.reverseGeocoding()
@@ -330,31 +338,69 @@ export class RutaAutomaticaComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
+        let correcto = true;
         this.reporte.estado = "Solucionado";
         let hoy = new Date(Date.now());
         this.reporte.fechaSolucion = hoy;
 
-        this.reportesService.editReporte(this.reporte).subscribe(
-          async res => {
-            Swal.fire({
-              title: 'Reporte solucionado!',
-              text: 'Se cambió el estado del reporte a solucionado',
-              icon: 'success',
-              confirmButtonText: 'Ok'
-            });
-            window.location.reload();
+        this.reportesService.editReporte(this.reporte)?.subscribe(
+          res => {
+            let notificacion: Notificacion = {
+                tipoProblema: this.reporte.tipoProblema,
+                folioReporte: this.reporte._id,
+                tipoNotificacion: 'estadoSolucionado',
+                usuarios: this.reporte.usuarios
+              }
+
+            this.notificacionesService.createNotificacion(notificacion).subscribe(
+              res => {
+                const reputacionUsr = {
+                  reputacion: 1,
+                  usuarios: this.reporte.usuarios
+                }
+
+                this.usuarioComunService.reputacionUsuario(reputacionUsr).subscribe(
+                  res => {
+                    Swal.fire({
+                      title: 'Solucionado!',
+                      text: "Se cambió el estado del reporte a 'Solucionado'",
+                      icon: 'success',
+                      showCancelButton: false,
+                      confirmButtonColor: '#3085d6',
+                      confirmButtonText: 'Ok'
+                    }).then((result) => {
+                      if (result.isConfirmed || result.isDismissed) {
+                        window.location.reload();
+                      }
+                    });
+                  },
+                  err => {
+                    correcto = false;
+                    console.error(err);
+                  }
+                );
+              },
+              err => {
+                correcto = false;
+                console.error(err);
+              }
+            );
           },
           err => {
+            correcto = false;
+            console.error(err);
+          }
+        );
+
+        if(!correcto){
+          this.reporte.estado = "En proceso";
             Swal.fire({
               title: 'Oh no!',
               text: 'Ocurrio un problema cambiando el estado del reporte',
               icon: 'error',
               confirmButtonText: 'Ok'
             });
-
-            console.error(err);
-          }
-        );
+        }
       }
     });
   }
@@ -371,28 +417,67 @@ export class RutaAutomaticaComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
+        let correcto = true;
         this.reporte.estado = "Denegado";
-        this.reportesService.editReporte(this.reporte).subscribe(
-          async res => {
-            Swal.fire({
-              title: 'Reporte denegado!',
-              text: 'Se cambió el estado del reporte a denegado',
-              icon: 'success',
-              confirmButtonText: 'Ok'
-            });
-            window.location.reload();
+
+        this.reportesService.editReporte(this.reporte)?.subscribe(
+          res => {
+            let notificacion: Notificacion = {
+                tipoProblema: this.reporte.tipoProblema,
+                folioReporte: this.reporte._id,
+                tipoNotificacion: 'estadoDenegado',
+                usuarios: this.reporte.usuarios
+              }
+
+            this.notificacionesService.createNotificacion(notificacion).subscribe(
+              res => {
+                const reputacionUsr = {
+                  reputacion: 1,
+                  usuarios: this.reporte.usuarios
+                }
+
+                this.usuarioComunService.reputacionUsuario(reputacionUsr).subscribe(
+                  res => {
+                    Swal.fire({
+                      title: 'Denegado!',
+                      text: "Se cambió el estado del reporte a 'Denegado'",
+                      icon: 'success',
+                      showCancelButton: false,
+                      confirmButtonColor: '#3085d6',
+                      confirmButtonText: 'Ok'
+                    }).then((result) => {
+                      if (result.isConfirmed || result.isDismissed) {
+                        window.location.reload();
+                      }
+                    });
+                  },
+                  err => {
+                    correcto = false;
+                    console.error(err);
+                  }
+                );
+              },
+              err => {
+                correcto = false;
+                console.error(err);
+              }
+            );
           },
           err => {
+            correcto = false;
+            console.error(err);
+          }
+        );
+
+        if(!correcto){
+          this.reporte.estado = "En proceso";
             Swal.fire({
               title: 'Oh no!',
               text: 'Ocurrio un problema cambiando el estado del reporte',
               icon: 'error',
               confirmButtonText: 'Ok'
             });
-
-            console.error(err);
-          }
-        );
+        }
       }
     });
   }

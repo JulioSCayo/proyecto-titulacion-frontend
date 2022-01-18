@@ -38,6 +38,10 @@ export class UsuarioComunService {
     return this.http.put(this.URL_API + '/' + _id, usuario);
   }
 
+  reputacionUsuario(reputacionUsr?: any) {
+    return this.http.put('http://localhost:4000/reputacion', reputacionUsr);
+  }
+
   deleteUsuario(_id?: string) {
     return this.http.delete(this.URL_API + '/' + _id);
   }
