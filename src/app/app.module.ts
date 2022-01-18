@@ -42,6 +42,7 @@ import { Grafica2Component } from './components/analisis-datos/grafica2/grafica2
 import { Grafica3Component } from './components/analisis-datos/grafica3/grafica3.component';
 import { Grafica4Component } from './components/analisis-datos/grafica4/grafica4.component';
 import { Grafica5Component } from './components/analisis-datos/grafica5/grafica5.component';
+import { NotificacionesComponent } from './components/components/notificaciones/notificaciones.component';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,8 @@ import { Grafica5Component } from './components/analisis-datos/grafica5/grafica5
     Grafica2Component,
     Grafica3Component,
     Grafica4Component,
-    Grafica5Component
+    Grafica5Component,
+    NotificacionesComponent
   ],
   imports: [
     BrowserModule,

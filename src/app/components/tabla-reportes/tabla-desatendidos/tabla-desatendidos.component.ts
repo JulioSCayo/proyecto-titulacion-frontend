@@ -1,15 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Reporte } from 'src/app/models/reporte';
 import { ReportesService } from 'src/app/services/reportes/reportes.service';
+import { NotificacionesService } from 'src/app/services/notificaciones/notificaciones.service';
 import Swal from 'sweetalert2';
 import { AlgoritmoUrgencia } from '../../mapa-reportes/algoritmo-urgencia';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import { stringify } from '@angular/compiler/src/util';
+import { FormGroup } from '@angular/forms';
 import { FormBuilder, FormArray } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { Notificacion } from 'src/app/models/notificacion';
+import { UsuarioComunService } from 'src/app/services/usuario-comun/usuario-comun.service';
 
 
 @Component({
@@ -46,6 +47,8 @@ export class TablaDesatendidosComponent implements OnDestroy,OnInit {
   public seleccionado!: "ninguno";
 
   constructor(public reportesService: ReportesService,
+              public notificacionesService: NotificacionesService,
+              public usuarioComunService: UsuarioComunService,
               private formBuilder: FormBuilder,
               private http: HttpClient,
               private router: Router,
@@ -172,18 +175,40 @@ export class TablaDesatendidosComponent implements OnDestroy,OnInit {
         
         this.reportesService.editReporte(reporte)?.subscribe(
           res => {
-            Swal.fire({
-              title: 'En proceso!',
-              text: "Se cambió el estado del reporte a 'En proceso'",
-              icon: 'success',
-              showCancelButton: false,
-              confirmButtonColor: '#3085d6',
-              confirmButtonText: 'Ok'
-            }).then((result) => {
-              if (result.isConfirmed || result.isDismissed) {
-                window.location.reload();
+            let notificacion: Notificacion = {
+                tipoProblema: reporte.tipoProblema,
+                folioReporte: reporte._id,
+                tipoNotificacion: 'estadoEnProceso',
+                usuarios: reporte.usuarios
               }
-            });
+
+            this.notificacionesService.createNotificacion(notificacion).subscribe(
+              res => {
+                Swal.fire({
+                  title: 'En proceso!',
+                  text: "Se cambió el estado del reporte a 'En proceso'",
+                  icon: 'success',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: 'Ok'
+                }).then((result) => {
+                  if (result.isConfirmed || result.isDismissed) {
+                    window.location.reload();
+                  }
+                });
+              },
+              err => {
+                reporte.estado = "Desatendido";
+                Swal.fire({
+                  title: 'Oh no!',
+                  text: 'Ocurrio un problema cambiando el estado del reporte',
+                  icon: 'error',
+                  confirmButtonText: 'Ok'
+                });
+        
+                console.error(err);
+              }
+            );
           },
           err => {
             reporte.estado = "Desatendido";
@@ -213,34 +238,67 @@ export class TablaDesatendidosComponent implements OnDestroy,OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
+        let correcto = true;
         reporte.estado = "Denegado";
+
         this.reportesService.editReporte(reporte)?.subscribe(
           res => {
-            Swal.fire({
-              title: 'Denegado!',
-              text: "Se cambió el estado del reporte a 'Denegado'",
-              icon: 'success',
-              showCancelButton: false,
-              confirmButtonColor: '#3085d6',
-              confirmButtonText: 'Ok'
-            }).then((result) => {
-              if (result.isConfirmed || result.isDismissed) {
-                window.location.reload();
+            let notificacion: Notificacion = {
+                tipoProblema: reporte.tipoProblema,
+                folioReporte: reporte._id,
+                tipoNotificacion: 'estadoDenegado',
+                usuarios: reporte.usuarios
               }
-            });
+
+            this.notificacionesService.createNotificacion(notificacion).subscribe(
+              res => {
+                const reputacionUsr = {
+                  reputacion: -1,
+                  usuarios: reporte.usuarios
+                }
+
+                this.usuarioComunService.reputacionUsuario(reputacionUsr).subscribe(
+                  res => {
+                    Swal.fire({
+                      title: 'Denegado!',
+                      text: "Se cambió el estado del reporte a 'Denegado'",
+                      icon: 'success',
+                      showCancelButton: false,
+                      confirmButtonColor: '#3085d6',
+                      confirmButtonText: 'Ok'
+                    }).then((result) => {
+                      if (result.isConfirmed || result.isDismissed) {
+                        window.location.reload();
+                      }
+                    });
+                  },
+                  err => {
+                    correcto = false;
+                    console.error(err);
+                  }
+                );
+              },
+              err => {
+                correcto = false;
+                console.error(err);
+              }
+            );
           },
           err => {
-            reporte.estado = "Desatendido";
+            correcto = false;
+            console.error(err);
+          }
+        );
+
+        if(!correcto){
+          reporte.estado = "Desatendido";
             Swal.fire({
               title: 'Oh no!',
               text: 'Ocurrio un problema cambiando el estado del reporte',
               icon: 'error',
               confirmButtonText: 'Ok'
             });
-    
-            console.error(err);
-          }
-          );
+        }
       }
     });
   }

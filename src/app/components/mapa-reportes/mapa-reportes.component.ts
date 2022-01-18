@@ -10,6 +10,8 @@ import { LoginService } from "../../services/login/login.service";
 import { AlgoritmoIdentificacion } from './algoritmo-identificacion';
 import { AlgoritmoUrgencia } from "./algoritmo-urgencia";
 import { createOfflineCompileUrlResolver } from '@angular/compiler';
+import { NotificacionesService } from 'src/app/services/notificaciones/notificaciones.service';
+import { Notificacion } from 'src/app/models/notificacion';
 
 // import { from } from 'rxjs';
 
@@ -62,7 +64,7 @@ export class MapaReportesComponent implements OnInit {
     }]
   }];
 
-  constructor(public reportesService: ReportesService, public http: HttpClient, private formBuilder: FormBuilder, public loginService: LoginService) { }
+  constructor(public reportesService: ReportesService, public notificacionesService: NotificacionesService, public http: HttpClient, private formBuilder: FormBuilder, public loginService: LoginService) { }
 
   ngOnInit(): void {
     
@@ -120,22 +122,18 @@ mapa() {
     // apiKey: 'AIzaSyAYN-jmRSHPR78rT0l1na0XchXlJT7_sDw'
     apiKey: ''
   });
-  console.log("UNO")
+
   // CONSEGUIR COORDENADAS DEL USUARIO
   if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(position => {
       latitud = position.coords.latitude;
       longitud = position.coords.longitude;
-      console.log(position.coords)
     }, function(err){
       console.error(err);
     }, {enableHighAccuracy: true});
   }
-  
-  console.log("DOS")
 
   setTimeout(() => {
-    console.log("NUEVO")
   // SE CARGA EL MAPA CENTRADO EN LA UBICACION DEL USUARIO
   loader.load().then(() => {
     const map = new google.maps.Map(document.getElementById("mapa")!, {
@@ -173,8 +171,6 @@ mapa() {
         }
       ]
     });
-
-  console.log("TRES")
 
     // ESTO ES PARA INTENTAR HACER EL BUSCADOR EN UN FUTURO
     // const buscador = <HTMLInputElement>document.getElementById("buscador")!;
@@ -459,8 +455,8 @@ mapa() {
                 });
                 
                 // Algoritmo de urgencia de prueba
-                let pruebaUrgencia = new AlgoritmoUrgencia(this.reportesService);
-                console.log("URGENTE: " + await pruebaUrgencia.Urgente(res.toString()));
+                // let pruebaUrgencia = new AlgoritmoUrgencia(this.reportesService);
+                // console.log("URGENTE: " + await pruebaUrgencia.Urgente(res.toString()));
 
                 pruebaIdentifiacion.AccederYGuardar(res.toString());
 
@@ -547,6 +543,28 @@ mapa() {
                   
                   if(correcto) {
                     pruebaIdentifiacion.AccederYGuardar(res.toString());
+
+                    // let notificacion: Notificacion = {
+                    //   tipoProblema: this.registrarForm.value.tipoProblema,
+                    //   folioReporte: res.toString(),
+                    //   tipoNotificacion: 'nuevoProblema',
+                    //   usuarios: [{_id: this.registrarForm.value.usuarios._id}]
+                    // }
+
+                    // this.notificacionesService.createNotificacion(notificacion).subscribe(
+                    //   res => {
+                    //     console.log(res.toString());
+                    //   },
+                    //   err => {
+                    //     Swal.fire({
+                    //       title: 'Oh no!',
+                    //       text: 'Ocurrio un problema recibiendo las notificaciones',
+                    //       icon: 'error',
+                    //       confirmButtonText: 'Ok'
+                    //     });
+                    //     console.error(err);
+                    //   }
+                    // );
                     // CUANDO SE CREA UN REPORTE SE VA DIRECTO AL MAPA Y SE REFRESCA
                     this.toggleFormReporte = false; // SE ESCONDE EL FORM DE DETALLES
                     this.toggleDesactivarMapa = false; // SE ACTIVA EL MAPA

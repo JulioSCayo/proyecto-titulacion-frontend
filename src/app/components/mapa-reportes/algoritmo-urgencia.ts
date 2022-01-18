@@ -82,12 +82,12 @@ export class AlgoritmoUrgencia {
 
     // Se obtienen los puntos de urgencia de un problema (AL CONSULTAR LA URGENCIA DE LOS REPORTES)
     async PuntosUrgencia(_id: string): Promise<number> {
-        let puntosCredibilidad = this.PuntosCredibilidad(_id);
-        let puntosVidaEnRiesgo = this.PuntosVidaEnRiesgo(_id);
-        let puntosCronico = this.PuntosCronico(_id);
-        let puntosTiempo = this.PuntosTiempo(_id);
+        let puntosCredibilidad = await this.PuntosCredibilidad(_id);
+        let puntosVidaEnRiesgo = await this.PuntosVidaEnRiesgo(_id);
+        let puntosCronico = await this.PuntosCronico(_id);
+        let puntosTiempo = await this.PuntosTiempo(_id);
 
-        let puntosUrgencia = await puntosCredibilidad + await puntosVidaEnRiesgo + await puntosCronico + await puntosTiempo;
+        let puntosUrgencia = puntosCredibilidad + puntosVidaEnRiesgo + puntosCronico + puntosTiempo;
 
         return puntosUrgencia;
     }
