@@ -164,11 +164,14 @@ export class CrearRuta {
                                                                                                     // crear aqui el setinterval time para checar y cambiar el estado del reporte asignado
                                                     // una vez llegue a la ubicacion del problema
                                                     let cambioEnProceso = setInterval( () => {
+                                                        console.log("paso set interval")
                                                         navigator.geolocation.getCurrentPosition(//este metodo recibe 3 parametros,dos metodos y un objeto
-                                                            (pos) =>{                               
-                                                                if(this.CalcularDistancia(pos.coords, update?.ubicacion) <= 0.040){
-                                                                    clearInterval(cambioEnProceso);
+                                                            (pos) =>{   
+                                                                let distancia = this.CalcularDistancia(pos.coords, update?.ubicacion)                            
+                                                                if(distancia <= 0.050){
+                                                                    console.log(distancia)
                                                                     update!.estado = "En proceso";
+                                                                    clearInterval(cambioEnProceso);
                                                                     this.reportesService.editReporte(update!).subscribe(
                                                                         res => {
                                                                             console.log("EL REPORTE ", update?._id, " HA PASADO A EN PROCESO")
@@ -176,6 +179,9 @@ export class CrearRuta {
                                                                         error => {
                                                                             console.error(error)
                                                                         })
+                                                                }else{
+                                                                    console.log("aun se encuentra muy lejos")
+                                                                    console.log(distancia)
                                                                 }
                                                             }, 
                                                             (err) =>{

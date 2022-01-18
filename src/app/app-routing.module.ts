@@ -15,6 +15,8 @@ import { TablaDesatendidosComponent } from './components/tabla-reportes/tabla-de
 import { TablaEnProcesoComponent } from './components/tabla-reportes/tabla-en-proceso/tabla-en-proceso.component';
 import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
 import { GraficasMasReportadosComponent } from './components/graficas/graficas-mas-reportados/graficas-mas-reportados.component';
+import { BaseGraficasComponent } from './components/analisis-datos/base-graficas/base-graficas.component';
+import { Grafica1Component } from './components/analisis-datos/grafica1/grafica1.component';
 // import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
 // import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
 import { PerfilComponent } from "./components/perfil/perfil.component";
@@ -51,6 +53,8 @@ const routes: Routes = [
   {path: 'grafica-mas-reportados', component: GraficasMasReportadosComponent},
   {path: 'datatable-prueba', component: PruebaDatatableComponent},
   {path: 'perfil', component: PerfilComponent},
+  {path: 'graficas', component: BaseGraficasComponent},
+  {path: 'grafica-uno', component: Grafica1Component},
   {path: '**', component: InicioComponent, canActivate: [InvitadoGuard]}
 ];
 
