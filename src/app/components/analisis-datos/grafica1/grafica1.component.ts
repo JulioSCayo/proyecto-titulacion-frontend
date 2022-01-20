@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { GraficasService } from "../../../services/graficas/graficas.service";
 import { Reporte } from "../../../models/reporte";
 import Swal from 'sweetalert2';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 declare var google: any;
 
@@ -35,8 +37,7 @@ export class Grafica1Component implements OnInit {
     ['Arbol caido', 0, '#ADD82B'],
     ['Socavón', 0, '#795d45'],
     ['Cables', 0, '#ebee4a'],
-    ['Incendio', 0, '#FF6A14'],
-    // ['Otros', 0, 'red']
+    ['Incendio', 0, '#FF6A14']
   ]
   
   ancho: any = "80%"
@@ -59,6 +60,7 @@ export class Grafica1Component implements OnInit {
   constructor(public graficasService: GraficasService) {
     this.mesBase = this.fecha.getMonth() + 1
     this.añoBase = this.fecha.getFullYear().toString()
+    // this.downloadPDF();
    }
 
 
@@ -142,52 +144,81 @@ export class Grafica1Component implements OnInit {
         )
     })
 
-   
+    this.graficasService.disparadorDescargar.subscribe(res => {
+        console.log(res)
+        if(res == "Grafica 1"){
+          const DATA = document.getElementById('contenedorDescargar');
+          const doc = new jsPDF('l', 'pt', 'a4');
+          const options = {
+            background: 'white',
+            scale: 5
+          };
+          html2canvas(DATA!, options).then((canvas) => {
+            const img = canvas.toDataURL('image/PNG');
+      
+            // Add image Canvas to PDF
+            const bufferX = 10;
+            const bufferY = 10;
+            const imgProps = (doc as any).getImageProperties(img);
+            const pdfWidth = doc.internal.pageSize.getWidth() - 2 * bufferX;
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+            // const pdfWidth = doc.internal.pageSize.getWidth() - 2 * bufferX;
+            // const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+            doc.addImage(img, 'PNG', bufferX, bufferY, pdfWidth, pdfHeight, undefined, 'FAST');
+            return doc;
+          }).then((docResult) => {
+            docResult.save(`${new Date().toISOString()}_Grafica1.pdf`);
+          });
+        }
+        
+      },
+      err => {
+        console.error(err);
+    })
+
   }
 
 
-
   // cuenta cuantos reportes hay de cada tipo
-  Calcular(magia: any){
-    let cont = 0
-
+Calcular(magia: any){
     magia.forEach((e: any) => {
       switch (e.tipoProblema) {
-        case "alumbrado":
+        case "Alumbrado":
           this.datosRemasterizados[1][1]++
           break;
-        case "inundacion":
+        case "Inundación":
           this.datosRemasterizados[2][1]++
           break;
-        case "fuga":
+        case "Fuga de agua":
           this.datosRemasterizados[3][1]++
           break;
-        case "faltaAlcantarilla":
+        case "Falta de alcantarilla":
           this.datosRemasterizados[4][1]++
           break;
-        case "alcantarillaObstruida":
+        case "Alcantarilla obstruida":
           this.datosRemasterizados[5][1]++
           break;
-        case "escombros":
+        case "Escombros tirados":
           this.datosRemasterizados[6][1]++
         break;
-        case "vehiculo":
+        case "Vehículo abandonado":
           this.datosRemasterizados[7][1]++
           break;
-        case "arbol":
+        case "Árbol caído":
           this.datosRemasterizados[8][1]++
           break;
-        case "socavon":
+        case "Socavón":
           this.datosRemasterizados[9][1]++
           break;
-        case "cables":
+        case "Cables caídos":
           this.datosRemasterizados[10][1]++
           break;
-        case "incendio":
+        case "Incendio":
           this.datosRemasterizados[11][1]++
           break;
         default:
-          this.datosRemasterizados[12][1]++
+          // this.datosRemasterizados[12][1]++
+          console.log("Entro al default")
           break;
       }
     });

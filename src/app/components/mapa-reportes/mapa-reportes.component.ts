@@ -206,7 +206,7 @@ mapa() {
     google.maps.event.addListener(map, "click", (event: any) => {
       let boton = document.getElementById('botonReportar')
       this.nuevoLatLng = event.latLng; // SE OBTIENE LA UBICACIÓN SELECCIONADA
-      
+      console.log(event.latLng)
       // SI YA EXISTE EL MARKER SE BORRA
       if(newMarker.length > 0) {
         newMarker[0].setMap(null);

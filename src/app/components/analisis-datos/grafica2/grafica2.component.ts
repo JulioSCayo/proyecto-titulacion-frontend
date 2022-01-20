@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GraficasService } from 'src/app/services/graficas/graficas.service';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 declare var google: any;
 
@@ -152,43 +154,77 @@ export class Grafica2Component implements OnInit {
     })
 
 
+    this.graficasService.disparadorDescargar.subscribe(res => {
+      console.log(res)
+      if(res == "Grafica 2"){
+        console.log("hola")
+        const DATA = document.getElementById('contenedorDescargar');
+        const doc = new jsPDF('l', 'pt', 'a4');
+        const options = {
+          background: 'white',
+          scale: 5
+        };
+        html2canvas(DATA!, options).then((canvas) => {
+          const img = canvas.toDataURL('image/PNG');
+    
+          // Add image Canvas to PDF
+          const bufferX = 10;
+          const bufferY = 10;
+          const imgProps = (doc as any).getImageProperties(img);
+          const pdfWidth = doc.internal.pageSize.getWidth() - 2 * bufferX;
+          const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+          // const pdfWidth = doc.internal.pageSize.getWidth() - 2 * bufferX;
+          // const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+          doc.addImage(img, 'PNG', bufferX, bufferY, pdfWidth, pdfHeight, undefined, 'FAST');
+          return doc;
+        }).then((docResult) => {
+          docResult.save(`${new Date().toISOString()}_Grafica1.pdf`);
+        });
+      }
+      
+    },
+    err => {
+      console.error(err);
+  })
+    
+
   }
 
 
   Convertir(a: any, b: any){
     a.forEach((e: any) => {
       switch (e.tipoProblema) {
-        case "alumbrado":
+        case "Alumbrado":
           this.ordenDatos[1][1]++
           break;
-        case "inundacion":
+        case "Inundación":
           this.ordenDatos[2][1]++
           break;
-        case "fuga":
+        case "Fuga de agua":
           this.ordenDatos[3][1]++
           break;
-        case "faltaAlcantarilla":
+        case "Falta de alcantarilla":
           this.ordenDatos[4][1]++
           break;
-        case "alcantarillaObstruida":
+        case "Alcantarilla obstruida":
           this.ordenDatos[5][1]++
           break;
-        case "escombros":
+        case "Escombros tirados":
           this.ordenDatos[6][1]++
         break;
-        case "vehiculo":
+        case "Vehículo abandonado":
           this.ordenDatos[7][1]++
           break;
-        case "arbol":
+        case "Árbol caído":
           this.ordenDatos[8][1]++
           break;
-        case "socavon":
+        case "Socavón":
           this.ordenDatos[9][1]++
           break;
-        case "cables":
+        case "Cables caídos":
           this.ordenDatos[10][1]++
           break;
-        case "incendio":
+        case "Incendio":
           this.ordenDatos[11][1]++
           break;
         default:
@@ -198,41 +234,41 @@ export class Grafica2Component implements OnInit {
     });
     b.forEach((e: any) => {
       switch (e.tipoProblema) {
-        case "alumbrado":
+        case "Alumbrado":
           this.ordenDatos[1][2]++
           break;
-        case "inundacion":
+        case "Inundación":
           this.ordenDatos[2][2]++
           break;
-        case "fuga":
+        case "Fuga de agua":
           this.ordenDatos[3][2]++
           break;
-        case "faltaAlcantarilla":
+        case "Falta de alcantarilla":
           this.ordenDatos[4][2]++
           break;
-        case "alcantarillaObstruida":
+        case "Alcantarilla obstruida":
           this.ordenDatos[5][2]++
           break;
-        case "escombros":
+        case "Escombros tirados":
           this.ordenDatos[6][2]++
         break;
-        case "vehiculo":
+        case "Vehículo abandonado":
           this.ordenDatos[7][2]++
           break;
-        case "arbol":
+        case "Árbol caído":
           this.ordenDatos[8][2]++
           break;
-        case "socavon":
+        case "Socavón":
           this.ordenDatos[9][2]++
           break;
-        case "cables":
+        case "Cables caídos":
           this.ordenDatos[10][2]++
           break;
-        case "incendio":
+        case "Incendio":
           this.ordenDatos[11][2]++
           break;
         default:
-          this.ordenDatos[12][2]++
+          console.log("Entro al default")
           break;
       }
     });

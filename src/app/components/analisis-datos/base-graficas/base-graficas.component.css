@@ -51,3 +51,14 @@
    .select-css option {
     font-weight:normal;
    }
+
+
+   .btnDescargar{
+     height: 40px;
+     width: 40px;
+     margin-left: 20px;
+     background-color: transparent;
+     padding: 0;
+     /* background-image: url('https://cdn-icons-png.flaticon.com/512/81/81040.png'), */
+     /* linear-gradient(to bottom, #ffffff 0%,#f7f7f7 100%); */
+   }

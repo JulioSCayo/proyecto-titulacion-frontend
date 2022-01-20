@@ -90,11 +90,139 @@ export class ReportesService {
     return this.http.post<any[]>(this.URL_API + '/infoUsuariosReporte/', ids)
   }
 
+  getReportesXMes(mes: any, año: any, estado: any){
+    let usuario = localStorage.getItem('Usr')
+    let mesNumero = this.ConvertirMes(mes)
+    let anoCorrecto = this.ConvertirAno(año)
+
+    usuario += "$" + mesNumero + "$" + anoCorrecto + "$" + estado
+    console.log(usuario)
+    
+    return this.http.get<any>(this.URL_API + '/reportes-x-mes/' + usuario);
+  }
+
+
   reverseGeocoding(){
     // AIzaSyD8LFh53VddzDev0C6A5Jhln9KgpmpoExg
     // return this.http.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&amp;key=AIzaSyC6fYd8wgc8L8L9GDxRZlEUZim4JnhBJh4")
     return this.http.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&amp;key=AIzaSyAYN-jmRSHPR78rT0l1na0XchXlJT7_sDw")
   }
   
+
+
+
+  
+  ConvertirMes(mes: any){
+    switch (mes) {
+      case 1:
+        return '01'
+      case 2:
+        return '02'
+      case "Enero":
+        return '01'
+      case "Febrero":
+        return '02'
+      case "Marzo":
+        return '03'
+      case "Abril":
+        return '04'
+      case "Mayo":
+        return '05'
+      case "Junio":
+        return '06'
+      case "Julio":
+        return '07'
+      case "Agosto":
+        return '08'
+      case "Septiembre":
+        return '9'
+      case "Octubre":
+        return '10'
+      case "Noviembre":
+        return '11'
+      case "Diciembre":
+        return '12'
+
+      case "Enero ":
+        return '01'
+      case "Febrero ":
+        return '02'
+      case "Marzo ":
+        return '03'
+      case "Abril ":
+        return '04'
+      case "Mayo ":
+        return '05'
+      case "Junio ":
+        return '06'
+      case "Julio ":
+        return '07'
+      case "Agosto ":
+        return '08'
+      case "Septiembre ":
+        return '9'
+      case "Octubre ":
+        return '10'
+      case "Noviembre ":
+        return '11'
+      case "Diciembre ":
+        return '12'
+
+        case " Enero":
+          return '01'
+        case " Febrero":
+          return '02'
+        case " Marzo":
+          return '03'
+        case " Abril":
+          return '04'
+        case " Mayo":
+          return '05'
+        case " Junio":
+          return '06'
+        case "Julio":
+          return '07'
+        case " Agosto":
+          return '08'
+        case " Septiembre":
+          return '9'
+        case " Octubre":
+          return '10'
+        case " Noviembre":
+          return '11'
+        case " Diciembre":
+          return '12'
+        
+      default:
+        return mes
+    }
+  }
+
+
+  ConvertirAno(ano: any){
+    switch (ano) {
+      case "2019 ":
+        return '2019'
+      case " 2019 ":
+        return '2019'
+      case "2020 ":
+        return '2020'
+      case " 2020 ":
+        return '2020'
+      case "2021 ":
+        return '2021'
+      case " 2021 ":
+        return '2021'
+      case "2022 ":
+        return '2022'
+      case " 2022 ":
+        return '2022'
+
+      default:
+        return ano
+    }
+  }
+
+
 
 }

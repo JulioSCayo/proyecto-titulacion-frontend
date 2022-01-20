@@ -26,6 +26,7 @@
     "datatables.net": "^1.11.3",
     "datatables.net-dt": "^1.11.3",
     "jquery": "^3.6.0",
+    "jspdf-html2canvas": "^1.4.9",
     "ng2-charts": "^3.0.1",
     "rxjs": "~6.6.0",
     "sweetalert2": "^11.0.19",

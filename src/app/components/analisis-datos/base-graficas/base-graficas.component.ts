@@ -58,6 +58,12 @@ export class BaseGraficasComponent implements OnInit {
     
   async anoSeleccionado(a:any): Promise<void>{
       this.graficasService.disparadorDeAño.emit(a)
+    }
+    
+    
+  Descargar(){
+      console.log("hola")
+      this.graficasService.disparadorDescargar.emit(this.graficaSeleccionada)
   }
 
 

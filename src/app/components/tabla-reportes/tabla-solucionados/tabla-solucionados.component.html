@@ -31,8 +31,10 @@
                     <td class="acciones"><a class="imagen-especial" (click)="openCentrado(contenido, reporte)">Ver más</a></td>
 
                     <ng-template #contenido let-modal>
+                    <div id="ContenedorDescarga">
                         <div class="modal-header">
-                            <h4 class="modal-title">Reporte <b>{{reporte._id}}</b> </h4>
+                            <h4 class="modal-title">Reporte <b>{{reporte._id}}</b><button class="btnDescargar" (click)="Descargar(reporte)"><i class="fas fa-file-download" ></i></button>
+                            </h4>
                             <button class="" aria-label="close" type="button" (click)="modal.dismiss()">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -63,11 +65,71 @@
                             </tbody>
                           </table>
                         </div>
-                      </ng-template>
+                    </div>
+                    </ng-template>
 
                 </tr>
             </table>
         </div>
+
+
+        <div id="divSelects" class="container contenedorOF">
+          <div class="row containerBlock">
+                  <h3>Ordenar por:</h3>
+                      <select name="" id="" class="select-css col-md-2" (change)="Ordenamientos($any($event.target).value )">
+                          <option value="">Selecciona una opción</option>
+                          <option *ngFor="let o of orden" value="{{o}}" >
+                              {{o}}
+                          </option>
+                      </select>
+
+                  <br><h3>Filtrar por:</h3>
+                      <select name="" id="" class="select-css col-md-2" (change)="FiltradosTipo($any($event.target).value )">
+                          <option *ngFor="let f of filtros" value="{{f}}" >
+                              {{f}}
+                          </option>
+                      </select>
+                      <select name="" id="" class="select-css col-md-2" (change)="FiltradosMunicipios($any($event.target).value )">
+                          <option *ngFor="let m of nombresMunicipios" value="{{m}}" >
+                              {{m}}
+                          </option>
+                      </select>
+                      <button class="col-md-2" (click)="AbrirMapa(mapaFiltrado)">Zona especial</button>
+                      <p><input type="checkbox" name="cronicos" id="filtradoCronicos" (change)="FiltradosCronicos($any($event.target).value )">Problemas cronicos</p>
+                      
+                  <h3>Fecha</h3>
+                      <select name="" id="selectMes" class="select-css col-md-2"  aria-label="Default select example"  (change)="mesSeleccionado($any($event.target).value )">
+                          <option *ngFor="let m of meses" value="{{m}}" id="{{m}}">
+                              {{m}}
+                          </option>
+                      </select>
+                      <select name="" id="selectAno" class="select-css col-md-2"  aria-label="Default select example" (change)="anoSeleccionado($any($event.target).value )">
+                          <option *ngFor="let a of anos" value="{{a}}" >
+                              {{a}}
+                          </option>
+                      </select>
+
+
+              </div>
+          </div>
+
+
+          <ng-template #mapaFiltrado let-modal>
+              <div class="modal-header">
+                  <p class="modal-title">Selecciona las dos ubicaciones en las cuales quieres filtrar los reportes</p>
+                  <button class="" aria-label="close" type="button" (click)="modal.dismiss()">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div> 
+              <div class="modal-body"> 
+                  <div id="marco2" class="marco"></div>
+                <div id="mapa">  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-success" (click)="filtradoMapa()"> Filtrar </button>
+              </div>
+            </ng-template>
+            
 
         <div class="div-tabla" *ngIf="!reportes.length">
             <h1>No hay reportes solucionados</h1>

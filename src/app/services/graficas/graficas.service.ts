@@ -8,6 +8,7 @@ import { Reporte } from "../../models/reporte";
 export class GraficasService {
   @Output() disparadorDeMes: EventEmitter<any> = new EventEmitter();
   @Output() disparadorDeAño: EventEmitter<any> = new EventEmitter();
+  @Output() disparadorDescargar: EventEmitter<any> = new EventEmitter();
 
   URL_API = 'http://localhost:4000';
 
