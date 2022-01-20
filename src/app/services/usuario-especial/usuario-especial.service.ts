@@ -39,8 +39,13 @@ export class UsuarioEspecialService {
   }
 
   editUsuario(usuarios: UsuarioEspecial) {
-    let url = "http://localhost:4000/registro/" + usuarios._id
+    let url = "http://localhost:4000/registro/" + usuarios._id;
     return this.http.put(url, usuarios);
+  }
+
+  aceptarEspecial(_id?: string) {
+    let url = "http://localhost:4000/aceptar-especial/" + _id;
+    return this.http.post(url, {validado: true});
   }
 
   deleteUsuario(_id?: string) {

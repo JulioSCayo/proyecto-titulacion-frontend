@@ -53,14 +53,4 @@ export class UsuarioComunService {
   getCorreosUsuarios(){
     return this.http.get<any[]>('http://localhost:4000/correosUsuarios');
   }
-  
-  verUsuarioUnico(nombre: String){
-    console.log(nombre)
-    return this.http.post<any>('http://localhost:4000/usuarioRepetido', nombre)
-  }
-
-  verCorreoUnico(usuario: any){
-    console.log(usuario)
-    return this.http.post<any>('http://localhost:4000/correoRepetido', usuario)
-  }
 }

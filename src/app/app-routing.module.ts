@@ -5,6 +5,7 @@ import { RegistroComunComponent } from "./components/registro-comun/registro-com
 import { RegistroEspecialComponent } from "./components/registro-especial/registro-especial.component";
 import { RegistroResponsableComponent } from "./components/registro-responsable/registro-responsable.component";
 import { MapaReportesComponent } from "./components/mapa-reportes/mapa-reportes.component";
+import { MapaSolucionadosComponent } from "./components/mapa-solucionados/mapa-solucionados.component";
 import { RutaAutomaticaComponent } from "./components/ruta-automatica/ruta-automatica.component";
 import { TablaComunesComponent } from "./components/tabla-usuarios/tabla-comunes/tabla-comunes.component";
 import { TablaEspecialesComponent } from "./components/tabla-usuarios/tabla-especiales/tabla-especiales.component";
@@ -14,7 +15,6 @@ import { ConoceMasComponent } from "./components/informacion/conoce-mas/conoce-m
 import { TablaDesatendidosComponent } from './components/tabla-reportes/tabla-desatendidos/tabla-desatendidos.component';
 import { TablaEnProcesoComponent } from './components/tabla-reportes/tabla-en-proceso/tabla-en-proceso.component';
 import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
-import { GraficasMasReportadosComponent } from './components/graficas/graficas-mas-reportados/graficas-mas-reportados.component';
 import { BaseGraficasComponent } from './components/analisis-datos/base-graficas/base-graficas.component';
 import { Grafica1Component } from './components/analisis-datos/grafica1/grafica1.component';
 // import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
@@ -30,12 +30,9 @@ import { EspecialGuard } from './services/guard/guard-usuario-especial/especial.
 import { ResponsableGuard } from './services/guard/guard-usuario-responsable/responsable.guard';
 
 
-import { PruebaDatatableComponent } from './components/tabla-reportes/prueba-datatable/prueba-datatable.component'
-
-
 const routes: Routes = [
   {path: '', component: InicioComponent, canActivate: [InvitadoGuard]},
-  {path: 'registro', component: RegistroComunComponent},
+  {path: 'registro', component: RegistroComunComponent, canActivate: [InvitadoGuard]},
   {path: 'registro-especial', component: RegistroEspecialComponent},
   {path: 'registro-responsable', component: RegistroResponsableComponent, canActivate: [AutenticacionGuard, AdminGuard]},
   {path: 'usuarios', component: TablaComunesComponent, canActivate: [AutenticacionGuard, AdminGuard]},
@@ -43,6 +40,7 @@ const routes: Routes = [
   {path: 'usuarios-especiales', component: TablaEspecialesComponent, canActivate: [AutenticacionGuard, AdminGuard]},
   {path: 'usuarios-responsables', component: TablaResponsablesComponent, canActivate: [AutenticacionGuard, AdminGuard]},
   {path: 'mapa-reportes', component: MapaReportesComponent},
+  {path: 'mapa-solucionados', component: MapaSolucionadosComponent},
   {path: 'ruta-automatica', component: RutaAutomaticaComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
   {path: 'reportes', component: TablaDesatendidosComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
   {path: 'reportes-desatendidos', component: TablaDesatendidosComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
@@ -50,10 +48,8 @@ const routes: Routes = [
   {path: 'reportes-solucionados', component: TablaSolucionadosComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
   {path: 'informacion', component: InformacionComponent},
   {path: 'informacion/conoce-mas', component: ConoceMasComponent},
-  {path: 'grafica-mas-reportados', component: GraficasMasReportadosComponent},
-  {path: 'datatable-prueba', component: PruebaDatatableComponent},
-  {path: 'perfil', component: PerfilComponent},
-  {path: 'graficas', component: BaseGraficasComponent},
+  {path: 'perfil', component: PerfilComponent, canActivate: [ComunGuard]},
+  {path: 'graficas', component: BaseGraficasComponent, canActivate: [AutenticacionGuard, ResponsableGuard]},
   {path: 'grafica-uno', component: Grafica1Component},
   {path: '**', component: InicioComponent, canActivate: [InvitadoGuard]}
 ];

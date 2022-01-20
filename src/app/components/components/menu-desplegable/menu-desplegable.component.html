@@ -16,6 +16,7 @@
         <li *ngIf="opciones('crearResp')==true" [routerLink]="['/registro-responsable']"> Crear responsable </li>
         <li *ngIf="opciones('usuarios')==true" [routerLink]="['/usuarios']"> Lista de usuarios </li>
         <li *ngIf="opciones('generarReporte')==true" [routerLink]="['/mapa-reportes']"> Generar reporte </li>
+        <li *ngIf="opciones('mapaSolucionados')==true" [routerLink]="['/mapa-solucionados']"> Reportes solucionados </li>
         <li *ngIf="opciones('generarRuta')==true" [routerLink]="['/ruta-automatica']"> Generar ruta </li>
         <li *ngIf="opciones('informacion')==true" [routerLink]="['/informacion']"> Información </li>
         <li *ngIf="opciones('cerrarSesion')==true" (click)="cerrarSesion()"> Cerrar Sesión </li>
