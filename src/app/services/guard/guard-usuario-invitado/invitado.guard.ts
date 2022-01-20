@@ -14,7 +14,7 @@ export class InvitadoGuard implements CanActivate {
     let u = this.loginService.getTipoUsuario();
     console.log(u);
 
-    if(u == "invitado") return true;
+    if(!u) return true;
     
     console.log("lo siento, no cuentas con los permisos")
     this.router.navigate(['/mapa-reportes'])

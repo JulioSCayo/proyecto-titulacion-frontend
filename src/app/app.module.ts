@@ -32,8 +32,6 @@ import { BtnsTablasReportesComponent } from './components/components/btns-tablas
 import { TablaDesatendidosComponent } from './components/tabla-reportes/tabla-desatendidos/tabla-desatendidos.component';
 import { TablaEnProcesoComponent } from './components/tabla-reportes/tabla-en-proceso/tabla-en-proceso.component';
 import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
-import { GraficasMasReportadosComponent } from './components/graficas/graficas-mas-reportados/graficas-mas-reportados.component';
-import { GraficasComparacionComponent } from './components/graficas/graficas-comparacion/graficas-comparacion.component';
 import { PerfilComponent } from './components/perfil/perfil.component';
 import { PruebaDatatableComponent } from './components/tabla-reportes/prueba-datatable/prueba-datatable.component';
 import { Grafica1Component } from './components/analisis-datos/grafica1/grafica1.component';
@@ -43,6 +41,7 @@ import { Grafica3Component } from './components/analisis-datos/grafica3/grafica3
 import { Grafica4Component } from './components/analisis-datos/grafica4/grafica4.component';
 import { Grafica5Component } from './components/analisis-datos/grafica5/grafica5.component';
 import { NotificacionesComponent } from './components/components/notificaciones/notificaciones.component';
+import { MapaSolucionadosComponent } from './components/mapa-solucionados/mapa-solucionados.component';
 
 @NgModule({
   declarations: [
@@ -67,8 +66,6 @@ import { NotificacionesComponent } from './components/components/notificaciones/
     TablaDesatendidosComponent,
     TablaEnProcesoComponent,
     TablaSolucionadosComponent,
-    GraficasMasReportadosComponent,
-    GraficasComparacionComponent,
     PerfilComponent,
     PruebaDatatableComponent,
     Grafica1Component,
@@ -77,7 +74,8 @@ import { NotificacionesComponent } from './components/components/notificaciones/
     Grafica3Component,
     Grafica4Component,
     Grafica5Component,
-    NotificacionesComponent
+    NotificacionesComponent,
+    MapaSolucionadosComponent
   ],
   imports: [
     BrowserModule,
@@ -86,18 +84,18 @@ import { NotificacionesComponent } from './components/components/notificaciones/
     FormsModule,
     DataTablesModule,
     ReactiveFormsModule,
-    ErrorTailorModule.forRoot({
-      errors: {
-        useValue: {
-          required: 'Este campo es requerido',
-          minlength: ({ requiredLength, actualLength }) => 
-                      `Expect ${requiredLength} but got ${actualLength}`,
-          // invalidAddress: error => `El correo electronico no es valido`,
-          email: 'El email no es valido',
-          validator: 'La contraseña no coincide'          
-        }
-      }
-    })
+    // ErrorTailorModule.forRoot({
+    //   errors: {
+    //     useValue: {
+    //       required: 'Este campo es requerido',
+    //       minlength: ({ requiredLength, actualLength }) => 
+    //                   `Expect ${requiredLength} but got ${actualLength}`,
+    //       // invalidAddress: error => `El correo electronico no es valido`,
+    //       email: 'El email no es valido',
+    //       validator: 'La contraseña no coincide'          
+    //     }
+    //   }
+    // })
   ],
   providers: [
     AutenticacionGuard,

@@ -45,13 +45,13 @@ export class MenuDesplegableComponent implements OnInit {
     }
     
     else if(tipoUsuario == "comun" || tipoUsuario == "especial") {
-      if(opcion == "perfil" || opcion == "generarReporte" || opcion == "informacion" || opcion == "cerrarSesion") {
+      if(opcion == "perfil" || opcion == "generarReporte" || opcion == "mapaSolucionados" || opcion == "informacion" || opcion == "cerrarSesion") {
         return true;
       }
     }
     
     else if(tipoUsuario == "responsable") {
-      if(opcion == "historial" || opcion == "generarRuta" || opcion == "informacion" || opcion == "cerrarSesion") {
+      if(opcion == "historial" || opcion == "generarRuta" || opcion == "mapaSolucionados" || opcion == "informacion" || opcion == "cerrarSesion") {
         return true;
       }
     }

@@ -102,6 +102,21 @@ export class MapaReportesComponent implements OnInit {
 
     if(this.selectedImage?.name) {
 			this.span = this.selectedImage?.name;
+
+      const extencion = this.selectedImage?.name.substring(this.selectedImage?.name.lastIndexOf('.'),this.selectedImage?.name.length);
+      console.log(extencion);
+
+      if(extencion != ".png" && extencion != ".jpg" && extencion != ".jpeg" && extencion != ".pdf") {
+        this.selectedImage = undefined;
+        this.span = "Selecciona archivo de imagen";
+          
+        Swal.fire({
+          title: 'Formato incorrecto!',
+          text: 'El archivo no es png, jpg, jpeg o pdfo',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+      }
     }
     else {
       this.span = "Selecciona archivo de imagen";
@@ -270,7 +285,10 @@ mapa() {
     // SE OBTIENEN TODOS LOS REPORTES EXISTENTES DESDE EL BACKEND CON EL SERVICE
     this.reportesService.getReportes().subscribe(
       res => {
-        this.reportes = <Reporte[]>res; 
+        for(let reporte of <Reporte[]>res) {
+          if(reporte.estado == "Desatendido")
+            this.reportes.push(reporte);
+        }
         
         // FOR PARA CREAR TODOS LOS MARCADORES
         for (let i = 0; i < this.reportes.length; i++) {

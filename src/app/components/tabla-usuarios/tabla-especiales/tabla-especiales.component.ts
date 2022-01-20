@@ -72,7 +72,8 @@ export class TablaEspecialesComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         usuario.usuarioEspecial.validado = true;
-        this.usuarioEspecialService.editUsuario(usuario)?.subscribe(
+        console.log(usuario)
+        this.usuarioEspecialService.aceptarEspecial(usuario._id)?.subscribe(
           res => {
             Swal.fire({
               title: 'Aceptado',

@@ -115,6 +115,21 @@ export class PerfilComponent implements OnInit {
 
     if(this.selectedImage?.name) {
 			this.span = this.selectedImage?.name;
+
+      const extencion = this.selectedImage?.name.substring(this.selectedImage?.name.lastIndexOf('.'),this.selectedImage?.name.length);
+      console.log(extencion);
+
+      if(extencion != ".png" && extencion != ".jpg" && extencion != ".jpeg" && extencion != ".pdf") {
+        this.selectedImage = undefined;
+        this.span = "Selecciona archivo de imagen";
+          
+        Swal.fire({
+          title: 'Formato incorrecto!',
+          text: 'El archivo no es png, jpg, jpeg o pdfo',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+      }
     }
     else {
       this.span = "Selecciona archivo de imagen";

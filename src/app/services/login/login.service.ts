@@ -42,13 +42,21 @@ export class LoginService {
   logout(){
     localStorage.removeItem('token');
     localStorage.removeItem('IDU');
+    localStorage.removeItem('TipoUsr');
+    localStorage.removeItem('Usr');
     localStorage.removeItem('FinJornada');
-    localStorage.setItem('TipoUsr','invitado');
+    localStorage.removeItem('reportes');
+    localStorage.removeItem('tiempos');
+
     this.router.navigate(['/']);
   }
 
   usuarioRepetido(nombreUsuario: any){
     return this.http.post<any>(this.URL_API + "usuarioRepetido/", {nombreUsuario});
+  }
+
+  correoRepetido(correoElectronico: any){
+    return this.http.post<any>(this.URL_API + "correoRepetido/", {correoElectronico})
   }
 
   compararContrasenas(idContrasena: any){

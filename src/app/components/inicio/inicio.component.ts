@@ -12,6 +12,7 @@ import { Loader } from '@googlemaps/js-api-loader';
 })
 export class InicioComponent implements OnInit {
   noCoinciden = false;
+  noAceptado = false;
 
   constructor(private loginService: LoginService, private router: Router) { }
 
@@ -23,21 +24,36 @@ export class InicioComponent implements OnInit {
 
   ngOnInit(): void {
     this.mapa();
-    localStorage.setItem('TipoUsr','invitado'); // el usuario al inicio es invitado
   }
 
   login() {
+    this.noAceptado = false;
+    this.noCoinciden = false;
+
     this.loginService.ingresar(this.usuario).subscribe(
       res => {
-        console.log("usuario valido")
-        console.log(res.token)
-        console.log(this.usuario);
-        localStorage.setItem('token',res.token); // cuando el usuario cierre su sesion debe colocarse esto como invitado nuevamente
-        localStorage.setItem('IDU', res.idUsuario);
-        localStorage.setItem('TipoUsr', res.tipoUsuario);
-        localStorage.setItem('Usr', res.nombreUsuario);
+        let validado = true;
 
-        this.router.navigate(['/mapa-reportes']) 
+        if(res.tipoUsuario == "especial") {
+          console.log(res.especialValidado);
+          if(!res.especialValidado) {
+            validado = false;
+            this.noAceptado = true;
+          }
+        }
+
+        if(validado) {
+          console.log("usuario valido")
+          console.log(res.token)
+          console.log(this.usuario);
+  
+          localStorage.setItem('token',res.token);
+          localStorage.setItem('IDU', res.idUsuario);
+          localStorage.setItem('TipoUsr', res.tipoUsuario);
+          localStorage.setItem('Usr', res.nombreUsuario);
+  
+          this.router.navigate(['/mapa-reportes']);
+        }
       },
       err => {
         console.log("usuario NO valido")
