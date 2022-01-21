@@ -446,7 +446,7 @@ mapa() {
 
     if(!pruebaIdentifiacion.ChecarBan()){ // primero revisa que el dispositivo no este baneado
         // Revisa si el usuario es invitado o no
-        if(localStorage.getItem('TipoUsr') == 'invitado') {
+        if(!localStorage.getItem('TipoUsr')) {
           this.registrarForm.value.usuarios._id = '000000000000000000000000'; // (PROVISIONAL)
           
         } else {

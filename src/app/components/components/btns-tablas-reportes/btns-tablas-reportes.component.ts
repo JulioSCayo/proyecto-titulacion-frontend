@@ -40,7 +40,7 @@ export class BtnsTablasReportesComponent implements OnInit {
   }
 
   graficas() {
-    this.router.navigate(['/grafica-mas-reportados']);
+    this.router.navigate(['/graficas']);
   }
 
 }

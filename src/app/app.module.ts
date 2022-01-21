@@ -33,7 +33,6 @@ import { TablaDesatendidosComponent } from './components/tabla-reportes/tabla-de
 import { TablaEnProcesoComponent } from './components/tabla-reportes/tabla-en-proceso/tabla-en-proceso.component';
 import { TablaSolucionadosComponent } from './components/tabla-reportes/tabla-solucionados/tabla-solucionados.component';
 import { PerfilComponent } from './components/perfil/perfil.component';
-import { PruebaDatatableComponent } from './components/tabla-reportes/prueba-datatable/prueba-datatable.component';
 import { Grafica1Component } from './components/analisis-datos/grafica1/grafica1.component';
 import { BaseGraficasComponent } from './components/analisis-datos/base-graficas/base-graficas.component';
 import { Grafica2Component } from './components/analisis-datos/grafica2/grafica2.component';
@@ -67,7 +66,6 @@ import { MapaSolucionadosComponent } from './components/mapa-solucionados/mapa-s
     TablaEnProcesoComponent,
     TablaSolucionadosComponent,
     PerfilComponent,
-    PruebaDatatableComponent,
     Grafica1Component,
     BaseGraficasComponent,
     Grafica2Component,
