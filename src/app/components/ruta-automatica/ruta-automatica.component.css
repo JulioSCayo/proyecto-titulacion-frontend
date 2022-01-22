@@ -107,7 +107,7 @@
             box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.45);
         }
 .opcionesRuta {
-    z-index: 4;
+    z-index: 1000;
     display: block;
     float: right;
     position: absolute;

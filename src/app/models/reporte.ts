@@ -14,6 +14,7 @@ export interface Reporte {
 	comentario?: string,
 	vidaRiesgo?: number,
 	asignado?: string,
+	urgenciaOriginal?: number,
 	cronico?: boolean,
 	fantasma?: boolean,
 	usuarios: [

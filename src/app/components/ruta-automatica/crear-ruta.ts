@@ -41,6 +41,8 @@ export class CrearRuta {
 
     urgenciaReporte = 0;
 
+    // public directionsRenderer: any
+    // public directionsService: any
 
     CrearRuta(){
         this.reportesService.getReporteAsignado().subscribe(
@@ -55,13 +57,15 @@ export class CrearRuta {
                     }else{
                         var options = {
                             enableHighAccuracy: true,
-                            timeout: 5000,
+                            timeout: 20000,
                             maximumAge: 0
                           };
                         navigator.geolocation.getCurrentPosition(//este metodo recibe 3 parametros,dos metodos y un objeto
                             (pos) =>{
                                 this.TrazarRuta(pos.coords, res[0].ubicacion);
-                                this.reporte = res;
+                                this.reporte = res[0];
+                                console.log(this.reporte)
+                                this.reportesService.disparadorReporteAsignado.emit(this.reporte)
                             }, 
                             (err) =>{
                                 console.warn('ERROR(' + err.code + '): ' + err.message);
@@ -95,6 +99,7 @@ export class CrearRuta {
                         icon: 'info',
                         confirmButtonColor: '#3085d6',
                       })
+                      this.reportesService.disparadorDesactivarBotones.emit("Desactivar")
                       return
                   }
   
@@ -110,6 +115,24 @@ export class CrearRuta {
                     }).slice(0,5);
                     console.log(top5)
 
+                    let salto = localStorage.getItem("salto");
+                    let contadorSalto = 0, bandera = true
+
+                    top5.forEach( (element: any) => {
+                        if(element.id == salto!){
+                            bandera = false
+                            console.log(element)
+                        }
+                        if(bandera)
+                        contadorSalto++
+                    });
+
+                    console.log(top5)
+                    console.log(salto)
+                    console.log(contadorSalto)
+                    top5.splice(contadorSalto, 1)
+                    console.log(top5)
+
                     //AHORA ASIGNA UNO DE ESOS REPORTES PARA SER RESUELTO
                     if(!navigator.geolocation){// obtiene la ubicacion actual del usuario
                         alert("No se puede obtener la Geolocalización");
@@ -117,7 +140,7 @@ export class CrearRuta {
                         // console.log(navigator.geolocation);
                         var options = {
                             enableHighAccuracy: true,
-                            timeout: 5000,
+                            timeout: 15000,
                             maximumAge: 0
                           };
                           
@@ -154,6 +177,9 @@ export class CrearRuta {
                                         update.asignado = localStorage.getItem('IDU')!;
                                         update.estado = "En ruta";
 
+                                        console.log(this.reporte)
+                                
+                                        this.reportesService.disparadorReporteAsignado.emit(this.reporte)
                                         setTimeout(() => {
                                             this.reportesService.editReporte(update).subscribe(  
                                                 async res => {
@@ -243,8 +269,8 @@ export class CrearRuta {
     // y la ubicacion del problema asignado a resolver
     TrazarRuta(origen:any, destino:any){
       // inicia la Configuración
-        const directionsRenderer = new google.maps.DirectionsRenderer();
-        const directionsService = new google.maps.DirectionsService();
+        var directionsRenderer = new google.maps.DirectionsRenderer();
+        var directionsService = new google.maps.DirectionsService();
         const map = new google.maps.Map(document.getElementById("mapa")!, {
           zoom: 14,
           center: { lat: origen.latitude, lng: origen.longitude },
@@ -256,9 +282,10 @@ export class CrearRuta {
             origin:  { lat: origen.latitude, lng: origen.longitude },
             destination: { lat: destino.latitud, lng: destino.longitud },
             travelMode: google.maps.TravelMode["DRIVING"], // tambien se puede usar de otro modo WALKING - BICYCLING - TRANSIT
-          },(response, status) => {
+          },(response: any, status: any) => {
             if (status == "OK") {
               directionsRenderer.setDirections(response);
+              console.log("DEBIO TERMINAR DE TRAZAR LA RUTA")
             } else {
               console.warn("Ocurrio un error al trazar la ruta " + status);
             }

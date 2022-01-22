@@ -31,18 +31,26 @@ export class RutaAutomaticaComponent implements OnInit {
 
   finJornada = new FormControl();
 
+  longitud: number =  -103.3479102;
+  latitud: number = 20.6763989;
+
+  fecha = new Date()
+  // desactivado = false
+
   reporte: Reporte = {
     ubicacion: {
         latitud: 0,
         longitud: 0
     },
-    tipoProblema: "",
+    tipoProblema: "Generico",
     credibilidad: 0,
     usuarios: [{
         _id: ""
-    }]
+    }],
+    urgenciaOriginal: 0,
+    fechaCreacion: undefined
   };
-
+  // ("2022-01-01T00:00:00Z")
   reportes: Reporte[] = [{
       ubicacion: {
           latitud: 0,
@@ -64,38 +72,57 @@ export class RutaAutomaticaComponent implements OnInit {
               private http: HttpClient
             ) { }
 
+
   ngOnInit(): void {
     // this.reverseGeocoding()
+      this.mapa();
+    
+      let urgencia = new AlgoritmoUrgencia(this.reportesService);
+    this.reportesService.disparadorReporteAsignado.subscribe(async res => {
+        this.reporte = res;
+        this.urgenciaReporte = await urgencia.PuntosUrgencia(this.reporte._id!);
 
-    this.mapa();
+        console.log(res);
+      },
+      err => {
+        console.error(err);
+      })
+
+      this.reportesService.disparadorDesactivarBotones.subscribe(res => {
+        console.log(res);
+        if(res == "Desactivar")
+          this.DeshabilitarBotones();
+      },
+      err => {
+        console.error(err);
+      })
+    
   }
 
-  async mapa() {
-    // COORDENADAS DEL USUARIO PARA CENTRAR EL MAPA
-    let longitud: number;
-    let latitud: number;
 
+
+  async mapa() {
     // CONSEGUIR COORDENADAS DEL USUARIO
     if(navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        latitud = position.coords.latitude;
-        longitud = position.coords.longitude;
+      let prueba = navigator.geolocation.getCurrentPosition(position => {
+        this.latitud = position.coords.latitude;
+        this.longitud = position.coords.longitude;
       }, function(err){
         console.error(err);
       }, {enableHighAccuracy: true});
     }
-
-    setTimeout(() => {
+    
     // DECLARAR LOADER DEL MAPA CON LA APIKEY
     let loader = new Loader({
       apiKey: 'AIzaSyAYN-jmRSHPR78rT0l1na0XchXlJT7_sDw'
       // apiKey: ''
     });
 
+    setTimeout(() => {
     // SE CARGA EL MAPA CENTRADO EN LA UBICACION DEL USUARIO
     loader.load().then(() => {
       const map = new google.maps.Map(document.getElementById("mapa")!, {
-        center: { lat: latitud, lng: longitud},
+        center: { lat: this.latitud, lng: this.longitud},
         disableDefaultUI: true,
         zoomControl: true,
         zoom: 15,
@@ -131,21 +158,41 @@ export class RutaAutomaticaComponent implements OnInit {
       });
     });
 
+  }, 100);
 
     if(localStorage.getItem("FinJornada")){
       this.toggleDesactivarMapa = false;
       this.toggleCrearRuta = false;
-      this.crearRuta();
+      let des = localStorage.getItem("desactivado")
+      console.log(des)
+      if(des == "true"){
+        this.DeshabilitarBotones();
+      }else{
+        this.crearRuta();
+      }
     }
 
-    }, 1000);
+  }
 
+
+  ObtenerUbicacion(){
   }
 
 
   formRuta() {
     this.toggleCrearRuta = false;
     this.toggleFormRuta = true;
+  }
+
+
+  DeshabilitarBotones(){
+    this.toggleCrearRuta = false;
+    this.toggleFormRuta = false;
+    this.toggleOpcionesRuta = false;
+    this.toggleDetallesRuta = false;
+    this.toggleSaltarReporte = false;
+    this.toggleTerminarRuta = false;
+    this.toggleOtraInstitucion = false;
   }
 
 
@@ -184,6 +231,7 @@ export class RutaAutomaticaComponent implements OnInit {
     else {
       if(!localStorage.getItem("FinJornada")){
         let durJornada = Math.abs((hoy.getHours() - fin[0])*60 + (hoy.getMinutes() - fin[1]))*60000;
+        console.log("ENTRO AL IF")
         this.finTiempoJornada(durJornada);
       }
 
@@ -194,21 +242,23 @@ export class RutaAutomaticaComponent implements OnInit {
       let ruta = new CrearRuta(this.reportesService, this.http);
       await ruta.CrearRuta();
 
-      await this.reportesService.getReporteAsignado().subscribe(
-        async res => {
-            this.reporte = <Reporte>res[0];
-            console.log("...");
-            console.log(this.reporte._id);
-            console.log("...");
+      // await this.reportesService.getReporteAsignado().subscribe(
+      //   async res => {
+      //       console.log(".........");
+      //       console.log(res)
+      //       this.reporte = res[0];
+      //       console.log(this.reporte._id);
+      //       console.log(".........");
 
-            // Obtenemos la urgencia del problema
-            let urgencia = new AlgoritmoUrgencia(this.reportesService);
-            this.urgenciaReporte = await urgencia.PuntosUrgencia(this.reporte._id!);
-        },
-        err => {
-            console.warn('error al obtener reporte ', err);
-        }
-      );
+      //       // Obtenemos la urgencia del problema
+      //       let urgencia = new AlgoritmoUrgencia(this.reportesService);
+      //       this.urgenciaReporte = await urgencia.PuntosUrgencia(this.reporte._id!);
+      //   },
+      //   err => {
+      //       console.warn('error al obtener reporte ', err);
+      //   }  );
+
+
     }
   }
 
@@ -218,7 +268,11 @@ export class RutaAutomaticaComponent implements OnInit {
 
   finTiempoJornada(durJornada: number) {
     localStorage.setItem("FinJornada", durJornada.toString())
+    console.log("---------------------")
+    console.log(durJornada)
     setTimeout(() => {
+      localStorage.removeItem("FinJornada")
+      localStorage.removeItem("desactivado")
       Swal.fire({
         title: 'Tiempo de jornada terminado',
         text: "Se llegó al final de la jornada, desea salir y guardar el reporte para la siguiente jornada? En caso de continuar con el problema actual no se asignarán más reportes al terminar.",
@@ -230,7 +284,7 @@ export class RutaAutomaticaComponent implements OnInit {
         cancelButtonText: 'No, continuar!'
       }).then((result) => {
         if(result.isConfirmed) {
-          localStorage.removeItem("FinJornada")
+          
           Swal.fire({
             title: 'Terminó su jornada!',
             text: 'Se ha guardado el último reporte de la ruta para su próxima jornada.',
@@ -276,6 +330,19 @@ export class RutaAutomaticaComponent implements OnInit {
           confirmButtonText: 'Ok'
         });
 
+        this.reportesService.saltarReporte(this.reporte._id).subscribe(
+          res =>{
+            console.log(res)
+            localStorage.setItem("salto", this.reporte._id!)
+            window.location.reload();
+          }, error =>{
+            console.log("Error al saltar reporte")
+          })
+        
+
+
+
+
         this.toggleSaltarReporte = false;
         this.toggleDetallesRuta = false;
         this.toggleDesactivarMapa = false;
@@ -302,14 +369,25 @@ export class RutaAutomaticaComponent implements OnInit {
           icon: 'success',
           confirmButtonText: 'Ok'
         }).then(() => {
+          localStorage.setItem("desactivado", "true");
+          setTimeout(() => {
+            // localStorage.removeItem("FinJornada")
+            console.log("eliminar")
+            localStorage.removeItem("desactivado")
+          }, 10000)
+          console.log("Paso el settimeout")
           window.location.reload();
+
+
+          // localStorage.setItem("FinJornada", durJornada.toString())
+          // console.log("---------------------")
+          // console.log(durJornada)
+
+
         });
       }
     });
   }
-
-
-
 
 
 
@@ -522,6 +600,7 @@ export class RutaAutomaticaComponent implements OnInit {
   }
 
   refuerzos() {
+    console.log("URGENCIA:", this.urgenciaReporte)
     Swal.fire({
       title: 'Pedir refuerzos?',
       text: "Se solicitará la ayuda de otra cuadrilla",
@@ -536,8 +615,8 @@ export class RutaAutomaticaComponent implements OnInit {
 
         const urgencia = new AlgoritmoUrgencia(this.reportesService);
         const masUrgente = await urgencia.MasUrgente();
-
-        const datos = this.reporte._id + "$" + masUrgente;
+        
+        const datos = this.reporte._id + "$" + masUrgente + "$" + this.urgenciaReporte;
 
         this.reportesService.refuerzoReporte(datos).subscribe(
           res => {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import { Reporte } from "../../models/reporte";
 
@@ -6,6 +6,8 @@ import { Reporte } from "../../models/reporte";
   providedIn: 'root'
 })
 export class ReportesService {
+  @Output() disparadorReporteAsignado: EventEmitter<any> = new EventEmitter();
+  @Output() disparadorDesactivarBotones: EventEmitter<any> = new EventEmitter();
 
   URL_API = 'http://localhost:4000';
 
@@ -101,6 +103,10 @@ export class ReportesService {
     return this.http.get<any>(this.URL_API + '/reportes-x-mes/' + usuario);
   }
 
+
+  saltarReporte(id: any){
+    return this.http.get<any>(this.URL_API + '/saltar-reporte/' + id)
+  }
 
   reverseGeocoding(){
     // AIzaSyD8LFh53VddzDev0C6A5Jhln9KgpmpoExg
