@@ -45,8 +45,6 @@ export class LoginService {
     localStorage.removeItem('TipoUsr');
     localStorage.removeItem('Usr');
     localStorage.removeItem('FinJornada');
-    localStorage.removeItem('reportes');
-    localStorage.removeItem('tiempos');
 
     this.router.navigate(['/']);
   }

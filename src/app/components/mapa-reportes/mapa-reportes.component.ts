@@ -219,46 +219,69 @@ mapa() {
 
     // SE CREA EL LISTENER DEL MAPA PARA CREAR NUEVOS REPORTES
     google.maps.event.addListener(map, "click", (event: any) => {
+      let latitud1 = 20.77758;
+      let latitud2 = 20.521687;
+      let longitud1 = -103.4836477;
+      let longitud2 = -103.2066437;
+
       let boton = document.getElementById('botonReportar')
       this.nuevoLatLng = event.latLng; // SE OBTIENE LA UBICACIÓN SELECCIONADA
-      console.log(event.latLng)
-      // SI YA EXISTE EL MARKER SE BORRA
-      if(newMarker.length > 0) {
-        newMarker[0].setMap(null);
-        newMarker = [];
+      let dentroDeGDL = true;
+
+      if(this.nuevoLatLng.lat() < latitud1 && this.nuevoLatLng.lat() > latitud2) {
+        if(this.nuevoLatLng.lng() > longitud1 && this.nuevoLatLng.lng() < longitud2) {
+          // SI YA EXISTE EL MARKER SE BORRA
+          if(newMarker.length > 0) {
+            newMarker[0].setMap(null);
+            newMarker = [];
+          }
+
+          // SE CREA EL MARKER
+          const addMarker = new google.maps.Marker({
+            position: this.nuevoLatLng,
+            map,
+            title: "Has un reporte!",
+            optimized: true,
+            icon: nuevoReporteMarker,
+            draggable: true
+          });
+
+          // SE AGREGA EL MARKER AL ARREGLO PARA SABER CUANDO SE CREA
+          newMarker.push(addMarker);
+
+          // SE CIERRA EL INFOWINDOW DEL OTRO MARKER EN CASO DE EXISTIR Y SE MUESTRA EL BOTON EN EL NUEVO MARCADOR
+          setTimeout(() => {
+            infoWindow.close();
+            if(localStorage.getItem('TipoUsr') == 'admin' || localStorage.getItem('TipoUsr') == 'responsable'){
+              infoWindow.setContent('<h2>No tiene permitido realizar reportes</h2>');
+            }
+            else {
+              infoWindow.setContent(boton);
+              this.toggleShowBotonReportar = true;
+            }
+
+            infoWindow.open(newMarker[0].getMap(), newMarker[0]);
+          }, 100);
+          
+          // AL PRESIONAR EL BOTON SE USA EL METODO
+          boton?.addEventListener('click', () => {
+            this.tipoProblema();
+          })
+        }
+        else 
+          dentroDeGDL = false;
       }
+      else
+        dentroDeGDL = false;
 
-      // SE CREA EL MARKER
-      const addMarker = new google.maps.Marker({
-        position: this.nuevoLatLng,
-        map,
-        title: "Has un reporte!",
-        optimized: true,
-        icon: nuevoReporteMarker,
-        draggable: true
-      });
-
-      // SE AGREGA EL MARKER AL ARREGLO PARA SABER CUANDO SE CREA
-      newMarker.push(addMarker);
-
-      // SE CIERRA EL INFOWINDOW DEL OTRO MARKER EN CASO DE EXISTIR Y SE MUESTRA EL BOTON EN EL NUEVO MARCADOR
-      setTimeout(() => {
-        infoWindow.close();
-        if(localStorage.getItem('TipoUsr') == 'admin' || localStorage.getItem('TipoUsr') == 'responsable'){
-          infoWindow.setContent('<h2>No tiene permitido realizar reportes</h2>');
-        }
-        else {
-          infoWindow.setContent(boton);
-          this.toggleShowBotonReportar = true;
-        }
-
-        infoWindow.open(newMarker[0].getMap(), newMarker[0]);
-      }, 100);
-      
-      // AL PRESIONAR EL BOTON SE USA EL METODO
-      boton?.addEventListener('click', () => {
-        this.tipoProblema();
-      })
+      if(!dentroDeGDL) {
+        Swal.fire({
+          title: 'Oh no!',
+          text: 'Solo se puede realizar reportes dentro de la zona metropolitana de Guadalajara',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+      }
     })
   });
   }, 100);
@@ -437,7 +460,6 @@ mapa() {
 
 
 
-//comentario: HTMLTextAreaElement, cronico: HTMLInputElement, riesgoVida: HTMLInputElement
   // FORM DE DETALLES Y ENVIAR REPORTE
   async reportar(): Promise<any> {
     //hace las validaciones del algoritmo de identificacion
@@ -494,8 +516,8 @@ mapa() {
                 console.error(err);
               }
             );
-          }
-        } // ---
+          } // ----------
+        }
 
 
 
@@ -505,7 +527,7 @@ mapa() {
             this.comentarioLargo = true;
           }
           else {
-            // if(await pruebaIdentifiacion.Identificacion(this.registrarForm?.value) == false){ // si pasa los algoritmos de validacion guarda el reporte
+            if(await pruebaIdentifiacion.Identificacion(this.registrarForm?.value) == false){ // si pasa los algoritmos de validacion guarda el reporte ----------
 
               /*
               if(pruebaIdentifiacion.VerificarFantasma()){ // si retorna true significa que dicidio hacer el reporte fantasma
@@ -561,32 +583,9 @@ mapa() {
                   
                   if(correcto) {
                     pruebaIdentifiacion.AccederYGuardar(res.toString());
-
-                    // let notificacion: Notificacion = {
-                    //   tipoProblema: this.registrarForm.value.tipoProblema,
-                    //   folioReporte: res.toString(),
-                    //   tipoNotificacion: 'nuevoProblema',
-                    //   usuarios: [{_id: this.registrarForm.value.usuarios._id}]
-                    // }
-
-                    // this.notificacionesService.createNotificacion(notificacion).subscribe(
-                    //   res => {
-                    //     console.log(res.toString());
-                    //   },
-                    //   err => {
-                    //     Swal.fire({
-                    //       title: 'Oh no!',
-                    //       text: 'Ocurrio un problema recibiendo las notificaciones',
-                    //       icon: 'error',
-                    //       confirmButtonText: 'Ok'
-                    //     });
-                    //     console.error(err);
-                    //   }
-                    // );
                     // CUANDO SE CREA UN REPORTE SE VA DIRECTO AL MAPA Y SE REFRESCA
                     this.toggleFormReporte = false; // SE ESCONDE EL FORM DE DETALLES
                     this.toggleDesactivarMapa = false; // SE ACTIVA EL MAPA
-                    this.ngOnInit();
                   }
                 },
                 err => {
@@ -600,7 +599,7 @@ mapa() {
                   console.error(err);
                 }
               );
-            // } // ---
+            } // ----------
           }
         }
     }

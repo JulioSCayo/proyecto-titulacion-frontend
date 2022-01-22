@@ -12,6 +12,18 @@
     align-items: center;
     display: flex;
 }
+    .float-left p {
+        cursor: pointer;
+        color: #000;
+        margin: 0;
+        padding: 0;
+        margin-left: 5px;
+        font-size: 20px;
+        font-weight: bolder;
+    }
+        .float-left p:hover {
+            color: #3A4049;
+        }
 
 .float-right {
     width: auto;

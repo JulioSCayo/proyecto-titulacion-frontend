@@ -13,6 +13,7 @@ import { Loader } from '@googlemaps/js-api-loader';
 export class InicioComponent implements OnInit {
   noCoinciden = false;
   noAceptado = false;
+  cuentaBaneada = false;
 
   constructor(private loginService: LoginService, private router: Router) { }
 
@@ -41,6 +42,15 @@ export class InicioComponent implements OnInit {
             this.noAceptado = true;
           }
         }
+
+        if(res.baneado) {
+          if(res.baneado == "Si") {
+            console.log(res.baneado)
+            validado = false
+            this.cuentaBaneada = true;
+          }
+        }
+        
 
         if(validado) {
           console.log("usuario valido")

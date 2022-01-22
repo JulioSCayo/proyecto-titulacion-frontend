@@ -59,6 +59,8 @@ export class TablaDesatendidosComponent implements OnInit {
 
   prueba: any;
 
+  urlImagen: string = "";
+
   constructor(public reportesService: ReportesService,
               public notificacionesService: NotificacionesService,
               public usuarioComunService: UsuarioComunService,
@@ -245,6 +247,10 @@ export class TablaDesatendidosComponent implements OnInit {
               reputacion: "---"
             })
           }
+          if(reporte.imagen)
+            this.urlImagen = "http://localhost:4000/" + reporte.imagen;
+          else
+            this.urlImagen = "";
       }, 
       err => {
           console.log('No se pudo cargar los reportes');
@@ -649,7 +655,7 @@ export class TablaDesatendidosComponent implements OnInit {
   Descargar(reporte: any){
     const doc = new jsPDF('p', 'pt', 'a4');
     let elementHTML = document.getElementById("ContenedorDescarga");
-    html2canvas(elementHTML!).then(canvas => {
+    html2canvas(elementHTML!, {allowTaint: false, useCORS: true }).then(canvas => {
     const imgWidth = 280; // your own stuff to calc the format you want
     const imgHeight = canvas.height * imgWidth / canvas.width; // your own stuff to calc the format you want
     const contentDataURL = canvas.toDataURL('image/png');

@@ -258,6 +258,10 @@ export class AlgoritmoIdentificacion {
                     text: 'Hemos recibido tu reporte del problema',
                     icon: 'success',
                     confirmButtonText: 'Ok'
+                  }).then((result) => {
+                      if(result.isConfirmed || result.isDismissed) {
+                        window.location.reload();
+                      }
                   });
             }
     }
