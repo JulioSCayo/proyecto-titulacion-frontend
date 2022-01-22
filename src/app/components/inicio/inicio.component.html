@@ -23,6 +23,7 @@
                     <input type="password" [(ngModel)]="usuario.contrasena" name="contrasena" placeholder="Contraseña">
                     <p *ngIf="noCoinciden" class="error" style="margin: 10px 0px -30px 0px;">El usuario y contrasena no coinciden</p>
                     <p *ngIf="noAceptado" class="error" style="margin: 10px 0px -30px 0px;">El usuario especial aún no ha sido aceptado</p>
+                    <p *ngIf="cuentaBaneada" class="error" style="margin: 10px 0px -30px 0px;">La cuenta ha sido bloqueada por 36 horas</p>
                     <input type="submit" class="enviar" value="Ingresar">
                 </div>
             </form>
