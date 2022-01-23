@@ -24,23 +24,43 @@ export class AlgoritmoIdentificacion {
 
      async Identificacion(reporte: any) : Promise<boolean>{
         // this.denegado = false;
-        this.Leer();
-        this.ChecarBan();
-        // if(this.denegado == true){
-        //     return this.denegado
-        // }
-        //this.VerificarFantasma();
-        /*
-        if(this.Leer() == true){ // si existe la variable en el LS con algun reporte hace el resto de metodos
-            // this.VerificarID(reporte._id);
-            this.VerificarDistancia(reporte);
-            // this.VerificarTiempo();
+        // // this.Leer();
+        // this.ChecarBan();
+        // // if(this.denegado == true){
+        // //     return this.denegado
+        // // }
+
+        // -
+
+        this.denegado = this.ChecarBan();
+
+        if(!this.denegado) {
+            if(this.Leer() == true){ // si existe la variable en el LS con algun reporte hace el resto de metodos
+                this.VerificarDistancia(reporte);
+                this.VerificarTiempo();
+                this.VerificarFantasma();
+            }
+            // guarda o no el id del nuevo reporte y da acceso a las siguientes validaciones y algoritmos
+            this.AccederYGuardar(reporte._id);
+            console.log("el estado de denegado es: " ,this.denegado)
+            
+            
         }
-        // guarda o no el id del nuevo reporte y da acceso a las siguientes validaciones y algoritmos
+        return this.denegado;
+        // -
+        
+        // this.VerificarFantasma();
+        
+        // if(this.Leer() == true){ // si existe la variable en el LS con algun reporte hace el resto de metodos
+        //     // this.VerificarID(reporte._id);
+        //     this.VerificarDistancia(reporte);
+        //     this.VerificarTiempo();
+        // }
+        // // guarda o no el id del nuevo reporte y da acceso a las siguientes validaciones y algoritmos
         // this.AccederYGuardar(reporte._id);
-        await console.log("el estado de denegado es: " ,this.denegado)
-        */
-        return await this.denegado;
+        // await console.log("el estado de denegado es: " ,this.denegado)
+        
+        // return await this.denegado;
     }
     
     
@@ -48,17 +68,17 @@ export class AlgoritmoIdentificacion {
         if(localStorage.getItem("reportes")){   // si existe algun reporte aun si solucionar
             this.reportes = JSON.parse(localStorage.getItem('reportes') || '{}'); // convierte a arreglo la varible de LS
             this.tiempos = JSON.parse(localStorage.getItem('tiempos') || '{}'); // convierte a arreglo la varible de LS
-            // this.denegado = true
-            return true
+            // this.denegado = true;
+            return true;
         }else{
-            // this.denegado = false
+            // this.denegado = false;
             console.log("No existe ningun reporte");
             return false
         }
     }
 
 
-    VerificarID( id_reporte: any): boolean{//  ESTE ES EL PASO UNO, PERO OJO CON EL COMENTARIO DE ARRIBA
+    VerificarID( id_reporte: any): boolean{//  ESTE ES EL PASO 1, PERO OJO CON EL COMENTARIO DE ARRIBA
         let identificador = id_reporte;
         this.Leer();
         console.log(this.reportes)

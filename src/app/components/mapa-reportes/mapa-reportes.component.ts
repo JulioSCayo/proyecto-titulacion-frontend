@@ -464,12 +464,12 @@ mapa() {
   async reportar(): Promise<any> {
     //hace las validaciones del algoritmo de identificacion
     // ASI SE UTILIZA LA CLASE CON EL ALGORITMO DE IDENTIFICACION
-    let pruebaIdentifiacion = new AlgoritmoIdentificacion(this.reportesService, this.http); // ---------------
+    let identificacion = new AlgoritmoIdentificacion(this.reportesService, this.http); // ---------------
 
-    if(!pruebaIdentifiacion.ChecarBan()){ // primero revisa que el dispositivo no este baneado
+    if(!identificacion.ChecarBan()){ // primero revisa que el dispositivo no este baneado
         // Revisa si el usuario es invitado o no
         if(!localStorage.getItem('TipoUsr')) {
-          this.registrarForm.value.usuarios._id = '000000000000000000000000'; // (PROVISIONAL)
+          this.registrarForm.value.usuarios._id = '000000000000000000000000'; // Id de usuario invitado
           
         } else {
           this.registrarForm.value.usuarios._id = this.loginService.getUsuarioActual();
@@ -478,13 +478,9 @@ mapa() {
         // SI ES REPLICA SE ENVIAN LOS DATOS PARA MODIFICAR EL REPORTE
         if(this.replica == true) {
 
-          
-          // SE INGRESA LA CREDIBILIDAD Y ID DEL USUARIO QUE VA A REPLICAR (FALTAN LOS ALGORITMOS)
-          if(!pruebaIdentifiacion.VerificarID(this.replicaId)){ // si pasa el algoritmo de validacion hace el reporte ---------------
+          // SE INGRESA LA CREDIBILIDAD Y ID DEL USUARIO QUE VA A REPLICAR
+          if(!identificacion.VerificarID(this.replicaId)){ // No replicar un reporte que ya hiciste // --------------- Quitar para prueba
 
-              // if(pruebaIdentifiacion.VerificarFantasma()){ // si retorna true significa que dicidio hacer el reporte fantasma
-              
-              // };
             this.reportesService.replicarReporte(this.replicaId, this.registrarForm?.value).subscribe(
               async res => {
                 Swal.fire({
@@ -493,12 +489,8 @@ mapa() {
                   icon: 'success',
                   confirmButtonText: 'Ok'
                 });
-                
-                // Algoritmo de urgencia de prueba
-                // let pruebaUrgencia = new AlgoritmoUrgencia(this.reportesService);
-                // console.log("URGENTE: " + await pruebaUrgencia.Urgente(res.toString()));
 
-                pruebaIdentifiacion.AccederYGuardar(res.toString());
+                identificacion.AccederYGuardar(res.toString());
 
                 // CUANDO SE REPLICA UN REPORTE SE VA DIRECTO AL MAPA Y SE REFRESCA
                 this.toggleFormReporte = false; // SE ESCONDE EL FORM DE DETALLES
@@ -516,7 +508,7 @@ mapa() {
                 console.error(err);
               }
             );
-          } // ----------
+          } // --------------- Quitar para prueba
         }
 
 
@@ -527,7 +519,7 @@ mapa() {
             this.comentarioLargo = true;
           }
           else {
-            if(await pruebaIdentifiacion.Identificacion(this.registrarForm?.value) == false){ // si pasa los algoritmos de validacion guarda el reporte ----------
+            // if(await identificacion.Identificacion(this.registrarForm?.value) == false){ // si pasa los algoritmos de validacion guarda el reporte ----------
 
               /*
               if(pruebaIdentifiacion.VerificarFantasma()){ // si retorna true significa que dicidio hacer el reporte fantasma
@@ -537,7 +529,7 @@ mapa() {
               };
               */
               
-              this.registrarForm.value.fantasma = await pruebaIdentifiacion.VerificarFantasma();
+              // this.registrarForm.value.fantasma = await identificacion.VerificarFantasma();
 
               // SE OBTIENEN LAS COORDENADAS DEL MARKER COLOCADO POR EL USUARIO
               const latitud = this.nuevoLatLng.lat();
@@ -582,7 +574,7 @@ mapa() {
                   }
                   
                   if(correcto) {
-                    pruebaIdentifiacion.AccederYGuardar(res.toString());
+                    identificacion.AccederYGuardar(res.toString());
                     // CUANDO SE CREA UN REPORTE SE VA DIRECTO AL MAPA Y SE REFRESCA
                     this.toggleFormReporte = false; // SE ESCONDE EL FORM DE DETALLES
                     this.toggleDesactivarMapa = false; // SE ACTIVA EL MAPA
@@ -599,7 +591,7 @@ mapa() {
                   console.error(err);
                 }
               );
-            } // ----------
+            // } // ----------
           }
         }
     }

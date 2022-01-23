@@ -30,6 +30,7 @@ export class InicioComponent implements OnInit {
   login() {
     this.noAceptado = false;
     this.noCoinciden = false;
+    this.cuentaBaneada = false;
 
     this.loginService.ingresar(this.usuario).subscribe(
       res => {
