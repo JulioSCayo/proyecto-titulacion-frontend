@@ -78,7 +78,7 @@ img {
 .cont-menu ul { 
     margin: 10px 0 10px 0;
     width: 300px;
-    height: calc(100% - 80px);
+    height: calc(100% - 120px);
     padding: 0;
     list-style: none;
     overflow: hidden;
@@ -120,6 +120,34 @@ img {
     align-items: center;
     display: flex;
 }
+
+
+.eliminarTodas {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+
+}
+    .eliminarTodas button {
+        border: none;
+        background: #A0A2A1;
+        color: #000;
+        cursor: pointer;
+        border-radius: 1rem;
+        font-weight: bold;
+        font-size: 16px;
+        height: 30px;
+        margin-bottom: 5px;
+        margin-top: 5px;
+        align-self: center;
+        text-align: center;
+        width: 70%;
+    }
+        .eliminarTodas button:hover {
+            background: #c2c2c2;
+        }
 
 .fechaNotificacion {
     float: right;

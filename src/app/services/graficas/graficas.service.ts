@@ -8,6 +8,7 @@ import { Reporte } from "../../models/reporte";
 export class GraficasService {
   @Output() disparadorDeMes: EventEmitter<any> = new EventEmitter();
   @Output() disparadorDeAño: EventEmitter<any> = new EventEmitter();
+  @Output() disparadorDeInstitucion: EventEmitter<any> = new EventEmitter();
   @Output() disparadorDescargar: EventEmitter<any> = new EventEmitter();
 
   URL_API = 'http://localhost:4000';
@@ -35,9 +36,6 @@ export class GraficasService {
       let anoCorrecto = this.ConvertirAno(año)
 
       usuario += "$" + mesNumero + "$" + anoCorrecto
-
-      let calis = usuario + "|"
-      console.log(calis)
       
       return this.http.get<any>(this.URL_API + '/reportes-graficas/' + usuario);
   }
@@ -48,9 +46,6 @@ export class GraficasService {
     let anoCorrecto = this.ConvertirAno(año)
 
     usuario += "$" + mesNumero + "$" + anoCorrecto
-
-    let calis = usuario + "|"
-    console.log(calis)
     
     return this.http.get<any>(this.URL_API + '/reportes-grafica2/' + usuario);
   }
@@ -61,9 +56,6 @@ export class GraficasService {
     let anoCorrecto = this.ConvertirAno(año)
 
     usuario += "$" + anoCorrecto
-    
-    let calis = usuario + "|"
-    console.log(calis)
 
     return this.http.get<any>(this.URL_API + '/reportes-grafica5/' + usuario);
   }

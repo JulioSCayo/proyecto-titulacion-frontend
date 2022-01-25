@@ -34,6 +34,12 @@
                 </select>
 
                 <button class="btnDescargar" (click)="Descargar()"><i class="fas fa-file-download" ></i></button>
+
+                <select *ngIf="admin" name="" id="selectAno" class="select-css col-md-2"  aria-label="Default select example" (change)="institucionSeleccionada($any($event.target).value )">
+                    <option *ngFor="let i of instituciones" value="{{i}}" >
+                        {{i}}
+                    </option>
+                </select>
                 <!--
                 <select name="" id="" class="select-css col-md-2"  aria-label="Default select example" [(ngModel)]="ano" (change)="anoSeleccionado($any($event.target).value )">
                     <span  *ngFor="let a of anos" >

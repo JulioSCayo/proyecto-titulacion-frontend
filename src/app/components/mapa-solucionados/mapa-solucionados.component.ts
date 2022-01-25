@@ -121,19 +121,53 @@ export class MapaSolucionadosComponent implements OnInit {
   }
 
   mesSeleccionado(m:any) {
+    console.log(this.mes)
+    console.log(this.ano)
     // Se cambia el mes seleccionado
     this.mes = this.meses.indexOf(m);
 
-    // Se filtra 
-    this.filtrar();
+    if(this.ano == this.fecha.getFullYear()) {
+      let indiceMes = this.meses.indexOf(m);
+      
+      if(indiceMes > this.fecha.getMonth()) {
+        this.mes = this.fecha.getMonth();
+        this.fechaMayor();
+      }
+      else
+        this.filtrar(); // Se filtra 
+    }
+    else
+      this.filtrar(); // Se filtra 
   }
   
   anoSeleccionado(a:any) {
+    console.log(this.mes)
+    console.log(this.ano)
+
     // Se cambia el año seleccionado
     this.ano = a;
 
-    // Se filtra 
-    this.filtrar();
+    if(this.ano == this.fecha.getFullYear()) {
+      let indiceMes = this.meses.indexOf(this.mes);
+      
+      if(indiceMes > this.fecha.getMonth()) {
+        this.mes = this.fecha.getMonth();
+        this.fechaMayor();
+      }
+      else
+        this.filtrar(); // Se filtra 
+    }
+    else
+      this.filtrar(); // Se filtra 
+  }
+
+  fechaMayor() {
+    Swal.fire({
+      title: 'Fecha ingresada mayor a la actual!',
+      text: 'Se colocarán los reportes de la fecha actual',
+      icon: 'error',
+      confirmButtonText: 'Ok'
+    });
   }
 
   filtrar() {

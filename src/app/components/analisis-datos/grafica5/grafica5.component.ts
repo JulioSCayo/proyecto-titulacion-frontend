@@ -17,6 +17,8 @@ export class Grafica5Component implements OnInit {
   mesBase: any = 11
   añoBase: any = 2021
 
+  institucionSeleccionada = "Ad";
+
   auxiliar: any = [ ]
   conclusiones: any = [  ]
 
@@ -82,26 +84,20 @@ export class Grafica5Component implements OnInit {
         this.añoBase = res
           this.graficasService.getReportesGrafica5(this.añoBase).subscribe(
             res => {
-              console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
               console.log(res)
               google.charts.load('current', {packages: ['corechart']});
               google.charts.setOnLoadCallback( () => {
-              console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
                 
                 for(let que = 1; que < this.datosRemasterizados.length; que++){
                   this.datosRemasterizados[que][1] = 0
                 }
-              console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
                 
                 this.Calcular(res)
-                console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
   
                 var data = google.visualization.arrayToDataTable(this.auxiliar);
-                console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
   
                 var chart = new google.visualization.BarChart(document.getElementById('barchart_values')); //indica que tipo de grafica va a cargar en que elemento del dom
                 chart.draw(data, this.options);   
-              console.log("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww")
 
               this.Conclusiones()
           } );  
@@ -111,6 +107,51 @@ export class Grafica5Component implements OnInit {
         }
           )
       })
+
+
+    // Disparador del select de institucion que se le muestra solamente al Admin
+      this.graficasService.disparadorDeInstitucion.subscribe(res => {
+        let institucion = res;
+  
+        console.log(institucion)
+  
+          // 'Todas las instituciones', 'SIAPA', 'Infrectructura', 'Bomberos', 'CFE', 'Proteccion', 'Movilidad'
+          if(institucion.substr(0,2) == "To") this.institucionSeleccionada = "Ad"
+          else if(institucion.substr(0,2) == "SI") this.institucionSeleccionada = "SP"
+          else if(institucion.substr(0,2) == "In") this.institucionSeleccionada = "IF"
+          else if(institucion.substr(0,2) == "Bo") this.institucionSeleccionada = "BM"
+          else if(institucion.substr(0,2) == "CF") this.institucionSeleccionada = "CF"
+          else if(institucion.substr(0,2) == "Pr") this.institucionSeleccionada = "PC"
+          else if(institucion.substr(0,2) == "Mo") this.institucionSeleccionada = "SM"
+  
+          console.log(this.institucionSeleccionada)
+  
+          this.graficasService.getReportesGrafica5(this.añoBase).subscribe(
+            res => {
+              console.log(res)
+              google.charts.load('current', {packages: ['corechart']});
+              google.charts.setOnLoadCallback( () => {
+                
+                for(let que = 1; que < this.datosRemasterizados.length; que++){
+                  this.datosRemasterizados[que][1] = 0
+                }
+                
+                this.Calcular(res)
+  
+                var data = google.visualization.arrayToDataTable(this.auxiliar);
+  
+                var chart = new google.visualization.BarChart(document.getElementById('barchart_values')); //indica que tipo de grafica va a cargar en que elemento del dom
+                chart.draw(data, this.options);   
+
+              this.Conclusiones()
+          } );  
+        },
+        err => {
+          console.error(err);
+        }
+          )
+      })
+
 
       this.graficasService.disparadorDescargar.subscribe(res => {
         console.log(res)
@@ -192,41 +233,45 @@ export class Grafica5Component implements OnInit {
     this.auxiliar.length = 0
     this.auxiliar.push(['Problema', 'Cantidad', { role: 'style' }])
 
-    let institucionUsr = localStorage.getItem('Usr')
+    let institucion;
+
+    if(localStorage.getItem('Usr') == "Admin") { // Si es Admin se toma la institución del select
+      institucion = this.institucionSeleccionada;
+    }
+    else { // Si no es Admin se toma la institución que le corresponde
+      institucion = localStorage.getItem('Usr')!;
+    }
+    let institucionUsr = institucion;
 
     let noElPrimero = false
     this.datosRemasterizados.forEach((element: any) => {
       if(noElPrimero){
-          if(element[1] > 0){
+        if(institucionUsr!.substr(0,2) == "SP")
+          if(element[0] == "Inundacion" || element[0] == "Fuga de agua" || element[0] == "Falta de alcantarilla" || element[0] == "Alcantarilla obstruida")
             this.auxiliar.push(element)
-          }else{
-              if(institucionUsr!.substr(0,2) == "SP")
-                if(element[0] == "Inundacion" || element[0] == "Fuga de agua" || element[0] == "Falta de alcantarilla" || element[0] == "Alcantarilla obstruida")
-                  this.auxiliar.push(element)
 
-              if(institucionUsr!.substr(0,2) == "CF")
-                if(element[0] == "Alumbrado" || element[0] == "Cables")
-                  this.auxiliar.push(element)
+        if(institucionUsr!.substr(0,2) == "CF")
+          if(element[0] == "Alumbrado" || element[0] == "Cables")
+            this.auxiliar.push(element)
              
-              if(institucionUsr!.substr(0,2) == "BM")
-                if(element[0] == "Incendio")
-                  this.auxiliar.push(element)
+        if(institucionUsr!.substr(0,2) == "BM")
+          if(element[0] == "Incendio")
+            this.auxiliar.push(element)
 
-              if(institucionUsr!.substr(0,2) == "PC")
-                if(element[0] == "Arbol caido" || element[0] == "Escombros")
-                  this.auxiliar.push(element)   
+        if(institucionUsr!.substr(0,2) == "PC")
+          if(element[0] == "Arbol caido" || element[0] == "Escombros")
+            this.auxiliar.push(element)   
               
-              if(institucionUsr!.substr(0,2) == "SM")
-                if(element[0] == "Vehiculo abandonado")
-                  this.auxiliar.push(element)   
+        if(institucionUsr!.substr(0,2) == "SM")
+          if(element[0] == "Vehiculo abandonado")
+            this.auxiliar.push(element)   
 
-              if(institucionUsr!.substr(0,2) == "IF")
-                if(element[0] == "Socavón")
-                  this.auxiliar.push(element)   
+        if(institucionUsr!.substr(0,2) == "IF")
+          if(element[0] == "Socavón")
+            this.auxiliar.push(element)   
   
-              if(institucionUsr!.substr(0,2) == "Ad")
-                  this.auxiliar.push(element)    
-          }
+        if(institucionUsr!.substr(0,2) == "Ad")
+          this.auxiliar.push(element)    
       }
       noElPrimero = true
     });

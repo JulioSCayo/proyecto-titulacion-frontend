@@ -24,7 +24,8 @@
                     <th class="acciones">Detalles</th>
                 </tr>
                 <tr *ngFor="let reporte of reportes | busquedaReportes: busqueda">
-                    <td>{{ reporte._id }}</td>
+                    <td *ngIf="reporte.promTiempoCronico"title="Este problema de {{reporte.tipoProblema}} ha ocurrido en promedio cada {{reporte.promTiempoCronico}} días">{{ reporte._id }}</td>
+                    <td *ngIf="!reporte.promTiempoCronico" title=" Problema de {{reporte.tipoProblema}}">{{ reporte._id }}</td>
                     <th>{{ reporte.credibilidad }}</th>
                     <td>{{ reporte.fechaCreacion | date:'dd-MM-yyyy' }}</td>
                     <th>{{ reporte.fechaSolucion | date:'dd-MM-yyyy' }}</th>
@@ -108,8 +109,8 @@
                               {{a}}
                           </option>
                       </select>
-
-
+                        <p *ngIf="fechaMayor" class="error">Fecha seleccionada no válida</p>
+                        <p *ngIf="fechaMayor" class="error">Se muestra el mes actual</p>
               </div>
           </div>
 

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-informacion',
@@ -66,8 +67,18 @@ export class InformacionComponent implements OnInit {
     if(enviar) {
       var left = (screen.width - 700) / 2;
       var top = (screen.height - 400) / 2;
-              
-      window.open('mailto:a18100272@ceti.mx?subject=Comentario de ' + this.nombre + ', Correo de contacto: ' + this.correo + '&body=' + this.comentario, "Enviar comentario", "width=700, height=400, top=" + top + ", left=" + left);
+
+      Swal.fire({
+        title: 'Gracias por el aporte!',
+        text: 'Solamente debes presionar "Enviar" y recibiremos tu comentario',
+        icon: 'success',
+        confirmButtonText: 'Ok'
+      }).then((result) => {
+          if(result.isConfirmed || result.isDismissed) {
+            window.open('mailto:a18100272@ceti.mx?subject=Comentario de ' + this.nombre + ', Correo de contacto: ' + this.correo + '&body=' + this.comentario, "Enviar comentario", "width=700, height=400, top=" + top + ", left=" + left);
+            window.location.reload();
+          }
+      });     
     }
   }
 }
