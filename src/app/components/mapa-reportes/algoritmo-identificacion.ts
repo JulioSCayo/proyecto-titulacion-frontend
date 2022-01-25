@@ -10,7 +10,7 @@ export class AlgoritmoIdentificacion {
 
     constructor(public reportesService: ReportesService, private http: HttpClient) { }
  
-    mensajeEror = {
+    mensajeError: any = {
         title: 'Oh no!',
         text: 'No se puede reportar',
         icon: 'error',
@@ -22,45 +22,44 @@ export class AlgoritmoIdentificacion {
     reportes: any[] = [];
     tiempos: any[] = [];
 
-     async Identificacion(reporte: any) : Promise<boolean>{
-        // this.denegado = false;
-        // // this.Leer();
-        // this.ChecarBan();
-        // // if(this.denegado == true){
-        // //     return this.denegado
-        // // }
 
-        // -
+    async Identificacion(reporte: any) : Promise<boolean>{
+        // this.denegado = this.ChecarBan();
 
-        this.denegado = this.ChecarBan();
+        // console.log(reporte)
 
-        if(!this.denegado) {
-            if(this.Leer() == true){ // si existe la variable en el LS con algun reporte hace el resto de metodos
-                this.VerificarDistancia(reporte);
-                this.VerificarTiempo();
-                this.VerificarFantasma();
-            }
-            // guarda o no el id del nuevo reporte y da acceso a las siguientes validaciones y algoritmos
-            this.AccederYGuardar(reporte._id);
-            console.log("el estado de denegado es: " ,this.denegado)
+        // if(!this.denegado) {
+        //     console.log("Entra al primer if")
+        //     if(this.Leer() == true){ // si existe la variable en el LS con algun reporte hace el resto de metodos
+        //         this.VerificarDistancia(reporte);
+        //         // this.VerificarTiempo();
+        //         // this.VerificarFantasma();
+        //     }
+        //     // guarda o no el id del nuevo reporte y da acceso a las siguientes validaciones y algoritmos
+        //     this.AccederYGuardar(reporte._id);
+        //     console.log("el estado de denegado es: " ,this.denegado)
             
             
-        }
-        return this.denegado;
-        // -
-        
-        // this.VerificarFantasma();
-        
-        // if(this.Leer() == true){ // si existe la variable en el LS con algun reporte hace el resto de metodos
-        //     // this.VerificarID(reporte._id);
-        //     this.VerificarDistancia(reporte);
-        //     this.VerificarTiempo();
         // }
-        // // guarda o no el id del nuevo reporte y da acceso a las siguientes validaciones y algoritmos
-        // this.AccederYGuardar(reporte._id);
-        // await console.log("el estado de denegado es: " ,this.denegado)
+        // return this.denegado;
         
-        // return await this.denegado;
+
+        // this.denegado = false;
+        // this.Leer();
+        this.ChecarBan();
+        if(this.denegado == true){
+            return this.denegado
+        }
+        
+        if(this.Leer() == true){ // si existe la variable en el LS con algun reporte hace el resto de metodos
+            // this.VerificarDistancia(reporte);
+            // this.VerificarTiempo();
+            // // // // // // this.VerificarFantasma();
+        }
+        // guarda o no el id del nuevo reporte y da acceso a las siguientes validaciones y algoritmos
+        // // // // // // this.AccederYGuardar(reporte._id);
+        await console.log("el estado de denegado es: " ,this.denegado)
+        return await this.denegado;
     }
     
     
@@ -81,8 +80,8 @@ export class AlgoritmoIdentificacion {
     VerificarID( id_reporte: any): boolean{//  ESTE ES EL PASO 1, PERO OJO CON EL COMENTARIO DE ARRIBA
         let identificador = id_reporte;
         this.Leer();
-        console.log(this.reportes)
-        console.log(id_reporte)
+        // console.log(this.reportes)
+        // console.log(id_reporte)
         this.reportes.forEach(e => {
             if(e == identificador){ // si algun identificador coincide significa que este usuario habia hecho el reporte
                 // console.log("No se puede repotar este problema de nuevo");
@@ -118,13 +117,24 @@ export class AlgoritmoIdentificacion {
                         lngComparada = res.ubicacion.longitud
 
                         //  (LatNueva  -  LataComparar) / 111,100 = distancia en metros entre las dos latitudes, igual con longitudes
-                        if( ((reporteActual.ubicacion.latitud - latComparada) / 111100) < 30 && ((reporteActual.ubicacion.longitud - lngComparada) / 111100) < 30){
+                        let distanciaLatitud = ((reporteActual.ubicacion.latitud - latComparada) * 111100)
+                        let distaciaLongitud = ((reporteActual.ubicacion.longitud - lngComparada) * 111100)
+
+                        if(distanciaLatitud < 0)
+                            distanciaLatitud = distanciaLatitud*-1
+                            
+                        if(distaciaLongitud < 0)
+                            distaciaLongitud = distaciaLongitud*-1
+
+                        console.log("Parte izquierda: " + distanciaLatitud + "  |  " + "Parte derecha: " + distaciaLongitud)
+
+                        if( distanciaLatitud < 30 && distaciaLongitud < 30){
                             //la distancia es menor a 30m
-                            console.log(latComparada, lngComparada)
-                            console.log(res.tipoProblema)
+                            // console.log(latComparada, lngComparada)
+                            // console.log(res.tipoProblema)
                             if(reporteActual.tipoProblema == res.tipoProblema){
                                 if(contador == 0){
-                                    console.log(reporteActual.ubicacion.latitud, reporteActual.ubicacion.longitud)
+                                    // console.log(reporteActual.ubicacion.latitud, reporteActual.ubicacion.longitud)
                                     // el tipo de problema coincide y la distancia es menor a 30 m, no se puede reportar
                                     this.denegado = true
                                     console.log("El reporte no se puede reportar NOO!")
@@ -141,24 +151,18 @@ export class AlgoritmoIdentificacion {
                             }
                         }
                     }, 
-                        (err: any) => {
-                            console.error(err);
-                        }
-                );
+                    (err: any) => {
+                        console.error(err);
+                    })
             }
         });
-
     }
 
 
     VerificarTiempo(){    // ESTE ES EL PASO 3
         let tiempo;
-        console.log("ENTRO AL PASO 3")
-
             tiempo = this.reportes[this.reportes.length - 1] 
-    
             if((this.fecha.getTime() - tiempo) < 300000 ){
-                console.log(" El reporte no se puede realizar, no han pasado mas de 5 min desde el ultimo")
                 this.denegado = true;
                 Swal.fire({
                     title: 'Oh no!',
@@ -169,13 +173,14 @@ export class AlgoritmoIdentificacion {
             }else{
                 console.log(" El reporte se puede realizar")
                 this.denegado = false;
-                this.mensajeEror.text = "No se puede reportar mas un reporte cada 5 minutos."
+                // this.mensajeError.text = "No se puede reportar mas un reporte cada 5 minutos."
             }
     }
 
 
-    async VerificarFantasma(): Promise<boolean>{  // ESTE ES EL PASO 4
+    VerificarFantasma(){  // ESTE ES EL PASO 4
         let contador = 1;
+        // console.log(this.tiempos)
         this.tiempos.forEach(e => { // paso 2 del cuaderno
             if(e >= (this.fecha.getTime() - 86400000)){
                 console.log("Fue hace menos de 24 horas");
@@ -191,14 +196,21 @@ export class AlgoritmoIdentificacion {
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Entiendo, enviar'
-              }).then((result => {
-                if (result.isConfirmed){
-
-                }else{
-                    // this.denegado = false;
+                confirmButtonText: 'Entiendo, enviar',
+                cancelButtonText: 'Cancelar'
+              }).then((result) => {
+                if(result.isConfirmed || result.isDismissed) {
+                  // window.location.reload();
+                  console.log("hace putas algo")
                 }
-              }));
+            });
+            // if (result.isConfirmed){
+            //     console.log("entro a confirmado, TRUE")
+            //     return true
+            // }else{
+            //     console.log("entro a desconfirmado, FALSE")
+            //     return false
+            // }
         }else if(contador == 4){
             Swal.fire({
                 title: 'Seguro?',
@@ -253,8 +265,7 @@ export class AlgoritmoIdentificacion {
 
 
     AccederYGuardar(idReporte: any){
-        console.log(this.reportes)
-        console.log(this.tiempos)
+
             if(this.denegado == true){
                 console.log("-- NO SE PUEDE HACER EL REPORTE --")
                 this.reportesService.deleteReporte(idReporte.toString()).subscribe(
@@ -263,10 +274,10 @@ export class AlgoritmoIdentificacion {
                     },
                     err =>{
                       console.log("Error al eliminar el reporte")
-                    }
-                  )
+                    })
             }else{
                 this.reportes.pop();
+                // console.log(idReporte)
                 this.reportes.push(idReporte)
                 this.reportes.push(this.fecha.getTime())
                 this.tiempos.push(this.fecha.getTime())
@@ -280,9 +291,11 @@ export class AlgoritmoIdentificacion {
                     confirmButtonText: 'Ok'
                   }).then((result) => {
                       if(result.isConfirmed || result.isDismissed) {
-                        window.location.reload();
+                        // window.location.reload();
                       }
                   });
             }
     }
+
+
 }

@@ -519,18 +519,18 @@ mapa() {
             this.comentarioLargo = true;
           }
           else {
-            // if(await identificacion.Identificacion(this.registrarForm?.value) == false){ // si pasa los algoritmos de validacion guarda el reporte ----------
-
-              /*
-              if(pruebaIdentifiacion.VerificarFantasma()){ // si retorna true significa que dicidio hacer el reporte fantasma
+            if(await identificacion.Identificacion(this.registrarForm?.value) == false){ // si pasa los algoritmos de validacion guarda el reporte ----------
+              ///* ------
+              if(identificacion.VerificarFantasma()){ // si retorna true significa que dicidio hacer el reporte fantasma
                 this.registrarForm.value.fantasma = true;
+                console.log(this.registrarForm.value)
               }else{
                 this.registrarForm.value.fantasma = false;
+                console.log(this.registrarForm.value)
               };
-              */
+              //*/ ------
               
               // this.registrarForm.value.fantasma = await identificacion.VerificarFantasma();
-
               // SE OBTIENEN LAS COORDENADAS DEL MARKER COLOCADO POR EL USUARIO
               const latitud = this.nuevoLatLng.lat();
               const longitud = this.nuevoLatLng.lng();
@@ -549,7 +549,6 @@ mapa() {
                     icon: 'success',
                     confirmButtonText: 'Ok'
                   }); */
-
                   if(this.selectedImage?.name) {
                     const formData = new FormData;
                     formData.append('imagen', "prueba");
@@ -573,12 +572,16 @@ mapa() {
                     );
                   }
                   
+                  console.log(correcto)
                   if(correcto) {
+                    console.log(res.toString())
                     identificacion.AccederYGuardar(res.toString());
+                    // this.ngOnInit();
                     // CUANDO SE CREA UN REPORTE SE VA DIRECTO AL MAPA Y SE REFRESCA
                     this.toggleFormReporte = false; // SE ESCONDE EL FORM DE DETALLES
                     this.toggleDesactivarMapa = false; // SE ACTIVA EL MAPA
                   }
+
                 },
                 err => {
                   Swal.fire({
@@ -587,11 +590,10 @@ mapa() {
                     icon: 'error',
                     confirmButtonText: 'Ok'
                   });
-
                   console.error(err);
                 }
               );
-            // } // ----------
+            } // ----------
           }
         }
     }

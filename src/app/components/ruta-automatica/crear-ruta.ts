@@ -13,6 +13,8 @@ export class CrearRuta {
 
     toggleCrearRuta: boolean = false;
 
+    fecha = new Date()
+
     reporte: Reporte = {
         ubicacion: {
             latitud: 0,
@@ -102,12 +104,14 @@ export class CrearRuta {
                       this.reportesService.disparadorDesactivarBotones.emit("Desactivar")
                       return
                   }
-  
+
                   for(let reporte of this.reportes) {  // calcula la urgencia de cada reporte y la guarda en un arreglo junto su id
                     let urgenciaReporte = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);
                     let obj = {id: reporte._id, urgencia:urgenciaReporte, ubicacion: reporte.ubicacion, distancia:0}
                     list.push(obj);
                   }
+                    
+                    let reportesTodos = list;
 
                     // ordena las urgencia de mayor a menor y pasa las primeras 5 a otro arreglo
                     let top5 = list.sort(function (a: any, b: any){
@@ -127,11 +131,11 @@ export class CrearRuta {
                         contadorSalto++
                     });
 
-                    console.log(top5)
-                    console.log(salto)
-                    console.log(contadorSalto)
+                    // console.log(top5)
+                    // console.log(salto)
+                    // console.log(contadorSalto)
                     top5.splice(contadorSalto, 1)
-                    console.log(top5)
+                    // console.log(top5)
 
                     //AHORA ASIGNA UNO DE ESOS REPORTES PARA SER RESUELTO
                     if(!navigator.geolocation){// obtiene la ubicacion actual del usuario
@@ -150,23 +154,50 @@ export class CrearRuta {
                                 console.log("latitude: " +  coordenadasActuales.latitude.toString() + "longitude: " +  coordenadasActuales.longitude.toString());
                                 // console.log("precision: " + coordenadasActuales.accuracy.toString().slice(-3) + " metros");
 
-                                // calcula la distancia en km que hay entre la posicion actual y la ubicacion de cada reporte
-                                // mediante la formula de haversine
-                                top5.forEach( (e: any)=>{
-                                    e.distancia = this.CalcularDistancia(e, coordenadasActuales);
-                                    console.log(e.distancia)
-                                })
 
-                                //ordena el top 5 por distancia, del mas cercano al mas lejano
-                                let topDistancias = top5.sort(function (a: any, b: any){  
-                                    return (a.distancia - b.distancia)
-                                });
                                 let idReporteMasCercano: string | undefined , contador = 0;
+                                let ordenDistancias
 
-                                topDistancias.forEach((e: any) => {
+                                // checa cuanto tiempo falta para que termine la jornada laboral, en base a eso asigna ruta,
+                                // en caso de que falte menos de 1:30 hrs asigna el problema mas cercano,
+                                // en caso de que falte mas de 1:30 hrs asigna de forma normal
+                                let diferencia = JSON.parse(localStorage.getItem('DiferenciaTiempo') || '{}');
+                                let tiempoActual = this.fecha.getTime()
+                                let sumaTermino = diferencia[0] + diferencia[1]
+                                let horaMenos = sumaTermino - 5400000
+
+                                if(tiempoActual < horaMenos){ //Entonces asigna de manera normal
+                                    console.log("Asigna de manera normal")
+
+                                    // calcula la distancia en km que hay entre la posicion actual y la ubicacion de cada reporte
+                                    // mediante la formula de haversine
+                                    top5.forEach( (e: any)=>{
+                                        e.distancia = this.CalcularDistancia(e, coordenadasActuales);
+                                        console.log(e.distancia)
+                                    })
+
+                                    //ordena el top 5 por distancia, del mas cercano al mas lejano
+                                     ordenDistancias = top5.sort(function (a: any, b: any){  
+                                        return (a.distancia - b.distancia)
+                                    });
+                                }else{ // asigna unicamente en base a la distancia
+                                    console.log("Asigna unicamente en base a la distancia")
+
+                                    list.forEach( (e: any)=>{
+                                        e.distancia = this.CalcularDistancia(e, coordenadasActuales);
+                                    })
+
+                                    // ordena todos los reportes por distancia
+                                    ordenDistancias = list.sort(function (a: any, b: any){  
+                                        return (a.distancia - b.distancia)
+                                    });
+                                }
+                                console.log(ordenDistancias)
+
+                                // asigna el reporte mas cercano a la primera posicion del arreglo ordenado
+                                ordenDistancias.forEach((e: any) => {
                                     if(contador == 0)
                                         idReporteMasCercano = e.id
-
                                     contador++;
                                 });
 
@@ -193,7 +224,11 @@ export class CrearRuta {
                                                         console.log("paso set interval")
                                                         navigator.geolocation.getCurrentPosition(//este metodo recibe 3 parametros,dos metodos y un objeto
                                                             (pos) =>{   
-                                                                let distancia = this.CalcularDistancia(pos.coords, update?.ubicacion)                            
+                                                                let coordenadasAct = pos.coords;
+                                                                console.log(pos.coords)
+                                                                console.log(update?.ubicacion)
+                                                                let distancia = this.CalcularDistancia(update, coordenadasAct)                            
+                                                                console.log(distancia)
                                                                 if(distancia <= 0.050){
                                                                     console.log(distancia)
                                                                     update!.estado = "En proceso";
@@ -215,8 +250,9 @@ export class CrearRuta {
                                                             },  {enableHighAccuracy: true,
                                                                 timeout: 5000,
                                                                 maximumAge: 0});
-                                                    }, 3000000)
-                                                
+                                                    }, 15000)     // 3000000
+
+                                                    console.log("DESPUES DEL INTERVAL")
                                                 },
                                                 err => {
                                                     console.warn("Error al momento de asignar el reporte")

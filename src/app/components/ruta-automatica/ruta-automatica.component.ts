@@ -267,7 +267,11 @@ export class RutaAutomaticaComponent implements OnInit {
 
 
   finTiempoJornada(durJornada: number) {
+    localStorage.removeItem("DiferenciaTiempo")
     localStorage.setItem("FinJornada", durJornada.toString())
+    let diferencias = [durJornada, this.fecha.getTime()]
+    localStorage.setItem("DiferenciaTiempo", JSON.stringify(diferencias))
+    
     console.log("---------------------")
     console.log(durJornada)
     setTimeout(() => {
@@ -338,10 +342,6 @@ export class RutaAutomaticaComponent implements OnInit {
           }, error =>{
             console.log("Error al saltar reporte")
           })
-        
-
-
-
 
         this.toggleSaltarReporte = false;
         this.toggleDetallesRuta = false;
@@ -374,16 +374,17 @@ export class RutaAutomaticaComponent implements OnInit {
             // localStorage.removeItem("FinJornada")
             console.log("eliminar")
             localStorage.removeItem("desactivado")
-          }, 10000)
+          }, 30000) //600000
           console.log("Paso el settimeout")
-          window.location.reload();
 
+          this.reportesService.terminoRutaRepentino(this.reporte._id).subscribe(
+            res =>{
+              console.log(res)
+            }, error =>{
+              console.log("Error al saltar reporte: ", error)
+            })
 
-          // localStorage.setItem("FinJornada", durJornada.toString())
-          // console.log("---------------------")
-          // console.log(durJornada)
-
-
+          this.ngOnInit();
         });
       }
     });
