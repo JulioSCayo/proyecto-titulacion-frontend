@@ -60,6 +60,9 @@ export class TablaDesatendidosComponent implements OnInit {
   prueba: any;
 
   urlImagen: string = "";
+  fechaMayor = false;
+
+  tiempoMouseDown = false;
 
   constructor(public reportesService: ReportesService,
               public notificacionesService: NotificacionesService,
@@ -143,7 +146,6 @@ export class TablaDesatendidosComponent implements OnInit {
         this.reportes = []
         setTimeout( ()=> {
           this.reportes = ordenados2
-          console.log(this.reportes)
         },1)
        break;
       case "Más antiguo":
@@ -160,6 +162,7 @@ export class TablaDesatendidosComponent implements OnInit {
         this.reportes = []
         setTimeout( ()=> {
           this.reportes = ordenados3
+          console.log("this.reportes")
         },1)
       break;
       default:
@@ -225,13 +228,49 @@ export class TablaDesatendidosComponent implements OnInit {
 
 
   async mesSeleccionado(m:any): Promise<void>{
-    this.mesBase = m
-    this.getReportesXmes()
+    this.mesBase = m;
+    this.fechaMayor = false;
+
+    if(this.anoBase == this.fecha.getFullYear()) {
+      let indiceMes = this.meses.indexOf(m);
+      
+      if(indiceMes == -1) {
+        indiceMes = this.mesesBase.indexOf(m);
+        if(indiceMes == -1) {
+          indiceMes = this.otroDeMeses.indexOf(m);
+        }
+      }
+      
+      if(indiceMes > this.fecha.getMonth()) {
+        this.mesBase = this.meses[this.fecha.getMonth()];
+        this.fechaMayor = true;
+      }
+    }
+
+    this.getReportesXmes();
   }
   
   async anoSeleccionado(a:any): Promise<void>{
-    this.anoBase = a
-    this.getReportesXmes()
+    this.anoBase = a;
+    this.fechaMayor = false;
+
+    if(this.anoBase == this.fecha.getFullYear()) {
+      let indiceMes = this.meses.indexOf(this.mesBase);
+      
+      if(indiceMes == -1) {
+        indiceMes = this.mesesBase.indexOf(this.mesBase);
+        if(indiceMes == -1) {
+          indiceMes = this.otroDeMeses.indexOf(this.mesBase);
+        }
+      }
+      
+      if(indiceMes > this.fecha.getMonth()) {
+        this.mesBase = this.meses[this.fecha.getMonth()];
+        this.fechaMayor = true;
+      }
+    }
+
+    this.getReportesXmes();
   }
 
 
@@ -533,20 +572,24 @@ export class TablaDesatendidosComponent implements OnInit {
           ]
         });
 
-        const infoWindow = new google.maps.InfoWindow();
-        let newMarker: google.maps.Marker[] = [];
-        // const latitud = this.nuevoLatLng.lat();
-        // const longitud = this.nuevoLatLng.lng();
+        // Se llama al método que muestra todos los reportes que hay en la lista para el filtrado especial
+        this.reportesExistentes(map);
+
+        // CREO QUE YA NO SE OCUPA LO DE ABAJO
+        // const infoWindow = new google.maps.InfoWindow();
+        // let newMarker: google.maps.Marker[] = [];
+        // // const latitud = this.nuevoLatLng.lat();
+        // // const longitud = this.nuevoLatLng.lng();
         
-        const nuevoReporteMarker = {
-          path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z', //
-          fillColor: "#04CAB3",
-          fillOpacity: 1,
-          strokeWeight: 0,
-          rotation: 0,
-          scale: 2,
-          anchor: new google.maps.Point(8, 12)
-        };
+        // const nuevoReporteMarker = {
+        //   path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z', //
+        //   fillColor: "#04CAB3",
+        //   fillOpacity: 1,
+        //   strokeWeight: 0,
+        //   rotation: 0,
+        //   scale: 2,
+        //   anchor: new google.maps.Point(8, 12)
+        // };
 
         let X1 = 0, X2 = 0, Y1 = 0, Y2 = 0;
         let marco1 = document.getElementById("marco1");
@@ -599,9 +642,68 @@ export class TablaDesatendidosComponent implements OnInit {
             }
         })
       });
-
-      
     }
+
+    // AGREGAR LOS MARCADORES DE LOS REPORTES
+  reportesExistentes(map: google.maps.Map) {
+
+    // LOS COLORES DE LOS MARCADORES DE CADA TIPO DE PROBLEMA
+    const markerAlumbrado = "#ccc547";
+    const markerAgua = "#6cb7ce";
+    const markerObstruccion = "#864109";
+    const markerIncendio = "#fd8037";
+        
+    // FOR PARA CREAR TODOS LOS MARCADORES
+    for (let i = 0; i < this.reportes.length; i++) {
+      let markerColor;
+
+      // SE IDENTIFICA EL TIPO DE REPORTE PARA ASIGNAR UN COLOR
+      switch (this.reportes[i].tipoProblema) {
+        case "Alumbrado":
+          markerColor = markerAlumbrado;
+          break;
+
+        case "Inundación":
+        case "Fuga de agua":
+        case "Falta de alcantarilla":
+        case "Alcantarilla obstruida":
+          markerColor = markerAgua;
+          break;
+
+        case "Escombros tirados":
+        case "Vehículo abandonado":
+        case "Árbol caído":
+        case "Socavón":
+        case "Cables caídos":
+          markerColor = markerObstruccion;
+          break;
+
+        case "Incendio":
+          markerColor = markerIncendio;
+          break;
+      }
+
+      // EL ICONO TOMA EL COLOR QUE LE CORRESPONDE
+      const icon = {
+        path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
+        fillColor: markerColor,
+        fillOpacity: 1,
+        strokeWeight: 0,
+        rotation: 0,
+        scale: 2,
+        anchor: new google.maps.Point(15, 30)
+      };
+
+      // SE CREA EL MARCADOR CON EL ICONO Y LAS COORDENADAS DEL PROBLEMA
+      const marker = new google.maps.Marker({
+        position: { lat: this.reportes[i].ubicacion.latitud, lng: this.reportes[i].ubicacion.longitud },
+        map: map,
+        title: "Ver detalles",
+        icon: icon,
+        optimized: true,
+      });
+    }
+  }
 
 
     filtradoMapa(){
@@ -664,5 +766,37 @@ export class TablaDesatendidosComponent implements OnInit {
     })
   }
 
-  
+  Pinnear(numero: Number, _id: String) {
+    if(numero == 1) {
+      this.tiempoMouseDown = false;
+      setTimeout(() => {
+        this.tiempoMouseDown = true;
+      }, 2000);
+    }
+    else {
+      if(this.tiempoMouseDown) {
+        console.log(this.reportes)
+        let index = 0;
+        let aux: any = [];
+        let noPinneados = this.reportes;
+
+        for(let i = 0; i < noPinneados.length; i++) {
+          if(noPinneados[i]._id === _id)
+              index = i;
+        }
+
+        let pinneado: any = noPinneados.splice(index, 1)[0];
+
+        aux.push(pinneado);
+
+        for(let noPinneado of noPinneados) {
+          aux.push(noPinneado);
+        }
+
+        this.reportes = [];
+
+        this.reportes = aux;     
+      }
+    }
+  }
 }

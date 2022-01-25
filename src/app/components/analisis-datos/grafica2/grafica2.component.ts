@@ -17,6 +17,8 @@ export class Grafica2Component implements OnInit {
   mesBase: any = 0
   añoBase: any = 0
 
+  institucionSeleccionada = "Ad";
+
   auxiliar: any = [ ]
   conclusiones: any = [  ]
 
@@ -154,6 +156,54 @@ export class Grafica2Component implements OnInit {
     })
 
 
+    // Disparador del select de institucion que se le muestra solamente al Admin
+    this.graficasService.disparadorDeInstitucion.subscribe(res => {
+      let institucion = res;
+
+      console.log(institucion)
+
+        // 'Todas las instituciones', 'SIAPA', 'Infrectructura', 'Bomberos', 'CFE', 'Proteccion', 'Movilidad'
+        if(institucion.substr(0,2) == "To") this.institucionSeleccionada = "Ad"
+        else if(institucion.substr(0,2) == "SI") this.institucionSeleccionada = "SP"
+        else if(institucion.substr(0,2) == "In") this.institucionSeleccionada = "IF"
+        else if(institucion.substr(0,2) == "Bo") this.institucionSeleccionada = "BM"
+        else if(institucion.substr(0,2) == "CF") this.institucionSeleccionada = "CF"
+        else if(institucion.substr(0,2) == "Pr") this.institucionSeleccionada = "PC"
+        else if(institucion.substr(0,2) == "Mo") this.institucionSeleccionada = "SM"
+
+        console.log(this.institucionSeleccionada)
+
+        this.graficasService.getReportesGrafica2(this.mesBase, this.añoBase).subscribe(
+          res => {
+            console.log(res)
+            google.charts.load('current', {'packages':['corechart', 'bar']});
+            google.charts.setOnLoadCallback( () => {
+              var chartDiv = document.getElementById('chart_div');
+  
+              solucionados = res.solucionados
+              elResto = res.elResto
+  
+              for(let que = 1; que < this.ordenDatos.length; que++){
+                this.ordenDatos[que][1] = 0
+                this.ordenDatos[que][2] = 0
+              }
+  
+              this.Convertir(elResto, solucionados)
+      
+              var data = google.visualization.arrayToDataTable(this.auxiliar);
+      
+              var materialChart = new google.charts.Bar(chartDiv);
+              materialChart.draw(data, google.charts.Bar.convertOptions(this.materialOptions));
+  
+              this.Conclusiones();
+            });
+            },
+          err => {
+            console.error(err);
+          });
+    });
+
+
     this.graficasService.disparadorDescargar.subscribe(res => {
       console.log(res)
       if(res == "Grafica 2"){
@@ -276,35 +326,45 @@ export class Grafica2Component implements OnInit {
     this.auxiliar.length = 0
     this.auxiliar.push(['Problema', 'Reportados', 'Solucionados'])
 
-    let institucionUsr = localStorage.getItem('Usr')
+    let institucion;
+
+    if(localStorage.getItem('Usr') == "Admin") { // Si es Admin se toma la institución del select
+      institucion = this.institucionSeleccionada;
+    }
+    else { // Si no es Admin se toma la institución que le corresponde
+      institucion = localStorage.getItem('Usr')!;
+    }
+    let institucionUsr = institucion;
 
     let noElPrimero = false
     this.ordenDatos.forEach((element: any) => {
       if(noElPrimero){
-          if(element[1] > 0){
+        if(institucionUsr!.substr(0,2) == "SP")
+          if(element[0] == "Inundacion" || element[0] == "Fuga de agua" || element[0] == "Falta de alcantarilla" || element[0] == "Alcantarilla obstruida")
             this.auxiliar.push(element)
-          }else{
-              if(institucionUsr!.substr(0,2) == "SP")
-                if(element[0] == "Inundacion" || element[0] == "Fuga de agua" || element[0] == "Falta de alcantarilla" || element[0] == "Alcantarilla obstruida")
-                  this.auxiliar.push(element)
-              if(institucionUsr!.substr(0,2) == "CF")
-                if(element[0] == "Alumbrado" || element[0] == "Cables")
-                  this.auxiliar.push(element)
-              if(institucionUsr!.substr(0,2) == "BM")
-                if(element[0] == "Incendio")
-                  this.auxiliar.push(element)
-              if(institucionUsr!.substr(0,2) == "PC")
-                if(element[0] == "Arbol caido" || element[0] == "Escombros")
-                  this.auxiliar.push(element)   
-              if(institucionUsr!.substr(0,2) == "SM")
-                if(element[0] == "Vehiculo abandonado")
-                  this.auxiliar.push(element)   
-              if(institucionUsr!.substr(0,2) == "IF")
-                if(element[0] == "Socavón")
-                  this.auxiliar.push(element)   
-              if(institucionUsr!.substr(0,2) == "Ad")
-                  this.auxiliar.push(element)
-          }
+
+        if(institucionUsr!.substr(0,2) == "CF")
+          if(element[0] == "Alumbrado" || element[0] == "Cables")
+            this.auxiliar.push(element)
+             
+        if(institucionUsr!.substr(0,2) == "BM")
+          if(element[0] == "Incendio")
+            this.auxiliar.push(element)
+
+        if(institucionUsr!.substr(0,2) == "PC")
+          if(element[0] == "Arbol caido" || element[0] == "Escombros")
+            this.auxiliar.push(element)   
+              
+        if(institucionUsr!.substr(0,2) == "SM")
+          if(element[0] == "Vehiculo abandonado")
+            this.auxiliar.push(element)   
+
+        if(institucionUsr!.substr(0,2) == "IF")
+          if(element[0] == "Socavón")
+            this.auxiliar.push(element)   
+  
+        if(institucionUsr!.substr(0,2) == "Ad")
+          this.auxiliar.push(element)    
       }
       noElPrimero = true
     });

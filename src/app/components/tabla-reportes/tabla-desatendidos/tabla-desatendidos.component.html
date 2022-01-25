@@ -29,10 +29,11 @@
                 </thead>
                 <tbody >
                     <tr *ngFor="let reporte of reportes | busquedaReportes: busqueda">
-                        <td>{{ reporte._id }}</td>
+                        <td *ngIf="reporte.promTiempoCronico" title="Este problema de {{reporte.tipoProblema}} ha ocurrido en promedio cada {{reporte.promTiempoCronico}} días">{{ reporte._id }}</td>
+                        <td *ngIf="!reporte.promTiempoCronico" title=" Problema de {{reporte.tipoProblema}}">{{ reporte._id }}</td>
                         <td>{{ reporte.credibilidad }}</td>
                         <td>{{ reporte.fechaCreacion | date:'dd-MM-yyyy' }}</td>
-                        <td>    {{ reporte.urgencia }}</td>
+                        <td  (mousedown)="Pinnear(1, reporte._id)" (mouseup)="Pinnear(2, reporte._id)">{{ reporte.urgencia }}</td>
                         <td class="acciones"><a class="imagen-especial"  (click)="openCentrado(contenido, reporte)">Ver más</a></td>
                         <td class="acciones">
                             <button class="boton-aceptar" (click)="cambioEnProceso(reporte);">En proceso</button>
@@ -119,8 +120,8 @@
                                 {{a}}
                             </option>
                         </select>
-
-
+                        <p *ngIf="fechaMayor" class="error">Fecha seleccionada no válida</p>
+                        <p *ngIf="fechaMayor" class="error">Se muestra el mes actual</p>
                 </div>
             </div>
 

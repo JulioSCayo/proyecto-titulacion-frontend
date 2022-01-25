@@ -95,12 +95,31 @@ export class NotificacionesComponent implements OnInit {
       err => {
         Swal.fire({
           title: 'Oh no!',
-          text: 'Ocurrio un problema recibiendo las notificaciones',
+          text: 'Ocurrio un problema eliminando la notificacion',
           icon: 'error',
           confirmButtonText: 'Ok'
         });
         console.error(err);
       }
     );
+  }
+
+  borrarTodas() {
+    for(let notificacion of this.notificaciones) {
+      this.notificacionesService.editNotificacion(notificacion._id!, this.idUsuario).subscribe(
+        res => {
+          this.ngOnInit();
+        },
+        err => {
+          Swal.fire({
+            title: 'Oh no!',
+            text: 'Ocurrio un problema eliminando las notificaciones',
+            icon: 'error',
+            confirmButtonText: 'Ok'
+          });
+          console.error(err);
+        }
+      );
+    }
   }
 }

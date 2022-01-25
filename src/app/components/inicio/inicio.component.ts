@@ -14,6 +14,8 @@ export class InicioComponent implements OnInit {
   noCoinciden = false;
   noAceptado = false;
   cuentaBaneada = false;
+  noExiste = false;
+  fallaServidor = false;
 
   constructor(private loginService: LoginService, private router: Router) { }
 
@@ -29,50 +31,58 @@ export class InicioComponent implements OnInit {
 
   login() {
     this.noAceptado = false;
+    this.noExiste = false;
     this.noCoinciden = false;
     this.cuentaBaneada = false;
-
+    this.fallaServidor = false;
+    
     this.loginService.ingresar(this.usuario).subscribe(
       res => {
         let validado = true;
 
-        if(res.tipoUsuario == "especial") {
-          console.log(res.especialValidado);
-          if(!res.especialValidado) {
-            validado = false;
-            this.noAceptado = true;
-          }
+        if(res.noExiste) {
+          this.noExiste = true;
         }
-
-        if(res.baneado) {
-          if(res.baneado == "Si") {
-            console.log(res.baneado)
-            validado = false
-            this.cuentaBaneada = true;
-          }
+        else if(res.noCoincide) {
+          this.noCoinciden = true;
         }
-        
-
-        if(validado) {
-          console.log("usuario valido")
-          console.log(res.token)
-          console.log(this.usuario);
+        else {
+          if(res.tipoUsuario == "especial") {
+            console.log(res.especialValidado);
+            if(!res.especialValidado) {
+              validado = false;
+              this.noAceptado = true;
+            }
+          }
   
-          localStorage.setItem('token',res.token);
-          localStorage.setItem('IDU', res.idUsuario);
-          localStorage.setItem('TipoUsr', res.tipoUsuario);
-          localStorage.setItem('Usr', res.nombreUsuario);
+          if(res.baneado) {
+            if(res.baneado == "Si") {
+              console.log(res.baneado)
+              validado = false
+              this.cuentaBaneada = true;
+            }
+          }
+          
   
-          this.router.navigate(['/mapa-reportes']);
+          if(validado) {
+            console.log("usuario valido")
+            console.log(res.token)
+            console.log(this.usuario);
+    
+            localStorage.setItem('token',res.token);
+            localStorage.setItem('IDU', res.idUsuario);
+            localStorage.setItem('TipoUsr', res.tipoUsuario);
+            localStorage.setItem('Usr', res.nombreUsuario);
+    
+            this.router.navigate(['/mapa-reportes']);
+          }
         }
       },
       err => {
-        console.log("usuario NO valido")
         console.error(err);
-        this.noCoinciden = true;
+        this.fallaServidor = true;
       }
-      );
-
+    );
   }
 
   mapa() {
