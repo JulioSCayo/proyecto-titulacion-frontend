@@ -53,7 +53,11 @@ export class TablaEnProcesoComponent implements OnInit {
   anoBase: any
 
   prueba: any;
+
+  urlImagen: string = "";
   fechaMayor = false;
+
+  tiempoMouseDown = false;
 
   constructor(public reportesService: ReportesService,
               public notificacionesService: NotificacionesService,
@@ -130,10 +134,19 @@ export class TablaEnProcesoComponent implements OnInit {
             reporte.urgencia = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);
         }
 
-        aux = this.reportes;
-        let ordenados2 = aux.sort(function (a: any, b: any){
-          return (new Date(a.fechaCreacion).getTime() < new Date(b.fechaCreacion).getTime())
-        });
+        let ordenados2 = this.reportes;
+        aux = ordenados2[0];
+
+        for(let i = ordenados2.length-1; i > 0; i--) {
+          for(let j = 0; j < i; j++) {
+            if(new Date(ordenados2[j].fechaCreacion).getTime() < new Date(ordenados2[j+1].fechaCreacion).getTime()) {
+              aux = ordenados2[j+1];
+              ordenados2[j+1] = ordenados2[j];
+              ordenados2[j] = aux;
+            }
+          }
+        }
+
         this.reportes = []
         setTimeout( ()=> {
           this.reportes = ordenados2
@@ -146,14 +159,22 @@ export class TablaEnProcesoComponent implements OnInit {
             reporte.urgencia = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);
         }
 
-        aux = this.reportes;
-        let ordenados3 = aux.sort(function (a: any, b: any){
-          return (new Date(a.fechaCreacion).getTime() > new Date(b.fechaCreacion).getTime())
-        });
+        let ordenados3 = this.reportes;
+        aux = ordenados3[0];
+
+        for(let i = ordenados3.length-1; i > 0; i--) {
+          for(let j = 0; j < i; j++) {
+            if(new Date(ordenados3[j].fechaCreacion).getTime() > new Date(ordenados3[j+1].fechaCreacion).getTime()) {
+              aux = ordenados3[j+1];
+              ordenados3[j+1] = ordenados3[j];
+              ordenados3[j] = aux;
+            }
+          }
+        }
+
         this.reportes = []
         setTimeout( ()=> {
           this.reportes = ordenados3
-          console.log("this.reportes")
         },1)
       break;
       default:
@@ -275,6 +296,10 @@ export class TablaEnProcesoComponent implements OnInit {
               reputacion: "---"
             })
           }
+          if(reporte.imagen)
+            this.urlImagen = "http://localhost:4000/" + reporte.imagen;
+          else
+            this.urlImagen = "";
       }, 
       err => {
           console.log('No se pudo cargar los reportes');
@@ -297,7 +322,29 @@ export class TablaEnProcesoComponent implements OnInit {
           for(let reporte of this.guardarReportes) {  // calcula la urgencia de cada reporte y la guarda en un arreglo junto su id
             reporte.urgencia = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);
           }
-          this.reportes = this.guardarReportes
+          
+          let aux: any = [];
+          let urgentes: any = [];
+          let noUrgentes = this.guardarReportes;
+
+          for(let i = 0; i < noUrgentes.length; i++) {
+            if(await algoritmoUrgencia.Urgente(noUrgentes[i]._id!))
+              urgentes.push(noUrgentes.splice(i, 1)[0]);
+          }
+
+          urgentes = urgentes.sort(function (a: any, b: any){
+            return (b.urgencia - a.urgencia)
+          });
+        
+          for(let urgente of urgentes) {
+            aux.push(urgente);
+          }
+
+          for(let noUrgente of noUrgentes) {
+            aux.push(noUrgente);
+          }
+
+          this.reportes = aux;
       }, 
       err => {
           console.log('No se pudo cargar los reportes');
@@ -752,4 +799,37 @@ export class TablaEnProcesoComponent implements OnInit {
     })
   }
 
+  Pinnear(numero: Number, _id: String) {
+    if(numero == 1) {
+      this.tiempoMouseDown = false;
+      setTimeout(() => {
+        this.tiempoMouseDown = true;
+      }, 2000);
+    }
+    else {
+      if(this.tiempoMouseDown) {
+        console.log(this.reportes)
+        let index = 0;
+        let aux: any = [];
+        let noPinneados = this.reportes;
+
+        for(let i = 0; i < noPinneados.length; i++) {
+          if(noPinneados[i]._id === _id)
+              index = i;
+        }
+
+        let pinneado: any = noPinneados.splice(index, 1)[0];
+
+        aux.push(pinneado);
+
+        for(let noPinneado of noPinneados) {
+          aux.push(noPinneado);
+        }
+
+        this.reportes = [];
+
+        this.reportes = aux;     
+      }
+    }
+  }
 }

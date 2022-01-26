@@ -53,7 +53,11 @@ export class TablaSolucionadosComponent implements OnInit {
   anoBase: any
 
   prueba: any;
+
+  urlImagen: string = "";
   fechaMayor = false;
+
+  tiempoMouseDown = false;
 
   constructor(public reportesService: ReportesService,
               public notificacionesService: NotificacionesService,
@@ -129,14 +133,22 @@ export class TablaSolucionadosComponent implements OnInit {
             reporte.urgencia = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);
         }
 
-        aux = this.reportes;
-        let ordenados2 = aux.sort(function (a: any, b: any){
-          return (new Date(a.fechaCreacion).getTime() < new Date(b.fechaCreacion).getTime())
-        });
+        let ordenados2 = this.reportes;
+        aux = ordenados2[0];
+
+        for(let i = ordenados2.length-1; i > 0; i--) {
+          for(let j = 0; j < i; j++) {
+            if(new Date(ordenados2[j].fechaCreacion).getTime() < new Date(ordenados2[j+1].fechaCreacion).getTime()) {
+              aux = ordenados2[j+1];
+              ordenados2[j+1] = ordenados2[j];
+              ordenados2[j] = aux;
+            }
+          }
+        }
+
         this.reportes = []
         setTimeout( ()=> {
           this.reportes = ordenados2
-          console.log(this.reportes)
         },1)
        break;
       case "Más antiguo":
@@ -146,10 +158,19 @@ export class TablaSolucionadosComponent implements OnInit {
             reporte.urgencia = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);
         }
 
-        aux = this.reportes;
-        let ordenados3 = aux.sort(function (a: any, b: any){
-          return (new Date(a.fechaCreacion).getTime() > new Date(b.fechaCreacion).getTime())
-        });
+        let ordenados3 = this.reportes;
+        aux = ordenados3[0];
+
+        for(let i = ordenados3.length-1; i > 0; i--) {
+          for(let j = 0; j < i; j++) {
+            if(new Date(ordenados3[j].fechaCreacion).getTime() > new Date(ordenados3[j+1].fechaCreacion).getTime()) {
+              aux = ordenados3[j+1];
+              ordenados3[j+1] = ordenados3[j];
+              ordenados3[j] = aux;
+            }
+          }
+        }
+
         this.reportes = []
         setTimeout( ()=> {
           this.reportes = ordenados3
@@ -314,6 +335,10 @@ export class TablaSolucionadosComponent implements OnInit {
               reputacion: "---"
             })
           }
+          if(reporte.imagen)
+            this.urlImagen = "http://localhost:4000/" + reporte.imagen;
+          else
+            this.urlImagen = "";
       }, 
       err => {
           console.log('No se pudo cargar los reportes');
@@ -595,4 +620,37 @@ export class TablaSolucionadosComponent implements OnInit {
     })
   }
 
+  Pinnear(numero: Number, _id: String) {
+    if(numero == 1) {
+      this.tiempoMouseDown = false;
+      setTimeout(() => {
+        this.tiempoMouseDown = true;
+      }, 2000);
+    }
+    else {
+      if(this.tiempoMouseDown) {
+        console.log(this.reportes)
+        let index = 0;
+        let aux: any = [];
+        let noPinneados = this.reportes;
+
+        for(let i = 0; i < noPinneados.length; i++) {
+          if(noPinneados[i]._id === _id)
+              index = i;
+        }
+
+        let pinneado: any = noPinneados.splice(index, 1)[0];
+
+        aux.push(pinneado);
+
+        for(let noPinneado of noPinneados) {
+          aux.push(noPinneado);
+        }
+
+        this.reportes = [];
+
+        this.reportes = aux;     
+      }
+    }
+  }
 }

@@ -139,10 +139,19 @@ export class TablaDesatendidosComponent implements OnInit {
             reporte.urgencia = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);
         }
 
-        aux = this.reportes;
-        let ordenados2 = aux.sort(function (a: any, b: any){
-          return (new Date(a.fechaCreacion).getTime() < new Date(b.fechaCreacion).getTime())
-        });
+        let ordenados2 = this.reportes;
+        aux = ordenados2[0];
+
+        for(let i = ordenados2.length-1; i > 0; i--) {
+          for(let j = 0; j < i; j++) {
+            if(new Date(ordenados2[j].fechaCreacion).getTime() < new Date(ordenados2[j+1].fechaCreacion).getTime()) {
+              aux = ordenados2[j+1];
+              ordenados2[j+1] = ordenados2[j];
+              ordenados2[j] = aux;
+            }
+          }
+        }
+
         this.reportes = []
         setTimeout( ()=> {
           this.reportes = ordenados2
@@ -155,14 +164,22 @@ export class TablaDesatendidosComponent implements OnInit {
             reporte.urgencia = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);
         }
 
-        aux = this.reportes;
-        let ordenados3 = aux.sort(function (a: any, b: any){
-          return (new Date(a.fechaCreacion).getTime() > new Date(b.fechaCreacion).getTime())
-        });
+        let ordenados3 = this.reportes;
+        aux = ordenados3[0];
+
+        for(let i = ordenados3.length-1; i > 0; i--) {
+          for(let j = 0; j < i; j++) {
+            if(new Date(ordenados3[j].fechaCreacion).getTime() > new Date(ordenados3[j+1].fechaCreacion).getTime()) {
+              aux = ordenados3[j+1];
+              ordenados3[j+1] = ordenados3[j];
+              ordenados3[j] = aux;
+            }
+          }
+        }
+
         this.reportes = []
         setTimeout( ()=> {
           this.reportes = ordenados3
-          console.log("this.reportes")
         },1)
       break;
       default:
@@ -330,7 +347,29 @@ export class TablaDesatendidosComponent implements OnInit {
           for(let reporte of this.guardarReportes) {  // calcula la urgencia de cada reporte y la guarda en un arreglo junto su id
             reporte.urgencia = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);
           }
-          this.reportes = this.guardarReportes
+
+          let aux: any = [];
+          let urgentes: any = [];
+          let noUrgentes = this.guardarReportes;
+
+          for(let i = 0; i < noUrgentes.length; i++) {
+            if(await algoritmoUrgencia.Urgente(noUrgentes[i]._id!))
+              urgentes.push(noUrgentes.splice(i, 1)[0]);
+          }
+
+          urgentes = urgentes.sort(function (a: any, b: any){
+            return (b.urgencia - a.urgencia)
+          });
+        
+          for(let urgente of urgentes) {
+            aux.push(urgente);
+          }
+
+          for(let noUrgente of noUrgentes) {
+            aux.push(noUrgente);
+          }
+
+          this.reportes = aux;
       }, 
       err => {
           console.log('No se pudo cargar los reportes');
@@ -609,7 +648,7 @@ export class TablaDesatendidosComponent implements OnInit {
               this.ubicacion1 = event.latLng; // SE OBTIENE LA UBICACIÓN SELECCIONADA
 
               marco2!.style.marginLeft = (X1 - origenx!).toString()+"px"
-              marco2!.style.marginTop = (Y1 - origeny! - 25).toString()+"px"
+              marco2!.style.marginTop = (Y1 - origeny! - 50).toString()+"px"
               // marco2!.style.marginTop = (Y1 - origeny!).toString()+"px"
               console.log("diferencia en x: ", X1, " - ", origenx, " = ", (X1 - origenx!));
               console.log("diferencia en y: ", Y1, " - ", origeny, " = ", (Y1 - origeny!));

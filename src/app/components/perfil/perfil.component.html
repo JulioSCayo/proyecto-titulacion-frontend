@@ -12,12 +12,12 @@
             <div class="infoPerfil">
                 <div class="infoPersonal">
                     <h2>{{ nombreUsuario }}</h2>
-                    <h3>{{ nombre }}</h3>
-                    <h3>{{ apellidoPaterno }}, {{ apellidoMaterno }}</h3>
+                    <h3 *ngIf="tipoUsuario != 'responsable'">{{ nombre }}</h3>
+                    <h3 *ngIf="tipoUsuario != 'responsable'">{{ apellidoPaterno }}, {{ apellidoMaterno }}</h3>
                     <button class="boton-editar" (click)="this.toggleEditarInfoForm = true; this.toggleDesactivarFondo = true; this.togglebloquearScroll = true;">Editar información</button>
                 </div>
         
-                <div class="reputacion">
+                <div class="reputacion" *ngIf="tipoUsuario != 'responsable'">
                     <div id="divPuntosReputacion"><p class="puntosReputacion">{{ reputacion }} puntos</p></div>
                     <div id="progressbar">
                         <div class="progress" [style.width.%]="barraProgreso"></div>
@@ -26,7 +26,7 @@
                 </div>
             </div>
     
-            <div *ngIf="reportes" class="div-tabla">
+            <div *ngIf="reportes.length" class="div-tabla">
                 <h1>Historial de reportes</h1>
                 <table class="tabla">
                     <tr class="cabecera">
@@ -52,12 +52,16 @@
                 </table>
             </div>
 
-            <div *ngIf="!reportes" class="div-tabla">
+            <div *ngIf="!reportes.length && tipoUsuario != 'responsable'" class="div-tabla">
                 <h1>No se han realizado reportes</h1>
+            </div>
+
+            <div *ngIf="tipoUsuario == 'responsable'" class="div-tabla">
+                <h1>No cuentas con historial de reportes por tu tipo de cuenta</h1>
             </div>
         </div>
 
-        <div class="contenido" [ngClass]="{'activarForm': toggleEditarInfoForm}">
+        <div class="contenido" [ngClass]="{'activarForm': toggleEditarInfoForm}" *ngIf="tipoUsuario != 'responsable'">
             <div class="divEditarForm">
                 <div class="barra1"><h2>Editar información</h2></div>
                 <form class="editarForm" (submit)="editarForm('informacion')" [formGroup]="editarInfoForm" >
@@ -65,6 +69,20 @@
                     <input type="text" placeholder="Nombre de usuario" formControlName = "nombreUsuario">
                     <p *ngIf="coincideNombre" class="error" style="margin: 10px 0px 0px 0px;">El nombre de usuario ya existe</p>
                     <p *ngIf="nombreLargo" class="error" style="margin: 10px 0px 0px 0px;">El nombre supera los 30 caracteres</p>
+                    <h3>Cambiar contraseña</h3>
+                    <input type="password" placeholder="Contraseña" formControlName = "contrasena">
+                    <p *ngIf="coincideContrasena" class="error" style="margin: 10px 0px 0px 0px;">La contraseña es igual a la actual</p>
+                    <p *ngIf="contrasenaLarga" class="error" style="margin: 10px 0px 0px 0px;">La contraseña supera los 30 caracteres</p>
+                    <input type="submit" class="editar" value="Editar">
+                    <button class="cancelar" (click)="this.toggleEditarInfoForm = false; this.toggleDesactivarFondo = false; this.togglebloquearScroll = false;">Cancelar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="contenido" [ngClass]="{'activarForm': toggleEditarInfoForm}" *ngIf="tipoUsuario == 'responsable'">
+            <div class="divEditarForm">
+                <div class="barra1"><h2>Editar información</h2></div>
+                <form class="editarForm" (submit)="editarForm('responsable')" [formGroup]="editarInfoForm" >
                     <h3>Cambiar contraseña</h3>
                     <input type="password" placeholder="Contraseña" formControlName = "contrasena">
                     <p *ngIf="coincideContrasena" class="error" style="margin: 10px 0px 0px 0px;">La contraseña es igual a la actual</p>

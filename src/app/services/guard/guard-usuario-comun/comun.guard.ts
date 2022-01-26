@@ -14,7 +14,7 @@ export class ComunGuard implements CanActivate {
     let u = this.loginService.getTipoUsuario();
     console.log(u);
 
-    if(u == "comun" || u == "especial") return true;
+    if(u == "comun" || u == "especial" || u == "responsable") return true;
     
     console.log("lo siento, no cuentas con los permisos")
     this.router.navigate(['/'])

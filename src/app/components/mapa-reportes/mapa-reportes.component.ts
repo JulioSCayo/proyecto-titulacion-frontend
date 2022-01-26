@@ -519,7 +519,7 @@ mapa() {
             this.comentarioLargo = true;
           }
           else {
-            if(await identificacion.Identificacion(this.registrarForm?.value) == false){ // si pasa los algoritmos de validacion guarda el reporte ----------
+            // if(await identificacion.Identificacion(this.registrarForm?.value) == false){ // si pasa los algoritmos de validacion guarda el reporte ----------
               ///* ------
               if(identificacion.VerificarFantasma()){ // si retorna true significa que dicidio hacer el reporte fantasma
                 this.registrarForm.value.fantasma = true;
@@ -593,7 +593,7 @@ mapa() {
                   console.error(err);
                 }
               );
-            } // ----------
+            // } // ----------
           }
         }
     }
