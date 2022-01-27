@@ -29,10 +29,11 @@
                 </thead>
                 <tbody >
                     <tr *ngFor="let reporte of reportes | busquedaReportes: busqueda">
-                        <td>{{ reporte._id }}</td>
-                        <td>{{ reporte.credibilidad }}</td>
-                        <td>{{ reporte.fechaCreacion | date:'dd-MM-yyyy' }}</td>
-                        <td>    {{ reporte.urgencia }}</td>
+                        <td *ngIf="reporte.promTiempoCronico" title="Este problema de {{reporte.tipoProblema}} ha ocurrido en promedio cada {{reporte.promTiempoCronico}} días">{{ reporte._id }}</td>
+                        <td *ngIf="!reporte.promTiempoCronico" title=" Problema de {{reporte.tipoProblema}}">{{ reporte._id }}</td>
+                        <td (mousedown)="Pinnear(1, reporte._id)" (mouseup)="Pinnear(2, reporte._id)">{{ reporte.credibilidad }}</td>
+                        <td (mousedown)="Pinnear(1, reporte._id)" (mouseup)="Pinnear(2, reporte._id)">{{ reporte.fechaCreacion | date:'dd-MM-yyyy' }}</td>
+                        <td (mousedown)="Pinnear(1, reporte._id)" (mouseup)="Pinnear(2, reporte._id)">{{ reporte.urgencia }}</td>
                         <td class="acciones"><a class="imagen-especial"  (click)="openCentrado(contenido, reporte)">Ver más</a></td>
                         <td class="acciones">
                             <button class="boton-aceptar" (click)="cambioEnProceso(reporte);">En proceso</button>
@@ -55,8 +56,10 @@
                             <h5> <b>Comentarios: </b> <br></h5>
                             <p *ngIf="reporte.comentario == ''" >   No hay comentarios  <br></p>
                             <p *ngIf="reporte.comentario.length > 0">   {{reporte.comentario}}  <br></p>
-                            <h5 *ngIf="urlImagen.length"> <b>Imagen del reporte</b> <br></h5>
+                            <h5> <b>Imagen del reporte</b> <br></h5>
+                            <p *ngIf="!urlImagen.length" >   No hay imagen  <br></p>
                             <img *ngIf="urlImagen.length" src="{{urlImagen}}" class="imagenReporte">
+                            
                             <h5> <b>Usuarios que lo reportaron:</b> </h5>
                             <table class="tablaUsuariosDentroReporteInfo table table-bordered row-border hover">
                               <thead>
@@ -119,8 +122,8 @@
                                 {{a}}
                             </option>
                         </select>
-
-
+                        <p *ngIf="fechaMayor" class="error">Fecha seleccionada no válida</p>
+                        <p *ngIf="fechaMayor" class="error">Se muestra el mes actual</p>
                 </div>
             </div>
 

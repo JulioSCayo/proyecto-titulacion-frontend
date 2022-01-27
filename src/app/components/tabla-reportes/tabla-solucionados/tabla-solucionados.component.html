@@ -24,10 +24,11 @@
                     <th class="acciones">Detalles</th>
                 </tr>
                 <tr *ngFor="let reporte of reportes | busquedaReportes: busqueda">
-                    <td>{{ reporte._id }}</td>
-                    <th>{{ reporte.credibilidad }}</th>
-                    <td>{{ reporte.fechaCreacion | date:'dd-MM-yyyy' }}</td>
-                    <th>{{ reporte.fechaSolucion | date:'dd-MM-yyyy' }}</th>
+                    <td *ngIf="reporte.promTiempoCronico"title="Este problema de {{reporte.tipoProblema}} ha ocurrido en promedio cada {{reporte.promTiempoCronico}} días">{{ reporte._id }}</td>
+                    <td *ngIf="!reporte.promTiempoCronico" title=" Problema de {{reporte.tipoProblema}}">{{ reporte._id }}</td>
+                    <th (mousedown)="Pinnear(1, reporte._id)" (mouseup)="Pinnear(2, reporte._id)">{{ reporte.credibilidad }}</th>
+                    <td (mousedown)="Pinnear(1, reporte._id)" (mouseup)="Pinnear(2, reporte._id)">{{ reporte.fechaCreacion | date:'dd-MM-yyyy' }}</td>
+                    <th (mousedown)="Pinnear(1, reporte._id)" (mouseup)="Pinnear(2, reporte._id)">{{ reporte.fechaSolucion | date:'dd-MM-yyyy' }}</th>
                     <td class="acciones"><a class="imagen-especial" (click)="openCentrado(contenido, reporte)">Ver más</a></td>
 
                     <ng-template #contenido let-modal>
@@ -47,6 +48,10 @@
                           <h5> <b>Comentarios: </b> <br></h5>
                           <p *ngIf="reporte.comentario == ''" >   No hay comentarios  <br></p>
                           <p *ngIf="reporte.comentario.length > 0">   {{reporte.comentario}}  <br></p>
+                          <h5> <b>Imagen del reporte</b> <br></h5>
+                            <p *ngIf="!urlImagen.length" >   No hay imagen  <br></p>
+                            <img *ngIf="urlImagen.length" src="{{urlImagen}}" class="imagenReporte">
+                            
                           <h5> <b>Usuarios que lo reportaron:</b> </h5>
                           <table class="tablaUsuariosDentroReporteInfo table table-bordered row-border hover">
                             <thead>
@@ -108,8 +113,8 @@
                               {{a}}
                           </option>
                       </select>
-
-
+                        <p *ngIf="fechaMayor" class="error">Fecha seleccionada no válida</p>
+                        <p *ngIf="fechaMayor" class="error">Se muestra el mes actual</p>
               </div>
           </div>
 

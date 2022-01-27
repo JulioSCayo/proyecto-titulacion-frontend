@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UsuarioResponsableService } from "../../../services/usuario-responsable/usuario-responsable.service";
 import { UsuarioResponsable } from "../../../models/usuario-responsable";
 import Swal from 'sweetalert2';
+import { LoginService } from 'src/app/services/login/login.service';
 
 @Component({
   selector: 'app-tabla-responsables',
@@ -21,7 +22,7 @@ export class TablaResponsablesComponent implements OnInit {
 
   busqueda = "";
   
-  constructor(public usuarioResponsableService: UsuarioResponsableService) { }
+  constructor(public usuarioResponsableService: UsuarioResponsableService, public loginService: LoginService,) { }
 
   ngOnInit(): void {
     this.getUsuarios(); // Se cargan los usuarios responsables en la tabla
@@ -29,14 +30,38 @@ export class TablaResponsablesComponent implements OnInit {
 
   getUsuarios() {
     this.usuarioResponsableService.getUsuarios().subscribe(
-      res => {
+      async res => {
         this.usuarios = <UsuarioResponsable[]>res;
-        // console.log(res);
-        // let numUsr = 0;
-        // this.usuarios.forEach(i => {
-        //   console.log("------------------> Usuario Responsable numero: " + numUsr++)
-        //   console.log(i.usuarioResponsable?.institucion + " - "+ i.contrasena + " - " + i.nombreUsuario)
-        // });
+        for(let i = 0; i < this.usuarios.length; i++) {
+          const idContrasena = {
+            id: this.usuarios[i]._id,
+            contrasena: this.usuarios[i].nombreUsuario
+          }
+    
+          this.usuarios[i].contrasena = await this.CompararContras(idContrasena, i);
+        }
+
+        let contraNoModif = this.usuarios;
+        let contraModif: any = [];
+        let aux: any = []
+
+        for(let i = 0; i < this.usuarios.length; i++) {
+          if(contraNoModif[i].contrasena != contraNoModif[i].nombreUsuario) {
+            contraModif.push(contraNoModif.splice(i, 1)[0]);
+          }
+        }
+
+        this.usuarios = [];
+
+        aux = contraNoModif;
+
+        for(let modif of contraModif) {
+          aux.push(modif);
+        }
+
+        setTimeout( ()=> {
+          this.usuarios = aux;
+        },1)
       },
       err => {
         Swal.fire({
@@ -50,6 +75,32 @@ export class TablaResponsablesComponent implements OnInit {
       }
       );
   }
+
+  async CompararContras(idContrasena: any, indice: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.loginService.compararContrasenas(idContrasena).subscribe(
+        res => {
+          const coinciden = res.coinciden;
+
+          if(coinciden) {
+            resolve(idContrasena.contrasena);
+          }
+          else {
+            resolve("El usuario ya modificó su contraseña");
+          }
+        },
+        err => {
+          Swal.fire({
+            title: 'Oh no!',
+            text: 'Ocurrio un problema revisando las credenciales',
+            icon: 'error',
+            confirmButtonText: 'Ok'
+          });
+          console.error(err);
+        }
+      );
+    });
+}
 
   deleteUsuario(id?: string) {
     Swal.fire({

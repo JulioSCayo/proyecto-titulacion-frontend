@@ -60,6 +60,9 @@ export class TablaDesatendidosComponent implements OnInit {
   prueba: any;
 
   urlImagen: string = "";
+  fechaMayor = false;
+
+  tiempoMouseDown = false;
 
   constructor(public reportesService: ReportesService,
               public notificacionesService: NotificacionesService,
@@ -136,14 +139,22 @@ export class TablaDesatendidosComponent implements OnInit {
             reporte.urgencia = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);
         }
 
-        aux = this.reportes;
-        let ordenados2 = aux.sort(function (a: any, b: any){
-          return (new Date(a.fechaCreacion).getTime() < new Date(b.fechaCreacion).getTime())
-        });
+        let ordenados2 = this.reportes;
+        aux = ordenados2[0];
+
+        for(let i = ordenados2.length-1; i > 0; i--) {
+          for(let j = 0; j < i; j++) {
+            if(new Date(ordenados2[j].fechaCreacion).getTime() < new Date(ordenados2[j+1].fechaCreacion).getTime()) {
+              aux = ordenados2[j+1];
+              ordenados2[j+1] = ordenados2[j];
+              ordenados2[j] = aux;
+            }
+          }
+        }
+
         this.reportes = []
         setTimeout( ()=> {
           this.reportes = ordenados2
-          console.log(this.reportes)
         },1)
        break;
       case "Más antiguo":
@@ -153,10 +164,19 @@ export class TablaDesatendidosComponent implements OnInit {
             reporte.urgencia = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);
         }
 
-        aux = this.reportes;
-        let ordenados3 = aux.sort(function (a: any, b: any){
-          return (new Date(a.fechaCreacion).getTime() > new Date(b.fechaCreacion).getTime())
-        });
+        let ordenados3 = this.reportes;
+        aux = ordenados3[0];
+
+        for(let i = ordenados3.length-1; i > 0; i--) {
+          for(let j = 0; j < i; j++) {
+            if(new Date(ordenados3[j].fechaCreacion).getTime() > new Date(ordenados3[j+1].fechaCreacion).getTime()) {
+              aux = ordenados3[j+1];
+              ordenados3[j+1] = ordenados3[j];
+              ordenados3[j] = aux;
+            }
+          }
+        }
+
         this.reportes = []
         setTimeout( ()=> {
           this.reportes = ordenados3
@@ -225,13 +245,49 @@ export class TablaDesatendidosComponent implements OnInit {
 
 
   async mesSeleccionado(m:any): Promise<void>{
-    this.mesBase = m
-    this.getReportesXmes()
+    this.mesBase = m;
+    this.fechaMayor = false;
+
+    if(this.anoBase == this.fecha.getFullYear()) {
+      let indiceMes = this.meses.indexOf(m);
+      
+      if(indiceMes == -1) {
+        indiceMes = this.mesesBase.indexOf(m);
+        if(indiceMes == -1) {
+          indiceMes = this.otroDeMeses.indexOf(m);
+        }
+      }
+      
+      if(indiceMes > this.fecha.getMonth()) {
+        this.mesBase = this.meses[this.fecha.getMonth()];
+        this.fechaMayor = true;
+      }
+    }
+
+    this.getReportesXmes();
   }
   
   async anoSeleccionado(a:any): Promise<void>{
-    this.anoBase = a
-    this.getReportesXmes()
+    this.anoBase = a;
+    this.fechaMayor = false;
+
+    if(this.anoBase == this.fecha.getFullYear()) {
+      let indiceMes = this.meses.indexOf(this.mesBase);
+      
+      if(indiceMes == -1) {
+        indiceMes = this.mesesBase.indexOf(this.mesBase);
+        if(indiceMes == -1) {
+          indiceMes = this.otroDeMeses.indexOf(this.mesBase);
+        }
+      }
+      
+      if(indiceMes > this.fecha.getMonth()) {
+        this.mesBase = this.meses[this.fecha.getMonth()];
+        this.fechaMayor = true;
+      }
+    }
+
+    this.getReportesXmes();
   }
 
 
@@ -291,7 +347,29 @@ export class TablaDesatendidosComponent implements OnInit {
           for(let reporte of this.guardarReportes) {  // calcula la urgencia de cada reporte y la guarda en un arreglo junto su id
             reporte.urgencia = await algoritmoUrgencia.PuntosUrgencia(reporte._id!);
           }
-          this.reportes = this.guardarReportes
+
+          let aux: any = [];
+          let urgentes: any = [];
+          let noUrgentes = this.guardarReportes;
+
+          for(let i = 0; i < noUrgentes.length; i++) {
+            if(await algoritmoUrgencia.Urgente(noUrgentes[i]._id!))
+              urgentes.push(noUrgentes.splice(i, 1)[0]);
+          }
+
+          urgentes = urgentes.sort(function (a: any, b: any){
+            return (b.urgencia - a.urgencia)
+          });
+        
+          for(let urgente of urgentes) {
+            aux.push(urgente);
+          }
+
+          for(let noUrgente of noUrgentes) {
+            aux.push(noUrgente);
+          }
+
+          this.reportes = aux;
       }, 
       err => {
           console.log('No se pudo cargar los reportes');
@@ -533,20 +611,24 @@ export class TablaDesatendidosComponent implements OnInit {
           ]
         });
 
-        const infoWindow = new google.maps.InfoWindow();
-        let newMarker: google.maps.Marker[] = [];
-        // const latitud = this.nuevoLatLng.lat();
-        // const longitud = this.nuevoLatLng.lng();
+        // Se llama al método que muestra todos los reportes que hay en la lista para el filtrado especial
+        this.reportesExistentes(map);
+
+        // CREO QUE YA NO SE OCUPA LO DE ABAJO
+        // const infoWindow = new google.maps.InfoWindow();
+        // let newMarker: google.maps.Marker[] = [];
+        // // const latitud = this.nuevoLatLng.lat();
+        // // const longitud = this.nuevoLatLng.lng();
         
-        const nuevoReporteMarker = {
-          path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z', //
-          fillColor: "#04CAB3",
-          fillOpacity: 1,
-          strokeWeight: 0,
-          rotation: 0,
-          scale: 2,
-          anchor: new google.maps.Point(8, 12)
-        };
+        // const nuevoReporteMarker = {
+        //   path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z', //
+        //   fillColor: "#04CAB3",
+        //   fillOpacity: 1,
+        //   strokeWeight: 0,
+        //   rotation: 0,
+        //   scale: 2,
+        //   anchor: new google.maps.Point(8, 12)
+        // };
 
         let X1 = 0, X2 = 0, Y1 = 0, Y2 = 0;
         let marco1 = document.getElementById("marco1");
@@ -566,7 +648,7 @@ export class TablaDesatendidosComponent implements OnInit {
               this.ubicacion1 = event.latLng; // SE OBTIENE LA UBICACIÓN SELECCIONADA
 
               marco2!.style.marginLeft = (X1 - origenx!).toString()+"px"
-              marco2!.style.marginTop = (Y1 - origeny! - 25).toString()+"px"
+              marco2!.style.marginTop = (Y1 - origeny! - 50).toString()+"px"
               // marco2!.style.marginTop = (Y1 - origeny!).toString()+"px"
               console.log("diferencia en x: ", X1, " - ", origenx, " = ", (X1 - origenx!));
               console.log("diferencia en y: ", Y1, " - ", origeny, " = ", (Y1 - origeny!));
@@ -599,9 +681,68 @@ export class TablaDesatendidosComponent implements OnInit {
             }
         })
       });
-
-      
     }
+
+    // AGREGAR LOS MARCADORES DE LOS REPORTES
+  reportesExistentes(map: google.maps.Map) {
+
+    // LOS COLORES DE LOS MARCADORES DE CADA TIPO DE PROBLEMA
+    const markerAlumbrado = "#ccc547";
+    const markerAgua = "#6cb7ce";
+    const markerObstruccion = "#864109";
+    const markerIncendio = "#fd8037";
+        
+    // FOR PARA CREAR TODOS LOS MARCADORES
+    for (let i = 0; i < this.reportes.length; i++) {
+      let markerColor;
+
+      // SE IDENTIFICA EL TIPO DE REPORTE PARA ASIGNAR UN COLOR
+      switch (this.reportes[i].tipoProblema) {
+        case "Alumbrado":
+          markerColor = markerAlumbrado;
+          break;
+
+        case "Inundación":
+        case "Fuga de agua":
+        case "Falta de alcantarilla":
+        case "Alcantarilla obstruida":
+          markerColor = markerAgua;
+          break;
+
+        case "Escombros tirados":
+        case "Vehículo abandonado":
+        case "Árbol caído":
+        case "Socavón":
+        case "Cables caídos":
+          markerColor = markerObstruccion;
+          break;
+
+        case "Incendio":
+          markerColor = markerIncendio;
+          break;
+      }
+
+      // EL ICONO TOMA EL COLOR QUE LE CORRESPONDE
+      const icon = {
+        path: 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
+        fillColor: markerColor,
+        fillOpacity: 1,
+        strokeWeight: 0,
+        rotation: 0,
+        scale: 2,
+        anchor: new google.maps.Point(15, 30)
+      };
+
+      // SE CREA EL MARCADOR CON EL ICONO Y LAS COORDENADAS DEL PROBLEMA
+      const marker = new google.maps.Marker({
+        position: { lat: this.reportes[i].ubicacion.latitud, lng: this.reportes[i].ubicacion.longitud },
+        map: map,
+        title: "Ver detalles",
+        icon: icon,
+        optimized: true,
+      });
+    }
+  }
 
 
     filtradoMapa(){
@@ -664,5 +805,37 @@ export class TablaDesatendidosComponent implements OnInit {
     })
   }
 
-  
+  Pinnear(numero: Number, _id: String) {
+    if(numero == 1) {
+      this.tiempoMouseDown = false;
+      setTimeout(() => {
+        this.tiempoMouseDown = true;
+      }, 2000);
+    }
+    else {
+      if(this.tiempoMouseDown) {
+        console.log(this.reportes)
+        let index = 0;
+        let aux: any = [];
+        let noPinneados = this.reportes;
+
+        for(let i = 0; i < noPinneados.length; i++) {
+          if(noPinneados[i]._id === _id)
+              index = i;
+        }
+
+        let pinneado: any = noPinneados.splice(index, 1)[0];
+
+        aux.push(pinneado);
+
+        for(let noPinneado of noPinneados) {
+          aux.push(noPinneado);
+        }
+
+        this.reportes = [];
+
+        this.reportes = aux;     
+      }
+    }
+  }
 }

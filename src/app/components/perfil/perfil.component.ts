@@ -7,8 +7,10 @@ import { LoginService } from 'src/app/services/login/login.service';
 import Swal from 'sweetalert2';
 import { UsuarioComunService } from "../../services/usuario-comun/usuario-comun.service";
 import { UsuarioEspecialService } from "../../services/usuario-especial/usuario-especial.service";
+import { UsuarioResponsableService } from "../../services/usuario-responsable/usuario-responsable.service";
 import { ReportesService } from "../../services/reportes/reportes.service";
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { UsuarioResponsable } from 'src/app/models/usuario-responsable';
 
 @Component({
   selector: 'app-perfil',
@@ -66,6 +68,11 @@ export class PerfilComponent implements OnInit {
     }
   };
 
+  usuarioResponsable: UsuarioResponsable = {
+    nombreUsuario: '',
+    contrasena: ''
+  };
+
   idUsuario: string = "";
   tipoUsuario: string = "";
   nombreUsuario: string = "";
@@ -88,7 +95,14 @@ export class PerfilComponent implements OnInit {
     }]
   }];
 
-  constructor(public usuarioComunService: UsuarioComunService, public usuarioEspecialService: UsuarioEspecialService, public reportesService: ReportesService, public loginService: LoginService, private formBuilder: FormBuilder, public router: Router) { }
+  constructor(
+              public usuarioComunService: UsuarioComunService,
+              public usuarioEspecialService: UsuarioEspecialService,
+              public usuarioResponsableService: UsuarioResponsableService,
+              public reportesService: ReportesService,
+              public loginService: LoginService,
+              private formBuilder: FormBuilder,
+              public router: Router) { }
 
   async ngOnInit(): Promise<void> {
     this.editarInfoForm = this.formBuilder.group({
@@ -105,8 +119,7 @@ export class PerfilComponent implements OnInit {
       contraseña: ['', ]
     }); 
 
-    await this.getUsuario();
-    setTimeout(async () => await this.getReportes(), 200);
+    this.getUsuario();
   }
 
   // NECESARIO PARA RECIBIR LA IMAGEN (PENDIENTE)
@@ -160,6 +173,8 @@ export class PerfilComponent implements OnInit {
             this.reputacion = this.usuarioComun.reputacion!;
 
             this.barraProgreso = this.reputacion*10;
+
+            setTimeout(async () => this.getReportes(), 200);
           },
           err => {
             Swal.fire({
@@ -190,6 +205,8 @@ export class PerfilComponent implements OnInit {
             this.reputacion = this.usuarioEspecial.reputacion!;
 
             this.barraProgreso = this.reputacion*10;
+
+            setTimeout(async () => this.getReportes(), 200);
           },
           err => {
             Swal.fire({
@@ -202,6 +219,32 @@ export class PerfilComponent implements OnInit {
             console.error(err);
           }
         );
+
+        break;
+
+      case "responsable":
+        this.usuarioResponsableService.getUsuario(usuario!).subscribe(
+            res => {
+              this.usuarioResponsable = <UsuarioResponsable>res;
+  
+              this.idUsuario = this.usuarioResponsable._id!;
+              this.tipoUsuario = "responsable";
+              this.nombreUsuario = this.usuarioResponsable.nombreUsuario;
+              this.contrasena = this.usuarioResponsable.contrasena!;
+
+              this.reportes = [];
+            },
+            err => {
+              Swal.fire({
+                title: 'Oh no!',
+                text: 'Ocurrio un problema recibiendo el usuario',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+              });
+      
+              console.error(err);
+            }
+          );
 
         break;
     }
@@ -319,7 +362,7 @@ export class PerfilComponent implements OnInit {
       
 
 
-    else {
+    else if(editarForm == "reporte"){
       this.editar = "reporte";
 
       if(!(this.editarReporteForm.value.comentario.length == 0)) {
@@ -344,6 +387,64 @@ export class PerfilComponent implements OnInit {
       }
       else {
         this.comentarioLargo = false;
+      }
+    }
+    else {
+      this.editar = "informacion";
+      this.editarInfoForm.value.nombreUsuario = '';
+
+      const idContrasena = {
+        id: this.idUsuario,
+        contrasena: this.editarInfoForm.value.contrasena
+      }
+
+
+      
+      if(!(this.editarInfoForm.value.contrasena == '')){
+        var valido = true;
+        if(this.editarInfoForm.value.contrasena.length > 30) {
+          this.contrasenaLarga = true;
+          valido = false;
+        }
+        else {
+          this.contrasenaLarga = false;
+        }
+
+        if(valido == true) {
+          this.loginService.compararContrasenas(idContrasena).subscribe(
+            res => {
+              const coinciden = res.coinciden;
+  
+              console.log(coinciden);
+  
+              if(coinciden) {
+                this.coincideContrasena = true;
+                siguienteForm = false;
+              }
+              else {
+                this.coincideContrasena = false;
+              }
+  
+              if(siguienteForm == true) {
+                this.toggleEditarInfoForm = false;
+                this.toggleConfirmarIdentidadForm = true;
+              }
+            },
+            err => {
+              Swal.fire({
+                title: 'Oh no!',
+                text: 'Ocurrio un problema revisando las credenciales',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+              });
+              console.error(err);
+            }
+          );
+        }
+      }
+      else {
+        this.coincideNombre = false;
+        this.coincideContrasena = false;
       }
     }
   }

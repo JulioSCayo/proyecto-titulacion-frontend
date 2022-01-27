@@ -44,8 +44,8 @@ export class UsuarioResponsableService {
     return this.http.get<any[]>('http://localhost:4000/buscarResponsable');
   }
 
-  getUsuario(): Observable<UsuarioResponsable[]> {
-    return this.http.get<any[]>(this.URL_API);
+  getUsuario(_id?: string) {
+    return this.http.get<UsuarioResponsable>("http://localhost:4000/registro/" + _id);
   }
 
   editUsuario() {
