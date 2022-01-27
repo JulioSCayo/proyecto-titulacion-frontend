@@ -46,6 +46,7 @@ export class MapaReportesComponent implements OnInit {
 
   // ID DEL REPORTE A REPLICAR
   replicaId: string = "";
+  fecha = new Date();
 
   // COORDENADAS Y TIPO DEL NUEVO REPORTE EN DONDE SE COLOCÓ EL MARKER
   nuevoLatLng: any;
@@ -490,7 +491,7 @@ mapa() {
                   confirmButtonText: 'Ok'
                 });
 
-                identificacion.AccederYGuardar(res.toString());
+                identificacion.AccederYGuardar(res.toString(), true);
 
                 // CUANDO SE REPLICA UN REPORTE SE VA DIRECTO AL MAPA Y SE REFRESCA
                 this.toggleFormReporte = false; // SE ESCONDE EL FORM DE DETALLES
@@ -520,15 +521,26 @@ mapa() {
           }
           else {
             if(await identificacion.Identificacion(this.registrarForm?.value) == false){ // si pasa los algoritmos de validacion guarda el reporte ----------
-              ///* ------
-              if(identificacion.VerificarFantasma()){ // si retorna true significa que dicidio hacer el reporte fantasma
-                this.registrarForm.value.fantasma = true;
+              let temporal: boolean, idReporte: any, cachaMetodoFantasma: any, guardar = true
+              // /* ------ // si quieres que no haga lo de checar fantasma quita el comentario de esta linea y la 543 para que se comente todo lo que esta adentro jaja
+              // una vez que paso las validaciones de tiempo y distancia (paso 2 y 3) llama al metedo verificar fantasma
+              cachaMetodoFantasma = await identificacion.VerificarFantasma()
+
+              // dependiendo lo que retorne realiza o asigna
+              if(cachaMetodoFantasma == 1){ // crea el reporte de forma normal sin conciderarlo fantasma
+                this.registrarForm.value.fantasma = 0;
+                temporal = false
                 console.log(this.registrarForm.value)
-              }else{
-                this.registrarForm.value.fantasma = false;
+              }else if(cachaMetodoFantasma == 3){ // si retorna 3 significa que se concidera reporte fantasma
+                this.registrarForm.value.fantasma = this.fecha.getTime();
                 console.log(this.registrarForm.value)
-              };
-              //*/ ------
+                temporal = true
+              }else if(cachaMetodoFantasma == 4){ // significa que no se debe generar el cuarto reporte
+                guardar = false
+              }else if(cachaMetodoFantasma == false){ // significa que no se debe generar ningun reporte, lo decidio cancelar
+                guardar = false
+              }
+              // */  // ------
               
               // this.registrarForm.value.fantasma = await identificacion.VerificarFantasma();
               // SE OBTIENEN LAS COORDENADAS DEL MARKER COLOCADO POR EL USUARIO
@@ -540,59 +552,72 @@ mapa() {
               this.registrarForm.value.ubicacion.longitud = longitud;
               this.registrarForm.value.tipoProblema = this.nuevoProblema;
 
-              this.reportesService.createReporte(this.registrarForm.value).subscribe(
-                async res => {
-                  let correcto = true;
-                  /*Swal.fire({
-                    title: 'Reporte enviado!',
-                    text: 'Hemos recibido tu reporte del problema',
-                    icon: 'success',
-                    confirmButtonText: 'Ok'
-                  }); */
-                  if(this.selectedImage?.name) {
-                    const formData = new FormData;
-                    formData.append('imagen', "prueba");
-                    formData.append('imagenReporte', this.file?.nativeElement.files[0]);
-      
-                    this.reportesService.editImagenReporte(res.toString(), formData).subscribe(
-                      res => {
-                        correcto = true;
-                      },
-                      err => {
-                        correcto = false;
+              if(guardar){  // simpre va a entrar a menos que sea en 4to reporte en menos de 24 horas
+                this.reportesService.createReporte(this.registrarForm.value).subscribe(
+                  async res => {
+                    let correcto = true;
+                    let idReporte = res
 
-                        Swal.fire({
-                          title: 'Oh no!',
-                          text: 'Ocurrio un problema editando la imagen del reporte',
-                          icon: 'error',
-                          confirmButtonText: 'Ok'
-                        });
-                        console.error(err);
+                      if(this.selectedImage?.name) {
+                        const formData = new FormData;
+                        formData.append('imagen', "prueba");
+                        formData.append('imagenReporte', this.file?.nativeElement.files[0]);
+          
+                          this.reportesService.editImagenReporte(res.toString(), formData).subscribe(
+                            res => {
+                              correcto = true;
+                            },
+                            err => {
+                              correcto = false;
+                              Swal.fire({
+                                title: 'Oh no!',
+                                text: 'Ocurrio un problema editando la imagen del reporte',
+                                icon: 'error',
+                                confirmButtonText: 'Ok'
+                              });
+                              console.error(err);
+                            });
                       }
-                    );
+                    
+                    console.log(correcto)
+                    if(correcto) {
+                      console.log(res.toString())
+                      identificacion.AccederYGuardar(res.toString(), true); // si se creo el reporte con exito guarda su id en el ls del usuario
+                      
+                        if(temporal){ // en caso de que el reporte sea considerado fantasma se lanza un settimeout para eliminarlo en 24 horas (si no lo reporto otro usr)
+                          console.log("Entro a temporal")
+                              setTimeout( () => {
+                                console.log("Entro al settimeout")
+                                console.log(idReporte)
+                                  this.reportesService.eliminarFantasma(idReporte).subscribe(
+                                      res =>{
+                                        console.log("Fantasma excedio el tiempo de espera y fue eliminado")
+                                        console.log(res)
+                                      },
+                                      err =>{
+                                        console.log("Error al eliminar el reporte fantasma")
+                                  })
+                              }, 60000)
+                        }
+                          
+                      this.ngOnInit();
+                      // CUANDO SE CREA UN REPORTE SE VA DIRECTO AL MAPA Y SE REFRESCA
+                      this.toggleFormReporte = false; // SE ESCONDE EL FORM DE DETALLES
+                      this.toggleDesactivarMapa = false; // SE ACTIVA EL MAPA
+                    }
+                  },
+                  err => {
+                    Swal.fire({
+                      title: 'Oh no!',
+                      text: 'Ocurrio un problema enviando tu reporte',
+                      icon: 'error',
+                      confirmButtonText: 'Ok'
+                    });
+                    console.error(err);
                   }
-                  
-                  console.log(correcto)
-                  if(correcto) {
-                    console.log(res.toString())
-                    identificacion.AccederYGuardar(res.toString());
-                    // this.ngOnInit();
-                    // CUANDO SE CREA UN REPORTE SE VA DIRECTO AL MAPA Y SE REFRESCA
-                    this.toggleFormReporte = false; // SE ESCONDE EL FORM DE DETALLES
-                    this.toggleDesactivarMapa = false; // SE ACTIVA EL MAPA
-                  }
-
-                },
-                err => {
-                  Swal.fire({
-                    title: 'Oh no!',
-                    text: 'Ocurrio un problema enviando tu reporte',
-                    icon: 'error',
-                    confirmButtonText: 'Ok'
-                  });
-                  console.error(err);
-                }
-              );
+                );
+              }
+              
             } // ----------
           }
         }

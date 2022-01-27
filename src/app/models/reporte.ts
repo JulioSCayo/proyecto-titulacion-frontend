@@ -16,7 +16,7 @@ export interface Reporte {
 	asignado?: string,
 	urgenciaOriginal?: number,
 	cronico?: boolean,
-	fantasma?: boolean,
+	fantasma?: number,
 	usuarios: [
         {
             _id?: string;

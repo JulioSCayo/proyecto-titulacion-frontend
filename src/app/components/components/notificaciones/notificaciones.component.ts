@@ -21,7 +21,7 @@ export class NotificacionesComponent implements OnInit {
   btnCerrarNotificaciones: boolean = false; // Variable icono para cerrar las notificaciones
 
   idUsuario: string = '';
-
+  // useState<any[]>([]);
   notificaciones: Notificacion[] = [{
     tipoNotificacion: '',
     usuarios: [
@@ -30,6 +30,8 @@ export class NotificacionesComponent implements OnInit {
           }
       ]
   }];
+
+  noNever: any = []
 
   // Cuando se hace click dentro del menu
   @HostListener('click')
@@ -66,12 +68,48 @@ export class NotificacionesComponent implements OnInit {
 
     if(tipoUsuario == 'admin')
       this.btnAbrirNotificaciones = false;
-
+    
+      console.log("HOLA")
     this.notificacionesService.getNotificacionesUsuario(this.idUsuario).subscribe(
       res => {
         this.notificaciones = res;
-        if(this.notificaciones)
+        console.log(res)
+        console.log(this.notificaciones)
+        this.noNever = res
+        if(this.notificaciones){
           this.hayNotificaciones = true;
+
+          let reportesLS = JSON.parse(localStorage.getItem('reportes') || '{}');
+          let tiemposReportes = JSON.parse(localStorage.getItem('tiempos') || '{}');
+          let aux, cont = 0
+
+          console.log(reportesLS)
+          console.log(tiemposReportes)
+          console.log(this.noNever)
+
+          this.noNever.forEach((element:any) => {
+            if(element.tipoNotificacion == "estadoSolucionado" || element.tipoNotificacion == "estadoDenegado"){
+              // aux = reportesLS.find((e:any) => e == e.folioReporte) // busca el id del reporte dentro del 
+              aux = reportesLS.indexOf(element.folioReporte)
+              console.log(aux)
+              if(aux != -1){
+                reportesLS.splice(aux, 1);
+                tiemposReportes.splice(aux, 1);
+              }
+              
+            }
+          });
+
+          if(tiemposReportes.length >= 1){
+            localStorage.setItem("reportes", JSON.stringify(reportesLS));
+            localStorage.setItem("tiempos", JSON.stringify(tiemposReportes));
+          }else{ 
+            localStorage.removeItem("reportes")
+            localStorage.removeItem("tiempos")
+          }
+
+        }else{
+        }
       },
       err => {
         Swal.fire({

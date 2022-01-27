@@ -24,40 +24,16 @@ export class AlgoritmoIdentificacion {
 
 
     async Identificacion(reporte: any) : Promise<boolean>{
-        // this.denegado = this.ChecarBan();
-
-        // console.log(reporte)
-
-        // if(!this.denegado) {
-        //     console.log("Entra al primer if")
-        //     if(this.Leer() == true){ // si existe la variable en el LS con algun reporte hace el resto de metodos
-        //         this.VerificarDistancia(reporte);
-        //         // this.VerificarTiempo();
-        //         // this.VerificarFantasma();
-        //     }
-        //     // guarda o no el id del nuevo reporte y da acceso a las siguientes validaciones y algoritmos
-        //     this.AccederYGuardar(reporte._id);
-        //     console.log("el estado de denegado es: " ,this.denegado)
-            
-            
-        // }
-        // return this.denegado;
-        
-
-        // this.denegado = false;
-        // this.Leer();
-        this.ChecarBan();
-        if(this.denegado == true){
+        this.ChecarBan(); // cecha si esta baneado, en caso de que si no hace nada mas
+        if(this.denegado == true){ // gracias a este if
             return this.denegado
         }
         
         if(this.Leer() == true){ // si existe la variable en el LS con algun reporte hace el resto de metodos
             // this.VerificarDistancia(reporte);
             // this.VerificarTiempo();
-            // // // // // // this.VerificarFantasma();
-        }
-        // guarda o no el id del nuevo reporte y da acceso a las siguientes validaciones y algoritmos
-        // // // // // // this.AccederYGuardar(reporte._id);
+        } // estan comentados los metodos para hacer pruebas y realizar todos los reportes sin limitaciones (maximo 3, si el metodo fantasma esta acivado en el component)
+
         await console.log("el estado de denegado es: " ,this.denegado)
         return await this.denegado;
     }
@@ -80,8 +56,6 @@ export class AlgoritmoIdentificacion {
     VerificarID( id_reporte: any): boolean{//  ESTE ES EL PASO 1, PERO OJO CON EL COMENTARIO DE ARRIBA
         let identificador = id_reporte;
         this.Leer();
-        // console.log(this.reportes)
-        // console.log(id_reporte)
         this.reportes.forEach(e => {
             if(e == identificador){ // si algun identificador coincide significa que este usuario habia hecho el reporte
                 // console.log("No se puede repotar este problema de nuevo");
@@ -97,7 +71,14 @@ export class AlgoritmoIdentificacion {
 
         console.log(this.denegado)
         if(this.denegado) return true
-        else{
+        else{ // si es un usuario distinto entonces llama a quitarFantasma, si el reporte aun existe y tiene el atributo de fantasma lo quita (realmente le asigna 0)
+            this.reportesService.quitarFantasma(id_reporte.toString()).subscribe(
+                res =>{
+                  console.log("fantasma eliminado, si es que lo tenia")
+                },
+                err =>{
+                  console.log("Error al quitar fantasma")
+            })
             console.log("SE PUEDE REPORTAR")
             return false
         }     
@@ -180,64 +161,96 @@ export class AlgoritmoIdentificacion {
 
     VerificarFantasma(){  // ESTE ES EL PASO 4
         let contador = 1;
+        let tipoUsr = localStorage.getItem("TipoUsr")
         // console.log(this.tiempos)
-        this.tiempos.forEach(e => { // paso 2 del cuaderno
-            if(e >= (this.fecha.getTime() - 86400000)){
+        this.tiempos.forEach(e => { // recorre todo los tiempos en el que el usuario hizo sus reporetes anteriores
+            if(e >= (this.fecha.getTime() - 86400000)){ // si fue hace menos de 24 horas aumenta contador
                 console.log("Fue hace menos de 24 horas");
                 contador++;
             }
         });
 
-        if(contador == 3){
-            Swal.fire({
-                title: 'Seguro?',
-                text: 'El siguiente reporte será fantasma y te restará 1 punto a tu fiabilidad',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Entiendo, enviar',
-                cancelButtonText: 'Cancelar'
-              }).then((result) => {
-                if(result.isConfirmed || result.isDismissed) {
-                  // window.location.reload();
-                  console.log("hace putas algo")
-                }
-            });
-            // if (result.isConfirmed){
-            //     console.log("entro a confirmado, TRUE")
-            //     return true
-            // }else{
-            //     console.log("entro a desconfirmado, FALSE")
-            //     return false
-            // }
-        }else if(contador == 4){
-            Swal.fire({
-                title: 'Seguro?',
-                text: 'Este reporte ya es fantasma, no pudes hacer ningun reporte desde este dispositivo',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Si, enviar reporte!'
-                    }).then((result => {
-                        if (result.isConfirmed){
-                            localStorage.setItem("Ban", this.fecha.getTime().toString()); // banea por 36 horas
-                            // console.log("y resta 1 punto a la fiabilidad")
-                            console.log("TRUE")
-                            return true
-                        }else{
-                            console.log("FALSE")
-                            return false
-                        }
-                    }));
-                    console.log("mando true")
-                    return true;  //////////////
-        }else if(contador > 4){
-            this.denegado = true;
+        // primero checa que tipo de usuario es, para cambiar la aleta y consecuencias dependiendo si es comun o invitado
+        if(tipoUsr == "comun"){
+            if(contador == 3){
+                 return 3;  ////////////// retorna 3 para indicar que es fantasma
+            }else if(contador == 4){
+                Swal.fire({
+                    title: 'Seguro?',
+                    text: 'Si realizas el reporte no podras realizar algún otro por 36 horas y se te restará 1 punto de reputación',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, enviar reporte!'
+                        }).then((result => {
+                            if (result.isConfirmed){
+                                localStorage.setItem("Ban", this.fecha.getTime().toString()); // banea por 36 horas ///////////////////////
+                                this.reportesService.bajarReputacion(localStorage.getItem("IDU"), 1).subscribe( // baja 1 punto de reputacion
+                                    res =>{
+                                      console.log("Reputacion modificada")
+                                    },
+                                    err =>{
+                                      console.log("Error al Bajar la reputacion")
+                                })
+                                return 4
+                            }else{
+                                console.log("Pues no hace nada, no guarda el reporte ni banea")
+                                return false
+                            }
+                        }));
+                        // ----------------------------------------------------------------------------------------------------------------------------
+                        // este bloque entre la linea de puntos deberia estar dentro del if(result.isConfirmed) de la alerta, ya que son las consecuencias
+                        // console.log("mando true")
+                        // localStorage.setItem("Ban", this.fecha.getTime().toString()); // banea por 36 horas ///////////////////////
+                        // this.reportesService.bajarReputacion(localStorage.getItem("IDU"), 1).subscribe( // baja 1 punto de reputacion
+                        //     res =>{
+                        //       console.log("Reputacion modificada")
+                        //     },
+                        //     err =>{
+                        //       console.log("Error al Bajar la reputacion")
+                        // })
+                        // el usuario invitado tiene un bloque igual, pero sin bajar reputacion, unicamente banea dispositivo, pero tambien deberia estar dentro de la alerta
+                        // ----------------------------------------------------------------------------------------------------------------------------
+                        return 4;  ////////////// retorna 4 para indicar que no se debe crear
+            }else if(contador > 4){
+                this.denegado = true;
+            }
+
+        } else if(tipoUsr == null){
+            console.log("Entro a el invitado")
+            if(contador == 3){
+                 return 3;  ////////////// retorna un 3 para indicar que es fantasma
+            }else if(contador == 4){
+                Swal.fire({
+                    title: 'Seguro?',
+                    text: 'Si realizas el reporte no podras realizar algún otro por 36 horas',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, enviar reporte!'
+                        }).then((result => {
+                            if (result.isConfirmed){
+                                localStorage.setItem("Ban", this.fecha.getTime().toString()); // banea por 36 horas
+                                console.log("TRUE")
+                                return 4
+                            }else{
+                                console.log("FALSE")
+                                console.log("Pues no hace nada, no guarda el reporte ni banea")
+                                return false
+                            }
+                        }));
+                        // console.log("mando true")
+                        // localStorage.setItem("Ban", this.fecha.getTime().toString()); // banea por 36 horas ///////////////////////
+                        return 4;  ////////////// retorna un 4 para indicar que no se debe realizar
+            }else if(contador > 4){
+                this.denegado = true;
+            }
         }
-        console.log("mando false")
-        return false;
+
+        console.log("retorno 1, se puede guardar normal")
+        return 1;
     }
 
 
@@ -264,20 +277,21 @@ export class AlgoritmoIdentificacion {
     }
 
 
-    AccederYGuardar(idReporte: any){
+    AccederYGuardar(idReporte: any, componente: boolean){
 
             if(this.denegado == true){
                 console.log("-- NO SE PUEDE HACER EL REPORTE --")
-                this.reportesService.deleteReporte(idReporte.toString()).subscribe(
-                    res =>{
-                      console.log("Reporte eliminado")
-                    },
-                    err =>{
-                      console.log("Error al eliminar el reporte")
+                if(componente){
+                    this.reportesService.deleteReporte(idReporte.toString()).subscribe(
+                        res =>{
+                          console.log("Reporte eliminado")
+                        },
+                        err =>{
+                          console.log("Error al eliminar el reporte")
                     })
+                }
             }else{
                 this.reportes.pop();
-                // console.log(idReporte)
                 this.reportes.push(idReporte)
                 this.reportes.push(this.fecha.getTime())
                 this.tiempos.push(this.fecha.getTime())
@@ -290,9 +304,9 @@ export class AlgoritmoIdentificacion {
                     icon: 'success',
                     confirmButtonText: 'Ok'
                   }).then((result) => {
-                      if(result.isConfirmed || result.isDismissed) {
-                        // window.location.reload();
-                      }
+                    //   if(result.isConfirmed || result.isDismissed) {
+                    //     window.location.reload();
+                    //   }
                   });
             }
     }

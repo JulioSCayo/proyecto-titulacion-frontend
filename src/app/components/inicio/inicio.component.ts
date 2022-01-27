@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http'
 import { Router } from "@angular/router";
 import { LoginService } from '../../services/login/login.service'
 import { Loader } from '@googlemaps/js-api-loader';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-inicio',
@@ -14,6 +15,8 @@ export class InicioComponent implements OnInit {
   noCoinciden = false;
   noAceptado = false;
   cuentaBaneada = false;
+
+  fecha = new Date();
 
   constructor(private loginService: LoginService, private router: Router) { }
 
@@ -120,9 +123,26 @@ export class InicioComponent implements OnInit {
         ]
       });
 
+      
       map.addListener("mousedown", () => {
-        this.router.navigate(['/mapa-reportes']) 
-      });
+        let ban = JSON.parse(localStorage.getItem('Ban') || '{}');
+
+          if(localStorage.getItem("Ban")){ // significa que fue baneado
+            if(ban >= (this.fecha.getTime() - 129600000)){ // si han pasado menos de 36 desde que fue baneado no lo deja hacer reporte
+                console.log("No se puede ingresar");
+                Swal.fire({
+                    title: 'Estas baneado',
+                    text: 'No puedes ingresar al mapa por el momento',
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                  });
+            }
+          }else{
+                localStorage.removeItem("Ban");
+                this.router.navigate(['/mapa-reportes']) 
+          }
+        
+      })
 
     });
   }

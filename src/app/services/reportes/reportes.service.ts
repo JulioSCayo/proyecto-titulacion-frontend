@@ -112,6 +112,18 @@ export class ReportesService {
     return this.http.get<any>(this.URL_API + '/termino-ruta/' + id)
   }
 
+  quitarFantasma(id: any){
+    return this.http.get<any>(this.URL_API + '/quitar-fantasma/' + id)
+  }
+ 
+  bajarReputacion(id: any, puntos: number){
+    return this.http.get<any>(this.URL_API + '/bajar-reputacion-usr/' + id)
+  }
+
+  eliminarFantasma(id: any){
+    return this.http.get<any>(this.URL_API + '/eliminar-fantasma/' + id)
+  }
+
   reverseGeocoding(){
     // AIzaSyD8LFh53VddzDev0C6A5Jhln9KgpmpoExg
     // return this.http.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&amp;key=AIzaSyC6fYd8wgc8L8L9GDxRZlEUZim4JnhBJh4")
