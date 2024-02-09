@@ -1,5 +1,5 @@
-<div class="icono-menu" id="icono" (click)="toggleClass = !toggleClass">
-    <button class="menu" onclick="this.classList.toggle('opened');this.setAttribute('aria-expanded', this.classList.contains('opened'))" aria-label="Main Menu">
+<div class="icono-menu" id="icono" (click)="this.toggleMenu = !this.toggleMenu">
+    <button class="menu" aria-label="Main Menu" [ngClass]="{'opened': toggleMenu}">
         <svg width="45" height="45" viewBox="0 0 100 100">
           <path class="line line1" d="M 20,29.000046 H 80.000231 C 80.000231,29.000046 94.498839,28.817352 94.532987,66.711331 94.543142,77.980673 90.966081,81.670246 85.259173,81.668997 79.552261,81.667751 75.000211,74.999942 75.000211,74.999942 L 25.000021,25.000058" />
           <path class="line line2" d="M 20,50 H 80" />
@@ -8,12 +8,19 @@
     </button>
 </div>
 
-<div class="cont-menu active" id="menu" [ngClass]="{'active': !toggleClass, 'opacity': !toggleClass}">
+<div class="cont-menu active" id="menu" [ngClass]="{'active': !toggleMenu, 'opacity': !toggleMenu}">
     <hr>
     <ul>
-        <li> Perfil </li>
-        <li> Generar ruta </li>
-        <li> Informacion </li>
-        <li> Cerrar Sesion </li>
+        <li *ngIf="opciones('perfil')==true" [routerLink]="['/perfil']"> Perfil </li>
+        <li *ngIf="opciones('historial')==true" [routerLink]="['/reportes']"> Historial de reportes </li>
+        <li *ngIf="opciones('crearResp')==true" [routerLink]="['/registro-responsable']"> Crear responsable </li>
+        <li *ngIf="opciones('usuarios')==true" [routerLink]="['/usuarios']"> Lista de usuarios </li>
+        <li *ngIf="opciones('generarReporte')==true" [routerLink]="['/mapa-reportes']"> Generar reporte </li>
+        <li *ngIf="opciones('mapaSolucionados')==true" [routerLink]="['/mapa-solucionados']"> Reportes solucionados </li>
+        <li *ngIf="opciones('generarRuta')==true" [routerLink]="['/ruta-automatica']"> Generar ruta </li>
+        <li *ngIf="opciones('informacion')==true" [routerLink]="['/informacion']"> Información </li>
+        <li *ngIf="opciones('cerrarSesion')==true" (click)="cerrarSesion()"> Cerrar Sesión </li>
     </ul>
 </div>
+
+<!-- <button style="margin-left: 300px;" (click)="menu(toggleMenu)">Cerrar</button> -->

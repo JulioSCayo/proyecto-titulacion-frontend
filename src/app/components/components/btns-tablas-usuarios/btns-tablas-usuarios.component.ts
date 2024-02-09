@@ -15,6 +15,7 @@ export class BtnsTablasUsuariosComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit(): void {
+    // Destaca el boton presionado
     if(this.router.url == '/usuarios' || this.router.url == '/usuarios-comunes')
       this.toggleComun = false;
     else if(this.router.url == '/usuarios-especiales') 

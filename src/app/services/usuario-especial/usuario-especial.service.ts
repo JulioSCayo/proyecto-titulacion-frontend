@@ -16,7 +16,10 @@ export class UsuarioEspecialService {
     correoElectronico: '',
     nombreUsuario: '',
     contrasena: '',
-    imagen: ''
+    usuarioEspecial: {
+      imagen: '',
+      validado: false
+    }
   };
 
   usuarios: UsuarioEspecial[] = [];
@@ -28,20 +31,25 @@ export class UsuarioEspecialService {
   }
 
   getUsuarios() {
-    return this.http.get<UsuarioEspecial[]>(this.URL_API);
+    return this.http.get<any>('http://localhost:4000/buscarEspecial');
   }
 
-  getUsuario() {
-
+  getUsuario(_id?: string) {
+    return this.http.get<UsuarioEspecial>("http://localhost:4000/registro/" + _id);
   }
 
   editUsuario(usuarios: UsuarioEspecial) {
-    this.URL_API = this.URL_API + '/' + usuarios._id;
-    return this.http.put(this.URL_API, usuarios);
+    let url = "http://localhost:4000/registro/" + usuarios._id;
+    return this.http.put(url, usuarios);
+  }
+
+  aceptarEspecial(_id?: string) {
+    let url = "http://localhost:4000/aceptar-especial/" + _id;
+    return this.http.post(url, {validado: true});
   }
 
   deleteUsuario(_id?: string) {
-    this.URL_API = this.URL_API + '/' + _id;
-    return this.http.delete(this.URL_API);
+    let url = "http://localhost:4000/registro/" + _id
+    return this.http.delete(url);
   }
 }

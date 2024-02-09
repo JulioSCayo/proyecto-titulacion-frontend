@@ -12,40 +12,30 @@
             <div class="barraForm">
                  <h2>Registrarte</h2>
              </div>
-             <input type="text" id="" placeholder="Nombre" formControlName = "nombre">
-             <input type="text" name="apellidoPaterno" id="" placeholder="Apellido Paterno" formControlName = "apellidoPaterno">
-             <input type="text" name="apellidoMaterno" id="" placeholder="Apellido Materno" formControlName = "apellidoMaterno">
-             <input type="email" name="correoElectronico" id="" placeholder="Correo electrónico" formControlName = "correoElectronico">
-             <input type="text" name="nombreUsuario" id="" placeholder="Nombre de Usuario" formControlName = "nombreUsuario">
-             <input type="password" name="contrasena" id="" placeholder="Contraseña" formControlName = "contrasena" 
-                     [controlErrorsTpl]="errorContrasena">
-             <input type="password" name="confirmarContrasena" id="" placeholder="Confirmar Contraseña" formControlName = "confirmarContrasena">
-             <!-- <div *ngIf=true>
-                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque necessitatibus nam commodi exercitationem eveniet perferendis pariatur qui. Modi nihil accusantium dolorem, praesentium vel odio minus cum, in qui beatae deleniti.
-             </div> -->
-             <div *ngIf="registrarForm.hasError('mustMatch')">
-                 Las contraseñas deben coincidir
-             </div>
+             <input type="text" name="nombre" id="nombre" placeholder="Nombre" formControlName = "nombre" (change)="ValidarCampo('nombre')"
+                [ngClass]="{'noValido': !nombreValido}">
+             <p class="noValidoMensaje" [ngClass]="{'activar': !nombreValido}">{{ nombreMensaje }}</p>
+             <input type="text" name="apellidoPaterno" id="apellidoPaterno" placeholder="Apellido Paterno" formControlName = "apellidoPaterno" (change)="ValidarCampo('apaterno')"
+                [ngClass]="{'noValido': !apaternoValido}">
+             <p class="noValidoMensaje" [ngClass]="{'activar': !apaternoValido}">{{ apaternoMensaje }}</p>
+             <input type="text" name="apellidoMaterno" id="apellidoMaterno" placeholder="Apellido Materno" formControlName = "apellidoMaterno" (change)="ValidarCampo('amaterno')"
+                [ngClass]="{'noValido': !amaternoValido}">
+             <p class="noValidoMensaje" [ngClass]="{'activar': !amaternoValido}">{{ amaternoMensaje }}</p>
+             <input type="email" name="correoElectronico" id="correoElectronico" placeholder="Correo electrónico" formControlName = "correoElectronico" (change)="ValidarCampo('correo')"
+                [ngClass]="{'noValido': !correoValido}">
+             <p class="noValidoMensaje" [ngClass]="{'activar': !correoValido}">{{ correoMensaje }}</p>
+             <input type="text" name="nombreUsuario" id="nombreUsuario" placeholder="Nombre de Usuario" formControlName = "nombreUsuario" (change)="ValidarCampo('nombreUsuario')"
+                [ngClass]="{'noValido': !nombreUsuarioValido}">
+             <p class="noValidoMensaje" [ngClass]="{'activar': !nombreUsuarioValido}">{{ nombreUsuarioMensaje }}</p>
+             <input type="password" name="contrasena" id="contrasena" placeholder="Contraseña" formControlName = "contrasena" (change)="ValidarCampo('contrasena')"
+                [ngClass]="{'noValido': !contrasenaValido}">
+             <p class="noValidoMensaje" [ngClass]="{'activar': !contrasenaValido}">{{ contrasenaMensaje }}</p>
+             <input type="password" name="confirmarContrasena" id="confirmarContrasena" placeholder="Confirmar Contraseña" formControlName = "confirmarContrasena" (change)="ValidarCampo('confContrasena')"
+                [ngClass]="{'noValido': !confContrasenaValido}">
+             <p class="noValidoMensaje" [ngClass]="{'activar': !confContrasenaValido}">{{ confContrasenaMensaje }}</p>
              
-             <button  class="registrate" [disabled]="registrarForm.invalid" >Registrarte</button>
+             <button class="registrate">Registrarte</button>
          </form>
-         
-         <div>
-             Error mustMatch: {{registrarForm.hasError('mustMatch') | json}}
-             <br>
-             Valido: {{registrarForm.valid | json}}
-         </div>
- 
- 
-         <ng-template let-error let-text="text" #errorContrasena>
-             <!-- {{error | json}} {{text}} -->
-             <div *ngIf="error?.minlength">
-                 <b>error:</b>
-                 <i>No cumples con los caracteres minimos</i>
-             </div>
-         </ng-template>
- 
- 
+
      </body>
- 
  </html>

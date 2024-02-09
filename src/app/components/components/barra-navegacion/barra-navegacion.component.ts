@@ -13,6 +13,7 @@ export class BarraNavegacionComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit(): void {
+    // Si es la pagina de inicio se muestra el boton de registro en la barra
     if(this.router.url == '/') {
       this.paginaInicio = true;
     }
@@ -21,10 +22,12 @@ export class BarraNavegacionComponent implements OnInit {
     }
   }
 
+  // Presionando el nombre del sistema
   inicio() {
     this.router.navigate(['/']);
   }
 
+  // Presionando el boton de registro
   registrarte() {
     this.router.navigate(['/registro']);
   }

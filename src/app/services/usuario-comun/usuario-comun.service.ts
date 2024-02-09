@@ -27,19 +27,30 @@ export class UsuarioComunService {
   }
 
   getUsuarios() {
-    return this.http.get<UsuarioComun[]>(this.URL_API);
+    return this.http.get<any[]>('http://localhost:4000/buscarComun');
+  }
+  
+  getUsuario(_id?: string) {
+    return this.http.get<UsuarioComun>(this.URL_API + '/' + _id);
   }
 
-  getUsuario() {
-    
+  editUsuario(_id?: string, usuario?: any) {
+    return this.http.put(this.URL_API + '/' + _id, usuario);
   }
 
-  editUsuario() {
-
+  reputacionUsuario(reputacionUsr?: any) {
+    return this.http.put('http://localhost:4000/reputacion', reputacionUsr);
   }
 
   deleteUsuario(_id?: string) {
-    this.URL_API = this.URL_API + '/' + _id;
-    return this.http.delete(this.URL_API);
+    return this.http.delete(this.URL_API + '/' + _id);
+  }
+  
+  getNombresUsuarios(){
+    return this.http.get<any[]>('http://localhost:4000/nombresUsuarios');
+  }
+
+  getCorreosUsuarios(){
+    return this.http.get<any[]>('http://localhost:4000/correosUsuarios');
   }
 }

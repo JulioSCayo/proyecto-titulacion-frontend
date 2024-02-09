@@ -5,7 +5,7 @@
 
 body {
     background-color: #FAFAFA;
-    font-family: Helvetica;
+    font-family: 'Source Sans Pro', sans-serif;
 }
 
 h1{
@@ -146,3 +146,10 @@ form {
     height: 40px;
 }
 
+
+
+.error{
+    color: red;
+    font-weight: bold;
+    margin: 5px 0px 0px 5px;
+}
